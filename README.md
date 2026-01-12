@@ -25,6 +25,8 @@ The project is purely static and focuses on **frontend design and responsiveness
 ---
 
 ## Project Structure
+
+```
 responsive-ui/
 │
 ├── index.html
