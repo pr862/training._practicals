@@ -1,4 +1,3 @@
-/* General body */
 body {
   margin: 0;
   background: #fff;
@@ -8,42 +7,40 @@ body {
 /* Navbar */
 .navbar {
   background: #fff;
-  box-shadow: 0 0 0 0; /* no border */
+  box-shadow: 0 0 0 0; 
   position: sticky;
   top: 0;
   z-index: 1000;
 }
 
-/* Container to limit width and center content */
 .container {
-  max-width: 1200px; /* adjust max width as you want */
-  margin: 0 auto; /* center horizontally */
+  max-width: 1200px; 
+  margin: 0 auto; 
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 40px; /* equal left & right padding */
-  height: 80px; /* adjust navbar height */
+  padding: 0 40px; 
+  height: 80px; 
   padding: 12px;
 }
 
 /* Logo */
 .logo img {
-  height: 60px; /* adjust size */
+  height: 60px; 
   width: auto;
 }
 
-/* Nav + Button wrapper */
 .nav-wrapper {
   display: flex;
   align-items: center;
-  gap: 32px; /* space between nav and button */
+  gap: 32px; 
 }
 
 /* Nav links */
 .nav-links {
   display: flex;
   gap: 28px; 
-  font-weight: 700;/* space between menu items */
+  font-weight: 700;
 }
 
 .nav-links a {
@@ -54,9 +51,8 @@ body {
   padding-bottom: 4px;
   transition: color 0.3s ease;
   font-family: 'Inter', sans-serif;
-  /* 3. Size & Color */
   font-size: 16px;
-  color: #111111; /* Dark Grey/Black */
+  color: #111111; 
   text-decoration: none;
 }
 
@@ -108,7 +104,6 @@ body {
 
 .blog-grid {
   display: grid;
-  /* Auto-fit creates a responsive grid (3 cols on desktop, 1 on mobile) */
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 40px;
 }
@@ -117,89 +112,77 @@ body {
 .blog-card {
   display: flex;
   flex-direction: column;
-  /* No background/border in original design, just clean layout */
 }
 
-/* Image styling */
 .blog-card img {
   width: 100%;
-  aspect-ratio: 16 / 9; /* Modern property for rect images */
+  aspect-ratio: 16 / 9; 
   object-fit: cover;
   margin-bottom: 20px;
-  background-color: #f3f4f6; /* Placeholder color while loading */
+  background-color: #f3f4f6; 
   transition: transform 0.3s ease;
 }
 
-/* Subtle zoom effect on hover (optional) */
 .blog-card:hover img {
   transform: scale(1.02);
 }
 
-/* Title styling */
 .blog-card h3 {
-  font-size: 1.25rem; /* approx 20px */
+  font-size: 1.25rem; 
   font-weight: 600;
   line-height: 1.4;
   color: #111;
   margin: 0 0 12px 0;
   font-family: 'Inter', sans-serif;
   letter-spacing: -0.5px;
-  /* Truncate text after 3 lines */
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-/* Description styling */
 .blog-card p {
-  font-size: 0.95rem; /* approx 15px */
+  font-size: 0.95rem; 
   line-height: 1.6;
-  color: #6b7280; /* Muted grey */
+  color: #6b7280; 
   margin: 0 0 24px 0;
   
-  /* Truncate text after 3 lines */
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
 
-/* --- Author / Footer Section --- */
 .author {
- display: flex;       /* Puts Avatar next to Text */
-  align-items: center; /* Vertically centers them */
+ display: flex;       
+  align-items: center; 
   gap: 12px;    
 }
 
-/* Avatar Circle */
 .author .avatar {
   display: block;
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #d1d5db; /* Light grey circle */
+  background-color: #d1d5db; 
   
-  /* Using an SVG data URI for the white user silhouette icon */
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='white'%3E%3Cpath d='M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: center bottom 4px; /* Adjust icon position */
+  background-position: center bottom 4px; 
   background-size: 24px;
 }
 
-/* Author Name */
 .author div strong {
   display: block;
-  color: #4ca957; /* The exact green from the image */
+  color: #4ca957; 
   font-weight: 600;
   font-size: 0.9rem;
   line-height: 1.2;
 }
 
-/* Date & Read Time */
 .author div small {
   display: block;
-  color: #6b7280; /* Grey text */
+  color: #6b7280; 
   font-size: 0.85rem;
   margin-top: 2px;
 }
