@@ -49,4 +49,3 @@ responsive-ui/
 2. Open `index.html` in any modern browser
 3. No additional setup required
 
----
