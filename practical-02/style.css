@@ -155,9 +155,8 @@ hr {
 .footer-row {
     display: flex;
     flex-wrap: wrap;
-    margin: 0 -16px;
+    margin: 0 -24px;
     padding: 32px 0;
-    background-color: #f9f9f9; 
 }
 .footer-row h3 {
     font-size: 20px;
