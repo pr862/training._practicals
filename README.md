@@ -1,4 +1,4 @@
-# Practical-01-Responsive UI
+# Practical-02-Responsive UI
 
 ## Overview
 This project is a **responsive HTML & CSS UI** designed to adapt seamlessly across **mobile and desktop devices**. The UI is built using **modern CSS layout techniques** like **Flexbox** and **CSS Grid**, ensuring clean structure and scalability.
