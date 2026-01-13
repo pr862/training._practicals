@@ -1,56 +1,51 @@
-### practical-01 - Static UI
+### Practical-02-Responsive UI
 
-A responsive blog/resources page for Canopas company featuring a professional navbar and blog card layout.
+## Overview
+This project is a **responsive HTML & CSS UI** designed to adapt seamlessly across **mobile and desktop devices**. The UI is built using **modern CSS layout techniques** like **Flexbox** and **CSS Grid**, ensuring clean structure and scalability.
 
-#### Features
-
-- **Navbar**: Responsive navigation with:
-  - Company logo (canopas.webp)
-  - Navigation links: Services, Portfolio, Resources, Blog, Career, About
-  - Call-to-action button: "Get Free Consultation"
-  
-- **Blog Section**: Grid layout displaying 3 blog cards:
-  - Card 1: "5 Ways Custom Software Development Can Revolutionize Your Small Business"
-  - Card 2: "Mobile App Development – A Comprehensive Guide for Entrepreneurs"
-  - Card 3: "How to develop a successful product based on your unique IDEA"
-  
-- **Blog Card Components**:
-  - Featured image
-  - Title with line breaks
-  - Excerpt/description text
-  - Author section with avatar, name, and timestamp
+The project is purely static and focuses on **frontend design and responsiveness**.
 
 ---
 
-  ## Responsiveness
-- Layout adapts smoothly to different screen sizes
-- Grid-based blog section adjusts for smaller devices
-- Flexible layout using modern CSS units
+## Objective
+- Build a static HTML project
+- Implement a responsive UI for both mobile and desktop screens
+- Use modern CSS features such as **Flexbox** and **CSS Grid**
+- Maintain a clean and reusable folder structure
 
-#### Files Structure
+---
+
+## Features
+- Fully responsive layout
+- Grid or flex-based structure for content
+- Clean typography and spacing
+- Mobile-first design approach
+- Consistent styling across all devices
+
+---
+
+## Project Structure
 
 ```
-practical-01/
-├── index.html      # Main HTML structure (semantic tags, accessibility)
-├── style.css       # Complete styling with responsive breakpoints
-└── images/         # Static assets
-    ├── canopas.webp    # Company logo (30x30px approx)
-    ├── b1.png          # Blog post #1 featured image
-    ├── 2.png           # Blog post #2 featured image
-    └── b3.png          # Blog post #3 featured image
+responsive-ui/
+│
+├── index.html
+├── style.css
+├── images/ # All images used in the UI
+└── README.md
 ```
+
+
+---
+
+## Responsiveness
+- Mobile: Layout stacks vertically, content adapts to smaller screens
+- Tablet / Desktop: Flexible grid or flex layout for multiple columns
+
+---
 
 ## How to Run
 1. Clone or download the repository
-2. Open `index.html` in any modern web browser
+2. Open `index.html` in any modern browser
 3. No additional setup required
-
----
-
-## Scope
-- Static UI only
-- No JavaScript
-- No backend integration
- 
-
 
