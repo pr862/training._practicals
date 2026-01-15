@@ -1,26 +1,38 @@
-# Responsive Food Blog UI
+# Practical-04  
+## Responsive Swiper UI using Tailwind CSS
 
-A modern, clean, and responsive food blog website template inspired by the "My Food" design. This project focuses on high-quality typography, grid layouts, and mobile-first responsiveness.
+---
 
-## Features
-- **Responsive Design:** Works seamlessly on Desktop, Tablet, and Mobile devices.
-- **CSS Grid & Flexbox:** Uses modern CSS layout techniques for the gallery and footer.
-- **Side Navigation:** A sliding hamburger menu for mobile navigation.
-- **Clean UI:** Minimalist design with a focus on food photography and readable text.
+## 📌 Objective
+The objective of this practical is to configure **Tailwind CSS** and build a **fully responsive user interface** using **Swiper.js**.  
+The UI is designed to be responsive across all devices, including **4K screen resolutions**.
 
-## Technologies Used
-- HTML5
-- CSS3 (Custom Properties, Grid, Flexbox)
+---
 
-## How to Run
-1. Clone or download the repository.
-2. Open `index.html` in any modern web browser.
+## 🛠 Technologies Used
+- HTML5  
+- Tailwind CSS  
+- Swiper.js  
+- JavaScript  
 
-## Layout Details
-- **Desktop:** 4-column photo grid.
-- **Tablet:** 2-column photo grid.
-- **Mobile:** Single column layout for better readability.
+---
 
-## Project Structure
-- `index.html`: Contains the semantic structure of the blog.
-- `style.css`: Contains all styling and media queries.
+## ✨ Features
+- Tailwind CSS configured using CDN.
+- Responsive Swiper slider with images.
+- Autoplay and infinite looping slider.
+- Centered active slide with scaling effect.
+- Clickable pagination bullets.
+- Fully responsive layout up to **4K devices**.
+
+---
+
+## 📱 Responsive Breakpoints
+| Device Type | Screen Width |
+|------------|-------------|
+| Mobile     | 320px+ |
+| Tablet     | 768px+ |
+| Desktop    | 1024px+ |
+| 4K Screens | 2560px+ |
+
+
