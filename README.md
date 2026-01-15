@@ -1,4 +1,4 @@
-# Practical-04  
+# Practical-03  
 ## Responsive Swiper UI using Tailwind CSS
 
 ---
