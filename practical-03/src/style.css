@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Swiper-only minimal styling */
-
   .swiper-slide {
     transition: transform 0.4s ease, opacity 0.4s ease;
   }
