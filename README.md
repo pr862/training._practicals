@@ -1,51 +1,38 @@
-### Practical-02-Responsive UI
-
-## Overview
-This project is a **responsive HTML & CSS UI** designed to adapt seamlessly across **mobile and desktop devices**. The UI is built using **modern CSS layout techniques** like **Flexbox** and **CSS Grid**, ensuring clean structure and scalability.
-
-The project is purely static and focuses on **frontend design and responsiveness**.
+# Practical-03  
+## Responsive Swiper UI using Tailwind CSS
 
 ---
 
-## Objective
-- Build a static HTML project
-- Implement a responsive UI for both mobile and desktop screens
-- Use modern CSS features such as **Flexbox** and **CSS Grid**
-- Maintain a clean and reusable folder structure
+## 📌 Objective
+The objective of this practical is to configure **Tailwind CSS** and build a **fully responsive user interface** using **Swiper.js**.  
+The UI is designed to be responsive across all devices, including **4K screen resolutions**.
 
 ---
 
-## Features
-- Fully responsive layout
-- Grid or flex-based structure for content
-- Clean typography and spacing
-- Mobile-first design approach
-- Consistent styling across all devices
+## 🛠 Technologies Used
+- HTML5  
+- Tailwind CSS  
+- Swiper.js  
+- JavaScript  
 
 ---
 
-## Project Structure
-
-```
-responsive-ui/
-│
-├── index.html
-├── style.css
-├── images/ # All images used in the UI
-└── README.md
-```
-
+## ✨ Features
+- Tailwind CSS configured using CDN.
+- Responsive Swiper slider with images.
+- Autoplay and infinite looping slider.
+- Centered active slide with scaling effect.
+- Clickable pagination bullets.
+- Fully responsive layout up to **4K devices**.
 
 ---
 
-## Responsiveness
-- Mobile: Layout stacks vertically, content adapts to smaller screens
-- Tablet / Desktop: Flexible grid or flex layout for multiple columns
+## 📱 Responsive Breakpoints
+| Device Type | Screen Width |
+|------------|-------------|
+| Mobile     | 320px+ |
+| Tablet     | 768px+ |
+| Desktop    | 1024px+ |
+| 4K Screens | 2560px+ |
 
----
-
-## How to Run
-1. Clone or download the repository
-2. Open `index.html` in any modern browser
-3. No additional setup required
 
