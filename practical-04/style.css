@@ -1,16 +1,10 @@
-/* Reset and Base Styles */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-html {
-    scroll-behavior: smooth;
-}
-
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     line-height: 1.6;
     color: #333;
     background-color: #f8f9fa;
@@ -64,6 +58,7 @@ section {
 .my-button:active {
     transform: translateY(0);
 }
+
 /* Links Section */
 #links {
     background-color: #fff;
@@ -104,6 +99,7 @@ section {
 .my-link:hover::after {
     width: 100%;
 }
+
 /* Images Section */
 #images {
     background-color: #f8f9fa;
@@ -125,7 +121,7 @@ section {
 }
 
 .my-image:hover {
-    transform: rotate(-360deg);
+    transform: rotate(-30deg);
 }
 
 /* Text Section */
@@ -194,6 +190,21 @@ section {
     100% { opacity: 1; }
 }
 
+.text-flip {
+    font-size: 28px;
+    font-weight: bold;
+    color: #e67e22;
+    display: inline-block;
+    animation: flipText 3s infinite alternate ease-in-out;
+}
+
+@keyframes flipText {
+    0% { transform: rotateY(0deg); }
+    50% { transform: rotateY(180deg); }
+    100% { transform: rotateY(0deg); }
+}
+
+/* Spinner Section */
 .spinner {
     position: relative;
     width: 120px;
@@ -217,7 +228,7 @@ section {
     height: 15%;
     background-color: #ff0055; 
     border-radius: 50%;
-    animation: spinner-video-fade 1.2s infinite ease-in-out both;
+    animation: spin 1.2s infinite ease-in-out both;
 }
 
 .spinner .dot:nth-child(1) { transform: rotate(0deg); }
@@ -246,17 +257,16 @@ section {
 .spinner .dot:nth-child(11)::after { animation-delay: -0.1s; }
 .spinner .dot:nth-child(12)::after { animation-delay: 0s; }
 
-@keyframes spinner-video-fade {
+@keyframes spin {
     0%, 39%, 100% {
-        opacity: 0.25;
         transform: scale(0.6);
     }
     40% {
-        opacity: 1;
         transform: scale(1.4);
     }
 }
 
+/* Bounce Section */
 #bounce {
     background-color: #fff;
 }
