@@ -1,26 +1,42 @@
-# Responsive Food Blog UI
+# Practical-05
+## Interactive CSS Animations and Effects
 
-A modern, clean, and responsive food blog website template inspired by the "My Food" design. This project focuses on high-quality typography, grid layouts, and mobile-first responsiveness.
+---
 
-## Features
-- **Responsive Design:** Works seamlessly on Desktop, Tablet, and Mobile devices.
-- **CSS Grid & Flexbox:** Uses modern CSS layout techniques for the gallery and footer.
-- **Side Navigation:** A sliding hamburger menu for mobile navigation.
-- **Clean UI:** Minimalist design with a focus on food photography and readable text.
+## 📌 Objective
+The objective of this practical is to understand and implement CSS animations, transitions, and transforms to create interactive and visually appealing user interface elements without using external libraries.
 
-## Technologies Used
+---
+
+## 🛠 Technologies Used
 - HTML5
-- CSS3 (Custom Properties, Grid, Flexbox)
+- CSS3
 
-## How to Run
-1. Clone or download the repository.
-2. Open `index.html` in any modern web browser.
+---
 
-## Layout Details
-- **Desktop:** 4-column photo grid.
-- **Tablet:** 2-column photo grid.
-- **Mobile:** Single column layout for better readability.
+## ✨ Features
+- Button hover effect with background and text color change
+- Link hover effect with animated underline from left to right
+- Image rotation effect using CSS transforms on hover
+- Animated text effects such as color change, scaling, rotation, and fading
+- Custom loading spinner created using CSS keyframe animations
+- Bounce animation applied to a circular element on button click
+- Smooth transitions using CSS timing functions
 
-## Project Structure
-- `index.html`: Contains the semantic structure of the blog.
-- `style.css`: Contains all styling and media queries.
+---
+
+## 🎨 CSS Concepts Covered
+- CSS Transitions
+- CSS Transforms
+- CSS Keyframe Animations
+- Timing Functions (ease, linear, cubic-bezier)
+
+---
+
+## ▶ How to Run
+1. Download or clone the project files.
+2. Open the `index.html` file in any modern web browser.
+3. Hover over the elements to see animations.
+4. Click the **Bounce** button to trigger the bounce animation.
+
+---
