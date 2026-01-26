@@ -2,7 +2,7 @@
 module.exports = {
   content: [
     "./src/index.html",
-    "./src/swiper.js"
+    "./src/index.js"
   ],
   theme: {
     extend: {},
