@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>BMI Calculator using typescript</title>
+  <link rel="stylesheet" href="output.css">
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+
+  <div class="bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl w-full max-w-md p-8 relative overflow-hidden">
+    
+    <div class="absolute -top-10 -right-10 w-32 h-32 bg-purple-200 rounded-full opacity-50"></div>
+    <div class="absolute -bottom-10 -left-10 w-24 h-24 bg-pink-200 rounded-full opacity-50"></div>
+
+    <div class="text-center mb-8 relative z-10">
+      <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl mb-4 shadow-lg">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+      </div>
+      <h2 class="text-3xl font-bold text-gray-800">BMI Calculator</h2>
+    </div>
+
+    <div class="space-y-5 relative z-10">
+      <div class="group">
+        <label class="text-sm font-semibold text-gray-600 ml-1">Your Height</label>
+        <div class="relative mt-1">
+          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+          </div>
+          <input id="height" placeholder="180"
+            class="w-full pl-4 pr-4 py-4 bg-gray-50 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:bg-white focus:ring-0 transition-all duration-300 placeholder-gray-400 text-gray-700">
+          <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">cm</span>
+        </div>
+        <p id="heightError" class="hidden text-xs text-red-500 mt-1 ml-1"></p>
+      </div>
+
+      <div class="group">
+        <label class="text-sm font-semibold text-gray-600 ml-1">Your Weight</label>
+        <div class="relative mt-1">
+          <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+          </div>
+          <input id="weight" placeholder="65"
+            class="w-full pl-4 pr-4 py-4 bg-gray-50 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:bg-white focus:ring-0 transition-all duration-300 placeholder-gray-400 text-gray-700">
+          <span class="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 font-medium">kg</span>
+        </div>
+        <p id="weightError" class="hidden text-xs text-red-500 mt-1 ml-1"></p>
+      </div>
+
+      <button type="button" onclick="calculateBMI()"
+        class="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white py-4 rounded-xl font-bold text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300">
+        Calculate BMI
+      </button>
+    </div>
+
+    <div class="mt-8 text-center relative z-10">
+      <div class="inline-flex items-center justify-center px-4 py-1 bg-gray-100 rounded-full mb-4">
+        <span class="text-gray-500 text-sm font-medium">Your Result</span>
+      </div>
+
+      <div class="relative inline-block">
+        <h1 id="bmiValue" class="text-6xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent">
+          --
+        </h1>
+      </div>
+
+      <div id="bmiStatus" class="mt-3 text-xl font-semibold text-gray-700">
+        Enter your height and weight
+      </div>
+
+      <div id="bmiInterpretation" class="hidden mt-4 text-sm text-gray-600 leading-relaxed"></div>
+
+      <div class="mt-6">
+        <div class="flex justify-between text-xs text-gray-500 mb-2">
+          <span>Underweight</span>
+          <span>Normal</span>
+          <span>Overweight</span>
+          <span>Obese</span>
+        </div>
+
+        <div class="h-4 w-full bg-gray-200 rounded-full overflow-hidden shadow-inner">
+          <div id="bmiBar" class="h-full w-0 rounded-full transition-all duration-700 ease-out bg-gradient-to-r from-purple-500 to-pink-500"></div> 
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="index.js"></script>
+</body>
+</html>
+
