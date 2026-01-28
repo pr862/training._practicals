@@ -8,12 +8,13 @@ type BMIResult = {
 
 const heightInput = document.getElementById("height") as HTMLInputElement;
 const weightInput = document.getElementById("weight") as HTMLInputElement;
+const heightError = document.getElementById("heightError") as HTMLElement;
+const weightError = document.getElementById("weightError") as HTMLElement;
 const bmiValue = document.getElementById("bmiValue") as HTMLElement;
 const bmiStatus = document.getElementById("bmiStatus") as HTMLElement;
 const bmiInterpretation = document.getElementById("bmiInterpretation") as HTMLElement;
 const bmiBar = document.getElementById("bmiBar") as HTMLElement;
-const heightError = document.getElementById("heightError") as HTMLElement;
-const weightError = document.getElementById("weightError") as HTMLElement;
+
 
 function calculateBMI(): void {
   const height = parseFloat(heightInput.value);
@@ -38,12 +39,21 @@ function isValidWeight(weight: number): boolean {
 function validateInputs(height: number, weight: number): boolean {
   let valid = true;
 
-  if (!isValidHeight(height)) {
+  if (heightInput.value.trim() === "") {
+    showError(heightError, "Height is required");
+    valid = false;
+  }
+  else if (!isValidHeight(height)) {
     showError(heightError, "Enter a valid height (50-250 cm)");
     valid = false;
   }
 
-  if (!isValidWeight(weight)) {
+
+  if (weightInput.value.trim() === "") {
+    showError(weightError, "Weight is required");
+    valid = false;
+  }
+  else if (!isValidWeight(weight)) {
     showError(weightError, "Enter a valid weight (10-300 kg)");
     valid = false;
   }
