@@ -24,11 +24,19 @@ function isValidWeight(weight) {
 }
 function validateInputs(height, weight) {
     var valid = true;
-    if (!isValidHeight(height)) {
+    if (isNaN(height) || heightInput.value.trim() === "") {
+        showError(heightError, "Height is required");
+        valid = false;
+    }
+    else if (height < 50 || height > 250) {
         showError(heightError, "Enter a valid height (50-250 cm)");
         valid = false;
     }
-    if (!isValidWeight(weight)) {
+    if (isNaN(weight) || weightInput.value.trim() === "") {
+        showError(weightError, "Weight is required");
+        valid = false;
+    }
+    else if (weight < 10 || weight > 300) {
         showError(weightError, "Enter a valid weight (10-300 kg)");
         valid = false;
     }
