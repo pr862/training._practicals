@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", function() {
   });
 
   password.addEventListener("input", function() {
+    let password = this.value;
     if (this.value.trim() === "") {
       showError("passwordError", "Password is required");
       return;
@@ -48,8 +49,6 @@ document.addEventListener("DOMContentLoaded", function() {
     errors.length 
       ? showError("passwordError", `Password must contain: ${errors.join(", ")}.`) 
       : clearError("passwordError");
-
-    confirmPassword.dispatchEvent(new Event("input"));
   });
 
   confirmPassword.addEventListener("input", function() {
@@ -96,11 +95,15 @@ document.getElementById("myForm").addEventListener("submit", function(e) {
   }
 
   let errors = [];
-  if (password.value.trim() === "") errors.push("Password is required");
-  if (password.value.length < 8) errors.push("at least 8 characters");
-  if (!/[a-z]/.test(password.value)) errors.push("lowercase letter");
-  if (!/[A-Z]/.test(password.value)) errors.push("uppercase letter");
-  if (!/[^A-Za-z0-9]/.test(password.value)) errors.push("special character");
+  if (password.value.trim() === "") {
+    showError("passwordError", "Password is required");
+    valid = false;
+  } else {
+    if (password.value.length < 8) errors.push("at least 8 characters");
+    if (!/[a-z]/.test(password.value)) errors.push("lowercase letter");
+    if (!/[A-Z]/.test(password.value)) errors.push("uppercase letter");
+    if (!/[^A-Za-z0-9]/.test(password.value)) errors.push("special character");
+  }
 
   if (errors.length) {
     showError("passwordError", `Password must contain: ${errors.join(", ")}.`);
