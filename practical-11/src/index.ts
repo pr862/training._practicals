@@ -40,7 +40,7 @@ function validateInputs(height: number, weight: number): boolean {
   let valid = true;
 
   if (heightInput.value.trim() === "") {
-    showError(heightError, "Height is required");
+    showError(heightError, "Please enter your height");
     valid = false;
   }
   else if (!isValidHeight(height)) {
@@ -50,7 +50,7 @@ function validateInputs(height: number, weight: number): boolean {
 
 
   if (weightInput.value.trim() === "") {
-    showError(weightError, "Weight is required");
+    showError(weightError, "Please enter your weight");
     valid = false;
   }
   else if (!isValidWeight(weight)) {
@@ -66,12 +66,20 @@ heightInput.addEventListener("input", () => {
   if (isValidHeight(height)) {
     heightError.classList.add("hidden");
   }
+  else{
+    heightError.classList.remove("hidden");
+    heightError.textContent = "Enter a valid height (50-250 cm)";
+  }
 });
 
 weightInput.addEventListener("input", () => {
   const weight = parseFloat(weightInput.value);
   if (isValidWeight(weight)) {
     weightError.classList.add("hidden");
+  }
+  else{
+    weightError.classList.remove("hidden");
+    weightError.textContent = "Enter a valid weight (10-300 kg)";
   }
 });
 
