@@ -1,0 +1,24 @@
+<!-- #show also progress bar -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tailwind File Upload</title>
+    <link rel="stylesheet" href="./src/output.css">
+</head>
+<body class="bg-gray-100 flex items-center justify-center h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-sm">
+        <h1 class="text-2xl font-bold mb-6 text-gray-800">Upload File</h1>
+        <form action="/single" method="POST" enctype="multipart/form-data">            <div class="mb-4">
+                <label for="file" class="block text-sm font-medium text-gray-700 mb-2"></label>
+                 <input type="file" name="image"  class="block w-full text-sm text-gray-900 border bg-gray-50 " required>
+            </div>
+            <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg transition duration-200">
+                Upload
+            </button>
+        </form>
+    </div>
+     <script src="server.js"></script> 
+</body>
+</html>
