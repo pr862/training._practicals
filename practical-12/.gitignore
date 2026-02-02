@@ -1,2 +1,4 @@
 node_modules/
 output.css
+server.js
+client.js
