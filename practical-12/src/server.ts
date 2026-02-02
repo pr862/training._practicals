@@ -4,7 +4,7 @@ import multer, { MulterError, StorageEngine, FileFilterCallback } from "multer";
 
 const app = express();
 
-app.use(express.static(path.join(__dirname, "..")));
+app.use(express.static(path.join(__dirname)));
 
 const fileStorageEngine: StorageEngine = multer.diskStorage({
   destination: (req: Request, file: Express.Multer.File, cb) => {
@@ -33,11 +33,8 @@ const upload = multer({
   limits: { fileSize: 1024 * 10 }, 
 });
 
-app.get("/", (req: Request, res: Response) => {
-  res.sendFile(path.join(__dirname, "index.html"));
-});
 
-app.post("/single", upload.single("image"), (req: Request, res: Response) => {
+app.post("/upload", upload.single("image"), (req: Request, res: Response) => {
   if (!req.file) {
     return res.status(400).json({ message: "No file uploaded" });
   }

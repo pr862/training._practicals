@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
             showError("Network error. Please check your connection.");
         });
 
-        xhr.open("POST", 'http://localhost:3000/single', true);
+        xhr.open("POST", 'http://localhost:3000/upload', true);
         xhr.send(formData);
     }
 
