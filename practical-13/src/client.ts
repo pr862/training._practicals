@@ -1,4 +1,5 @@
 import { io } from "socket.io-client";
+import { formatTime } from "./utils.js";
 
 const socket = io();
 
@@ -87,12 +88,8 @@ function sendMessage(e: SubmitEvent) {
     messageInput.focus();
 }
 
-function formatTime(): string {
-    return new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-}
-
 function renderMessage(data: { name: string, text: string, time?: string, type?: string }) {
-    const isMe = data.name === userName;
+    const isCurrentUser = data.name === userName;
     const time = data.time || formatTime();
 
     const div = document.createElement('div');
@@ -106,19 +103,19 @@ function renderMessage(data: { name: string, text: string, time?: string, type?:
             </div>
         `;
     } else {
-        div.className = `flex gap-3 ${isMe ? 'flex-row-reverse' : 'flex-row'}`;
+        div.className = `flex gap-3 ${isCurrentUser ? 'flex-row-reverse' : 'flex-row'}`;
         div.innerHTML = `
-            ${!isMe ? `
+            ${!isCurrentUser ? `
                 <div class="w-8 h-8 rounded-full bg-gradient-to-r ${getAvatarColor(data.name)} flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
                     ${getInitials(data.name)}
                 </div>
             ` : ''}
             
-            <div class="flex flex-col ${isMe ? 'items-end' : 'items-start'} max-w-[70%]">
-                ${!isMe ? `
+            <div class="flex flex-col ${isCurrentUser ? 'items-end' : 'items-start'} max-w-[70%]">
+                ${!isCurrentUser ? `
                     <span class="text-xs font-semibold text-gray-600 mb-1">${data.name}</span>
                 ` : ''}
-                <div class="relative px-4 py-2 rounded-2xl shadow-sm ${isMe
+                <div class="relative px-4 py-2 rounded-2xl shadow-sm ${isCurrentUser
                 ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white rounded-br-none'
                 : 'bg-white border border-gray-200 text-gray-800 rounded-bl-none'
             }">

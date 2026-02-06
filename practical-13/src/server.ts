@@ -3,6 +3,7 @@ import { Server } from 'socket.io';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { db } from "./config/firebase.js";
+import { formatTime } from "./utils.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -69,13 +70,13 @@ io.on('connection', (socket) => {
 
         socket.emit('message', {
             text: `Welcome to the ${room} chat room, ${name}!`,
-            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            time: formatTime(),
             type: 'system'
         });
 
         socket.to(room).emit('message', {
             text: `${name} has joined the room`,
-            time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+            time: formatTime(),
             type: 'system'
         });
 
@@ -101,10 +102,7 @@ io.on('connection', (socket) => {
         io.to(room).emit('message', {
             name,
             text,
-            time: new Date().toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit'
-            }),
+            time: formatTime(),
             type: "user"
         });
     });
@@ -125,7 +123,7 @@ io.on('connection', (socket) => {
 
             io.to(user.room).emit('message', {
                 text: `${user.name} has left the room`,
-                time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+                time: formatTime(),
                 type: 'system'
             });
 
