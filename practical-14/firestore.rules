@@ -1,0 +1,52 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Quizzes collection - accessible to all authenticated users
+    match /quizzes/{quizId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update, delete: if isAuthenticated() && resource.data.createdByUid == request.auth.uid;
+
+      // Questions subcollection
+      match /questions/{questionId} {
+        allow read: if isAuthenticated();
+        allow create: if isAuthenticated();
+        allow update, delete: if isAuthenticated();
+      }
+    }
+    
+    // Scores collection - user can only access their own scores
+    match /scores/{email} {
+      allow read: if isAuthenticated() && request.auth.token.email == email;
+      
+      match /results/{resultId} {
+        allow read: if isAuthenticated() && request.auth.token.email == email;
+        allow create: if isAuthenticated() && request.auth.token.email == email;
+        allow update, delete: if isAuthenticated() && request.auth.token.email == email;
+      }
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      allow create: if isAuthenticated() && request.auth.uid == userId;
+      allow read: if isAuthenticated();
+      allow update: if isOwner(userId);
+      allow delete: if isOwner(userId);
+    }
+    
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
+

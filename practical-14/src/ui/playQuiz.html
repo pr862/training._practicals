@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quiz App – Play Quiz</title>
+    <link href="../styles/output.css" rel="stylesheet" />
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-blue-50 via-sky-100 to-green-100">
+
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+
+                <div class="flex items-center gap-4">
+                    <a href="dashboard.html" class="text-gray-600 hover:text-gray-800">
+                        <svg class="size-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                    </a>
+
+                    <h1
+                        class="text-xl font-bold bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
+                        Play Quiz
+                    </h1>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <span id="userDisplayName" class="font-medium text-gray-600"></span>
+                    <button id="logoutBtn"
+                        class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg transition">
+                        Logout
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </nav>
+    <main id="mainContent" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <section id="categoryFilter" class="mb-10 text-center">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Categories</h2>
+
+            <div class="flex flex-wrap justify-center gap-3">
+
+                <button data-category=""class="category-btn px-4 py-2 rounded-lg font-medium transition bg-gradient-to-r from-blue-600 to-green-500 text-white">All</button>
+                <button data-category="science"class="category-btn px-4 py-2 rounded-lg font-medium transition bg-gray-100 text-gray-700">Science</button>
+                <button data-category="entertainment"class="category-btn px-4 py-2 rounded-lg font-medium transition bg-gray-100 text-gray-700">Entertainment</button>
+                <button data-category="sports" class="category-btn px-4 py-2 rounded-lg font-medium transition bg-gray-100 text-gray-700">Sports</button>
+                <button data-category="history" class="category-btn px-4 py-2 rounded-lg font-medium transition bg-gray-100 text-gray-700">History</button>
+                <button data-category="geography" class="category-btn px-4 py-2 rounded-lg font-medium transition bg-gray-100 text-gray-700">Geography</button>
+                <button data-category="technology" class="category-btn px-4 py-2 rounded-lg font-medium transition bg-gray-100 text-gray-700">Technology</button>
+                <button data-category="art" class="category-btn px-4 py-2 rounded-lg font-medium transition bg-gray-100 text-gray-700">Art</button>
+
+            </div>
+        </section>
+
+        <section id="quizList" class="grid gap-6 md:grid-cols-2 lg:grid-cols-3"></section>
+
+        <section id="noQuizzesMessage" class="hidden text-center py-12">
+            <svg class="size-16 mx-auto mb-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <p class="text-xl text-gray-600">No quizzes found in this category.</p>
+            <p class="text-gray-500 mt-2">Be the first to create one!</p>
+        </section>
+
+        <section id="loadingMessage" class="text-center py-12">
+            <div class="animate-spin rounded-full size-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p class="text-gray-600">Loading quizzes...</p>
+        </section>
+
+        <section id="errorMessage"
+            class="hidden text-center py-4 bg-red-100 text-red-700 rounded-lg border border-red-200 mx-auto max-w-lg">
+        </section>
+
+        <section id="successMessage"
+            class="hidden text-center py-4 bg-green-100 text-green-700 rounded-lg border border-green-200 mx-auto max-w-lg">
+        </section>
+    </main>
+
+    <div id="quizModal" class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-2xl p-8 w-full max-w-2xl max-h-[90vh] overflow-y-auto m-4">
+
+            <div class="flex justify-between items-start mb-6">
+                <h2 id="modalQuizTitle" class="text-2xl font-bold text-gray-800"></h2>
+                <button id="closeModalBtn" class="text-gray-500 hover:text-gray-700">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <p id="modalQuizDescription" class="text-gray-600 mb-6"></p>
+
+            <div id="progressContainer" class="hidden mb-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <div class="flex flex-wrap justify-between gap-4">
+                    <div>
+                        <span class="text-sm text-gray-600">Questions Answered:</span>
+                        <span id="answeredCount" class="ml-2 text-lg font-bold text-blue-600">0/0</span>
+                    </div>
+                    <div>
+                        <span class="text-sm text-gray-600">Current Score:</span>
+                        <span id="currentScoreDisplay" class="ml-2 text-lg font-bold text-green-600">0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div id="quizQuestions" class="space-y-6"></div>
+
+            <div id="quizResults" class="hidden mt-6 p-4 bg-green-100 rounded-lg">
+                <h3 class="text-xl font-bold text-green-800 mb-2">Results</h3>
+                <p id="scoreText" class="text-lg text-green-700"></p>
+            </div>
+
+            <div id="suggestionContainer" class="hidden mt-4 p-4 rounded-lg"></div>
+
+        </div>
+    </div>
+
+    <script type="module" src="../quiz/playQuiz.js"></script>
+
+    <script type="importmap">
+        {
+          "imports": {
+            "firebase/app": "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js",
+            "firebase/auth": "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js",
+            "firebase/firestore": "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"
+          }
+        }
+    </script>
+
+</body>
+
+</html>
