@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App - Dashboard</title>
+    <link href="../styles/output.css" rel="stylesheet">
+</head>
+
+<body class="bg-gradient-to-br from-blue-50 via-sky-100 to-green-100 min-h-screen">
+
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <h1
+                        class="text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-500 bg-clip-text text-transparent">
+                        Quiz Master
+                    </h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <span id="userDisplayName" class="text-gray-600 font-medium"></span>
+                    <button id="logoutBtn"
+                        class="bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded-lg transition">
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div id="mainContent" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-black mb-4">
+                Welcome to Quiz Master
+            </h2>
+            <p class="text-xl text-black opacity-90">
+                Create quizzes, test your knowledge, and compete with others!
+            </p>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+
+            <div class="bg-white rounded-xl shadow-2xl p-8 cursor-pointer transition transform hover:-translate-y-1 hover:shadow-3xl"
+                id="createQuizCard">
+                <div class="text-center">
+                    <div class="bg-blue-100 rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-10 h-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">
+                        Create Quiz
+                    </h3>
+                    <p class="text-gray-600">
+                        Create your own quizzes with custom questions and categories
+                    </p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-xl shadow-2xl p-8 cursor-pointer transition transform hover:-translate-y-1 hover:shadow-3xl"
+                id="playQuizCard">
+                <div class="text-center">
+                    <div class="bg-green-100 rounded-full size-20 flex items-center justify-center mx-auto mb-6">
+                        <svg class="size-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z">
+                            </path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                            </path>
+                        </svg>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800 mb-2">
+                        Play Quiz
+                    </h3>
+                    <p class="text-gray-600">
+                        Browse and play quizzes created by other users
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <script type="module" src="../quiz/dashboard.js"></script>
+    <script type="importmap">
+    {
+      "imports": {
+        "firebase/app": "https://www.gstatic.com/firebasejs/10.7.0/firebase-app.js",
+        "firebase/auth": "https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js",
+        "firebase/firestore": "https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js"
+      }
+    }
+    </script>
+</body>
+
+</html>
+
