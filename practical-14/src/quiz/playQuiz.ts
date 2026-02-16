@@ -320,7 +320,6 @@ async function saveQuizResult(
   score: number,
   percentage: number,
 ) {
-  try {
     await addDoc(
       collection(db, 'scores', currentUser.email!, 'results'),
       {
@@ -332,10 +331,6 @@ async function saveQuizResult(
         playedAt: Timestamp.now()
       }
     );
-    console.log('Quiz result saved successfully');
-  } catch (error) {
-    console.error('Error saving quiz result:', error);
-  }
 }
 
 async function finishQuiz() {

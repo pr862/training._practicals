@@ -27,11 +27,7 @@ setLoadingState(mainContent, true);
 setupAuthHandler(handleUserAuth, onAuthChange);
 
 logoutBtn.addEventListener('click', async () => {
-  try {
     await handleLogout(logoutUser);
-  } catch (error) {
-    console.error('Logout error:', error);
-  }
 });
 
 createQuizCard.addEventListener('click', () => {

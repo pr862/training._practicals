@@ -30,19 +30,16 @@ export async function registerUser(email: string, password: string, displayName?
     await setDoc(doc(db, 'users', user.uid), userProfile);
   }
   
-  console.log('User registered successfully:', user.uid);
   return user;
 }
 
 export async function loginUser(email: string, password: string): Promise<User> {
   const userCredential = await signInWithEmailAndPassword(auth, email, password);
-  console.log('User logged in successfully:', userCredential.user.uid);
   return userCredential.user;
 }
 
 export async function logoutUser(): Promise<void> {
   await signOut(auth);
-  console.log('User logged out successfully');
 }
 
 export function getCurrentUser(): User | null {

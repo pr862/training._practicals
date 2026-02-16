@@ -27,7 +27,6 @@ logoutBtn.addEventListener('click', async () => {
         await handleLogout(logoutUser);
     }
     catch (error) {
-        console.error('Logout error:', error);
     }
 });
 createQuizCard.addEventListener('click', () => {

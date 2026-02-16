@@ -176,7 +176,6 @@ async function saveQuiz(): Promise<void> {
       navigateTo('dashboard.html');
     }, 2000);
   } catch (error) {
-    console.error('Error saving quiz:', error);
     showToastError(errorMessage, 'Failed to save quiz. Please try again.');
   }
 }
