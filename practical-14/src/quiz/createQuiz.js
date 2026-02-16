@@ -13,8 +13,46 @@ const errorMessage = document.getElementById('errorMessage');
 const successMessage = document.getElementById('successMessage');
 const questionTemplate = document.getElementById('questionTemplate');
 const pageContent = document.getElementById('pageContent');
+const quizTitleError = document.getElementById('quizTitleError');
+const quizCategoryError = document.getElementById('quizCategoryError');
 let questionCount = 0;
 let currentUser = null;
+function showFieldError(input, errorElement, message) {
+    input.classList.add('border-red-500', 'ring-2', 'ring-red-200');
+    errorElement.textContent = message;
+    errorElement.classList.remove('hidden');
+}
+function clearFieldError(input, errorElement) {
+    input.classList.remove('border-red-500', 'ring-2', 'ring-red-200');
+    errorElement.textContent = '';
+    errorElement.classList.add('hidden');
+}
+function clearAllFieldErrors() {
+    clearFieldError(quizTitleInput, quizTitleError);
+    clearFieldError(quizCategorySelect, quizCategoryError);
+    const questionItems = questionsContainer.querySelectorAll('.question-item');
+    questionItems.forEach((item) => {
+        const questionTextInput = item.querySelector('.question-text');
+        const questionTextError = item.querySelector('.question-text-error');
+        if (questionTextInput && questionTextError) {
+            clearFieldError(questionTextInput, questionTextError);
+        }
+        const optionInputs = ['option-a', 'option-b', 'option-c', 'option-d'];
+        const optionErrors = ['option-a-error', 'option-b-error', 'option-c-error', 'option-d-error'];
+        optionInputs.forEach((opt, idx) => {
+            const input = item.querySelector(`.${opt}`);
+            const error = item.querySelector(`.${optionErrors[idx]}`);
+            if (input && error) {
+                clearFieldError(input, error);
+            }
+        });
+        const optionsError = item.querySelector('.options-error');
+        if (optionsError) {
+            optionsError.textContent = '';
+            optionsError.classList.add('hidden');
+        }
+    });
+}
 const handleUserAuth = async (user) => {
     if (user) {
         currentUser = user;
@@ -59,20 +97,22 @@ saveQuizBtn.addEventListener('click', async () => {
     await saveQuiz();
 });
 async function saveQuiz() {
+    clearAllFieldErrors();
     const title = quizTitleInput.value.trim();
     const category = quizCategorySelect.value;
     const description = quizDescriptionInput.value.trim();
+    let hasError = false;
     if (!title) {
-        showToastError(errorMessage, 'Please enter a quiz title');
-        return;
+        showFieldError(quizTitleInput, quizTitleError, 'Please enter a quiz title');
+        hasError = true;
     }
-    if (title.length < 3) {
-        showToastError(errorMessage, 'Quiz title must be at least 3 characters long');
-        return;
+    else if (title.length < 3) {
+        showFieldError(quizTitleInput, quizTitleError, 'Quiz title must be at least 3 characters long');
+        hasError = true;
     }
     if (!category) {
-        showToastError(errorMessage, 'Please select a category');
-        return;
+        showFieldError(quizCategorySelect, quizCategoryError, 'Please select a category');
+        hasError = true;
     }
     const questionsData = [];
     const questionItems = questionsContainer.querySelectorAll('.question-item');
@@ -82,37 +122,52 @@ async function saveQuiz() {
     }
     for (let i = 0; i < questionItems.length; i++) {
         const item = questionItems[i];
-        const questionText = item.querySelector('.question-text').value.trim();
-        const optionA = item.querySelector('.option-a').value.trim();
-        const optionB = item.querySelector('.option-b').value.trim();
-        const optionC = item.querySelector('.option-c').value.trim();
-        const optionD = item.querySelector('.option-d').value.trim();
+        const questionTextInput = item.querySelector('.question-text');
+        const questionTextError = item.querySelector('.question-text-error');
+        const questionText = questionTextInput.value.trim();
+        const optionAInput = item.querySelector('.option-a');
+        const optionAError = item.querySelector('.option-a-error');
+        const optionA = optionAInput.value.trim();
+        const optionBInput = item.querySelector('.option-b');
+        const optionBError = item.querySelector('.option-b-error');
+        const optionB = optionBInput.value.trim();
+        const optionCInput = item.querySelector('.option-c');
+        const optionCError = item.querySelector('.option-c-error');
+        const optionC = optionCInput.value.trim();
+        const optionDInput = item.querySelector('.option-d');
+        const optionDError = item.querySelector('.option-d-error');
+        const optionD = optionDInput.value.trim();
         const correctAnswer = item.querySelector('.correct-answer').value;
         if (!questionText) {
-            showToastError(errorMessage, `Please enter the text for question ${i + 1}`);
-            return;
+            showFieldError(questionTextInput, questionTextError, 'Please enter the question text');
+            hasError = true;
         }
         if (!optionA) {
-            showToastError(errorMessage, `Please enter option A for question ${i + 1}`);
-            return;
+            showFieldError(optionAInput, optionAError, 'Please enter option A');
+            hasError = true;
         }
         if (!optionB) {
-            showToastError(errorMessage, `Please enter option B for question ${i + 1}`);
-            return;
+            showFieldError(optionBInput, optionBError, 'Please enter option B');
+            hasError = true;
         }
         if (!optionC) {
-            showToastError(errorMessage, `Please enter option C for question ${i + 1}`);
-            return;
+            showFieldError(optionCInput, optionCError, 'Please enter option C');
+            hasError = true;
         }
         if (!optionD) {
-            showToastError(errorMessage, `Please enter option D for question ${i + 1}`);
-            return;
+            showFieldError(optionDInput, optionDError, 'Please enter option D');
+            hasError = true;
         }
         const options = [optionA, optionB, optionC, optionD];
         const uniqueOptions = new Set(options);
         if (uniqueOptions.size !== options.length) {
-            showToastError(errorMessage, `Question ${i + 1} has duplicate options. All options must be unique.`);
-            return;
+            const optionsError = item.querySelector('.options-error');
+            optionsError.textContent = 'All options must be unique';
+            optionsError.classList.remove('hidden');
+            hasError = true;
+        }
+        if (!questionText || !optionA || !optionB || !optionC || !optionD || uniqueOptions.size !== options.length) {
+            continue;
         }
         questionsData.push({
             question: questionText,
@@ -124,6 +179,13 @@ async function saveQuiz() {
             },
             correctAnswer: correctAnswer
         });
+    }
+    if (hasError) {
+        return;
+    }
+    if (questionsData.length === 0) {
+        showToastError(errorMessage, 'Please add at least one valid question');
+        return;
     }
     try {
         const quizDocRef = await addDoc(collection(db, 'quizzes'), {
