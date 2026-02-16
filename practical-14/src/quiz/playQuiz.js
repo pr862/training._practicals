@@ -250,17 +250,15 @@ function updateProgress() {
     currentScoreEl.textContent = `${score}`;
 }
 async function saveQuizResult(quizId, quizTitle, score, percentage) {
- 
-        await addDoc(collection(db, 'scores', currentUser.email, 'results'), {
-            quizId,
-            quizTitle,
-            playedBy: currentUser.displayName || currentUser.email,
-            score,
-            percentage,
-            playedAt: Timestamp.now()
-        });
-    }
-    
+    await addDoc(collection(db, 'scores', currentUser.email, 'results'), {
+        quizId,
+        quizTitle,
+        playedBy: currentUser.displayName || currentUser.email,
+        score,
+        percentage,
+        playedAt: Timestamp.now()
+    });
+}
 async function finishQuiz() {
     let score = 0;
     questionsArray.forEach((q, i) => {

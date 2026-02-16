@@ -23,11 +23,7 @@ const handleUserAuth = async (user) => {
 setLoadingState(mainContent, true);
 setupAuthHandler(handleUserAuth, onAuthChange);
 logoutBtn.addEventListener('click', async () => {
-    try {
-        await handleLogout(logoutUser);
-    }
-    catch (error) {
-    }
+    await handleLogout(logoutUser);
 });
 createQuizCard.addEventListener('click', () => {
     navigateTo('createQuiz.html');
