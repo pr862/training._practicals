@@ -11,14 +11,13 @@ app.use(express.json());
 import authRoutes from './routes/auth.routes';
 import adminRoutes from './routes/admin.routes';
 import publicRoutes from './routes/public.routes';
+import userRoutes from './routes/user.routes';
 
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/public', publicRoutes);
+app.use('/api/user', userRoutes);
 
-app.get('/', (_, res) => {
-  res.json({ message: 'Welcome to the API', endpoints: ['/api/auth', '/api/admin', '/api/public'] });
-});
 
 app.use(errorHandler);
 

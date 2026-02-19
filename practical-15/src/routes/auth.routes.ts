@@ -1,18 +1,10 @@
 import { Router } from 'express';
 import bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
 import { User } from '../models/User';
 import { sendWelcomeEmail } from '../utils/email';
+import { generateToken } from '../utils/jwt';
 import { asyncHandler } from '../middleware/asyncHandler';
 import { validate, adminSignupValidation, userSignupValidation, loginValidation } from '../middleware/validation';
-
-const generateToken = (id: number, role: string) => {
-  return jwt.sign(
-    { id, role },
-    process.env.JWT_SECRET as string,
-    { expiresIn: '1d' }
-  );
-};
 
 const router = Router();
 

@@ -5,14 +5,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const bcrypt_1 = __importDefault(require("bcrypt"));
-const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const User_1 = require("../models/User");
 const email_1 = require("../utils/email");
+const jwt_1 = require("../utils/jwt");
 const asyncHandler_1 = require("../middleware/asyncHandler");
 const validation_1 = require("../middleware/validation");
-const generateToken = (id, role) => {
-    return jsonwebtoken_1.default.sign({ id, role }, process.env.JWT_SECRET, { expiresIn: '1d' });
-};
 const router = (0, express_1.Router)();
 router.post('/admin/signup', (0, validation_1.validate)(validation_1.adminSignupValidation), (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const { name, email, password } = req.body;
@@ -27,7 +24,7 @@ router.post('/admin/signup', (0, validation_1.validate)(validation_1.adminSignup
         password: hashedPassword,
         role: 'admin'
     });
-    const token = generateToken(admin.id, admin.role);
+    const token = (0, jwt_1.generateToken)(admin.id, admin.role);
     res.status(201).json({ token });
 }));
 router.post('/user/signup', (0, validation_1.validate)(validation_1.userSignupValidation), (0, asyncHandler_1.asyncHandler)(async (req, res) => {
@@ -43,7 +40,7 @@ router.post('/user/signup', (0, validation_1.validate)(validation_1.userSignupVa
         password: hashedPassword,
         role: 'user'
     });
-    const token = generateToken(user.id, user.role);
+    const token = (0, jwt_1.generateToken)(user.id, user.role);
     await (0, email_1.sendWelcomeEmail)(user.email, user.name);
     res.status(201).json({ token });
 }));
@@ -57,7 +54,7 @@ router.post('/login', (0, validation_1.validate)(validation_1.loginValidation), 
     if (!isMatch) {
         return res.status(400).json({ message: 'Invalid email or password' });
     }
-    const token = generateToken(user.id, user.role);
+    const token = (0, jwt_1.generateToken)(user.id, user.role);
     res.json({
         token,
         user: {

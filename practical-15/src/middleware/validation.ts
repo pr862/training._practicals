@@ -23,7 +23,7 @@ export const validate = (validations: ValidationChain[]) => {
   };
 };
 
-export const adminSignupValidation = [
+export const signupValidation = [
   body('name')
     .trim()
     .notEmpty()
@@ -48,30 +48,8 @@ export const adminSignupValidation = [
     .withMessage('Password must contain at least one number')
 ];
 
-export const userSignupValidation = [
-  body('name')
-    .trim()
-    .notEmpty()
-    .withMessage('Name is required')
-    .isLength({ min: 2, max: 50 })
-    .withMessage('Name must be between 2 and 50 characters'),
-
-  body('email')
-    .trim()
-    .notEmpty()
-    .withMessage('Email is required')
-    .isEmail()
-    .withMessage('Invalid email format')
-    .normalizeEmail(),
-
-  body('password')
-    .notEmpty()
-    .withMessage('Password is required')
-    .isLength({ min: 6 })
-    .withMessage('Password must be at least 6 characters')
-    .matches(/\d/)
-    .withMessage('Password must contain at least one number')
-];
+export const adminSignupValidation = signupValidation;
+export const userSignupValidation = signupValidation;
 
 export const loginValidation = [
   body('email')
@@ -154,7 +132,7 @@ export const productValidation = [
 ];
 
 export const productIdValidation = [
-  param('id')
+  param('productId')
     .isInt({ min: 1 })
     .withMessage('Valid product ID is required')
 ];
@@ -163,5 +141,21 @@ export const userIdValidation = [
   param('id')
     .isInt({ min: 1 })
     .withMessage('Valid user ID is required')
+];
+
+export const feedbackValidation = [
+  body('subject')
+    .trim()
+    .notEmpty()
+    .withMessage('Subject is required')
+    .isLength({ min: 3, max: 100 })
+    .withMessage('Subject must be between 3 and 100 characters'),
+
+  body('message')
+    .trim()
+    .notEmpty()
+    .withMessage('Message is required')
+    .isLength({ min: 10, max: 2000 })
+    .withMessage('Message must be between 10 and 2000 characters')
 ];
 
