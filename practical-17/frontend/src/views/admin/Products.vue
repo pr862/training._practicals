@@ -7,7 +7,7 @@
       </div>
       <button
         @click="openModal()"
-        class="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+        class="flex items-center gap-2 px-4 py-2 bg-olive-500 hover:bg-olive-600 text-white rounded-lg transition-colors"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -16,9 +16,9 @@
       </button>
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="bg-white rounded-xl shadow-sm border border-olive-100 overflow-hidden">
       <table class="w-full">
-        <thead class="bg-gray-50">
+        <thead class="bg-olive-50">
           <tr>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Image</th>
@@ -31,7 +31,7 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
-          <tr v-for="product in products" :key="product.id" class="hover:bg-gray-50">
+          <tr v-for="product in products" :key="product.id" class="hover:bg-olive-50">
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ product.id }}</td>
 <td class="px-6 py-4 whitespace-nowrap">
               <img 
@@ -41,7 +41,7 @@
                 class="w-16 h-16 object-contain rounded-lg cursor-pointer hover:scale-110 transition-transform"
                 @click="openImageModal(getImageUrl(product.image))"
               />
-              <div v-else class="w-16 h-16 bg-gray-200 rounded-lg flex items-center justify-center">
+              <div v-else class="w-16 h-16 bg-olive-200 rounded-lg flex items-center justify-center">
                 <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
@@ -49,16 +49,16 @@
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ product.name }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-              <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
+              <span class="px-2 py-1 bg-olive-300 text-olive-800 rounded-lg text-xs">
                 {{ product.Category?.name || 'N/A' }}
               </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-              <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded-full text-xs">
+              <span class="px-2 py-1 bg-purple-100 text-purple-800 rounded-lg text-xs">
                 {{ product.Subcategory?.name || 'N/A' }}
               </span>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${{ product.price }}</td>
+            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">₹{{ product.price }}</td>
             <td class="px-6 py-4 whitespace-nowrap">
               <span :class="product.stock > 0 ? 'text-green-600' : 'text-red-600'" class="text-sm">
                 {{ product.stock }}
@@ -67,15 +67,25 @@
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
               <button
                 @click="openModal(product)"
-                class="text-blue-600 hover:text-blue-900 mr-4"
+                class="text-olive-700 mr-4"
               >
-                Edit
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+               </svg>
+
               </button>
               <button
                 @click="deleteProduct(product.id)"
                 class="text-red-600 hover:text-red-900"
               >
-                Delete
+               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                 <polyline points="3 6 5 6 21 6"></polyline>
+                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                 <line x1="10" y1="11" x2="10" y2="17"></line>
+                 <line x1="14" y1="11" x2="14" y2="17"></line>
+               </svg>
+
               </button>
             </td>
           </tr>
@@ -86,7 +96,7 @@
       </table>
     </div>
 
-    <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 overflow-y-auto">
+    <div v-if="showModal"  class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
       <div class="bg-white rounded-xl shadow-xl w-full max-w-lg p-6 my-8">
         <h2 class="text-xl font-bold text-gray-900 mb-4">
           {{ editingProduct ? 'Edit Product' : 'Add Product' }}
@@ -97,23 +107,11 @@
             <input
               v-model="formData.name"
               type="text"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:ring-2 focus:ring-olive-500 focus:border-olive-500 outline-none"
               placeholder="Enter product name"
               required
             />
             <p v-if="errors.name" class="mt-1 text-sm text-red-600">{{ errors.name }}</p>
-          </div>
-
-          <div class="mb-4">
-            <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
-            <textarea
-              v-model="formData.description"
-              rows="3"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-              placeholder="Enter product description"
-              required
-            ></textarea>
-            <p v-if="errors.description" class="mt-1 text-sm text-red-600">{{ errors.description }}</p>
           </div>
 
           <div class="grid grid-cols-2 gap-4 mb-4">
@@ -124,7 +122,7 @@
                 type="number"
                 step="0.01"
                 min="0"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:ring-2 focus:ring-olive-500 focus:border-olive-500 outline-none"
                 placeholder="0.00"
                 required
               />
@@ -136,7 +134,7 @@
                 v-model.number="formData.stock"
                 type="number"
                 min="0"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:ring-2 focus:ring-olive-500 focus:border-olive-500 outline-none"
                 placeholder="0"
                 required
               />
@@ -149,7 +147,7 @@
               <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
               <select
                 v-model="formData.categoryId"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:ring-2 focus:ring-olive-500 focus:border-olive-500 outline-none"
                 required
               >
                 <option value="">Select category</option>
@@ -163,7 +161,7 @@
               <label class="block text-sm font-medium text-gray-700 mb-2">Subcategory</label>
               <select
                 v-model="formData.subcategoryId"
-                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:ring-2 focus:ring-olive-500 focus:border-olive-500 outline-none"
                 required
               >
                 <option value="">Select subcategory</option>
@@ -174,18 +172,17 @@
               <p v-if="errors.subcategoryId" class="mt-1 text-sm text-red-600">{{ errors.subcategoryId }}</p>
             </div>
           </div>
-
           <div class="mb-4">
             <label class="block text-sm font-medium text-gray-700 mb-2">Product Image</label>
-            <div class="flex items-center gap-4">
+            <div class="flex items-center gap-4 rounded-lg border border-dashed border-olive-300">
               <div class="flex-shrink-0">
                 <img 
                   v-if="formData.image || formData.existingImage" 
                   :src="formData.image ? URL.createObjectURL(formData.image) : getImageUrl(formData.existingImage)" 
                   alt="Preview" 
-                  class="w-24 h-24 object-contain rounded-lg border border-gray-300"
+                  class="w-24 h-24 object-contain rounded-lg border border-olive-300"
                 />
-                <div v-else class="w-24 h-24 bg-gray-200 rounded-lg border border-gray-300 flex items-center justify-center">
+                <div v-else class="w-24 h-24 bg-gray-100 rounded-lg  flex items-center justify-center">
                   <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
@@ -196,7 +193,7 @@
                   type="file"
                   accept="image/*"
                   @change="handleImageChange"
-                  class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                  class="w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-olive-50 file:text-olive-700 hover:file:bg-olive-100"
                 />
                 <p class="mt-1 text-xs text-gray-500">Supported: JPG, PNG, GIF, WebP (max 5MB)</p>
               </div>
@@ -207,18 +204,18 @@
             <button
               type="button"
               @click="closeModal"
-              class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              class="flex-1 px-4 py-2 border border-olive-300 text-gray-700 rounded-lg hover:bg-olive-50 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
-              class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              class="flex-1 px-4 py-2 bg-olive-500 text-white rounded-lg hover:bg-olive-600 transition-colors"
               :disabled="loading"
             >
               {{ loading ? 'Saving...' : (editingProduct ? 'Update' : 'Create') }}
             </button>
-</div>
+          </div>
         </form>
       </div>
     </div>
@@ -265,7 +262,6 @@ interface Subcategory {
 interface Product {
   id: number;
   name: string;
-  description: string;
   price: number;
   stock: number;
   image?: string;
@@ -288,7 +284,6 @@ const showImageModal = ref(false);
 
 const formData = ref({
   name: '',
-  description: '',
   price: null as number | null,
   stock: null as number | null,
   categoryId: '' as number | string,
@@ -354,7 +349,6 @@ const openModal = (product?: Product) => {
     editingProduct.value = product;
     formData.value = {
       name: product.name,
-      description: product.description,
       price: product.price,
       stock: product.stock,
       categoryId: product.categoryId,
@@ -366,7 +360,6 @@ const openModal = (product?: Product) => {
     editingProduct.value = null;
     formData.value = {
       name: '',
-      description: '',
       price: null,
       stock: null,
       categoryId: '',
@@ -384,7 +377,6 @@ const closeModal = () => {
   editingProduct.value = null;
   formData.value = {
     name: '',
-    description: '',
     price: null,
     stock: null,
     categoryId: '',
@@ -400,11 +392,6 @@ const handleSubmit = async () => {
   
   if (!formData.value.name || formData.value.name.length < 2) {
     errors.value.name = 'Name must be at least 2 characters';
-    return;
-  }
-
-  if (!formData.value.description || formData.value.description.length < 10) {
-    errors.value.description = 'Description must be at least 10 characters';
     return;
   }
 
@@ -432,7 +419,6 @@ const handleSubmit = async () => {
   try {
     const data: any = {
       name: formData.value.name,
-      description: formData.value.description,
       price: formData.value.price,
       stock: formData.value.stock,
       categoryId: Number(formData.value.categoryId),

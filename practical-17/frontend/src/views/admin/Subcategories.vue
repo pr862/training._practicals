@@ -7,7 +7,7 @@
       </div>
       <button
         @click="openModal()"
-        class="flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+        class="flex items-center gap-2 px-4 py-2 bg-olive-500 hover:bg-olive-600 text-white rounded-lg transition-colors"
       >
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -16,9 +16,9 @@
       </button>
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="bg-white rounded-xl shadow-sm border border-olive-100 overflow-hidden">
       <table class="w-full">
-        <thead class="bg-gray-50">
+        <thead class="bg-olive-50">
           <tr>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
@@ -28,11 +28,11 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
-          <tr v-for="subcategory in subcategories" :key="subcategory.id" class="hover:bg-gray-50">
+          <tr v-for="subcategory in subcategories" :key="subcategory.id" class="hover:bg-olive-50">
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ subcategory.id }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ subcategory.name }}</td>
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-              <span class="px-2 py-1 bg-blue-100 text-blue-800 rounded-full text-xs">
+              <span class="px-2 py-1 bg-olive-300 text-olive-800 rounded-lg text-xs">
                 {{ subcategory.Category?.name || 'N/A' }}
               </span>
             </td>
@@ -40,15 +40,23 @@
             <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
               <button
                 @click="openModal(subcategory)"
-                class="text-blue-600 hover:text-blue-900 mr-4"
+                class="text-olive-700 mr-4"
               >
-                Edit
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+               </svg>
               </button>
               <button
                 @click="deleteSubcategory(subcategory.id)"
                 class="text-red-600 hover:text-red-900"
               >
-                Delete
+               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                 <polyline points="3 6 5 6 21 6"></polyline>
+                 <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                 <line x1="10" y1="11" x2="10" y2="17"></line>
+                 <line x1="14" y1="11" x2="14" y2="17"></line>
+               </svg>
               </button>
             </td>
           </tr>
@@ -59,7 +67,7 @@
       </table>
     </div>
 
-    <div v-if="showModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div v-if="showModal"  class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
       <div class="bg-white rounded-xl shadow-xl w-full max-w-md p-6">
         <h2 class="text-xl font-bold text-gray-900 mb-4">
           {{ editingSubcategory ? 'Edit Subcategory' : 'Add Subcategory' }}
@@ -70,7 +78,7 @@
             <input
               v-model="formData.name"
               type="text"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:ring-2 focus:ring-olive-500 focus:border-olive-500 outline-none"
               placeholder="Enter subcategory name"
               required
             />
@@ -80,7 +88,7 @@
             <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
             <select
               v-model="formData.categoryId"
-              class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+              class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:ring-2 focus:ring-olive-500 focus:border-olive-500 outline-none"
               required
             >
               <option value="">Select a category</option>
@@ -94,13 +102,13 @@
             <button
               type="button"
               @click="closeModal"
-              class="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+              class="flex-1 px-4 py-2 border border-olive-300 text-gray-700 rounded-lg hover:bg-olive-50 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
-              class="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              class="flex-1 px-4 py-2 bg-olive-500 text-white rounded-lg hover:bg-olive-600 transition-colors"
               :disabled="loading"
             >
               {{ loading ? 'Saving...' : (editingSubcategory ? 'Update' : 'Create') }}

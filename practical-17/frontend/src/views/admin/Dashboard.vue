@@ -12,8 +12,8 @@
             <p class="text-sm text-gray-500">Total Users</p>
             <p class="text-3xl font-bold text-gray-900 mt-1">{{ stats.totalUsers }}</p>
           </div>
-          <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div class="w-12 h-12 bg-olive-100 rounded-lg flex items-center justify-center">
+            <svg class="w-6 h-6 text-olive-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
             </svg>
           </div>
@@ -68,9 +68,9 @@
       <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
         <router-link
           to="/admin/categories"
-          class="flex items-center gap-3 p-4 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors"
+          class="flex items-center gap-3 p-4 bg-olive-50 hover:bg-olive-100 rounded-lg transition-colors"
         >
-          <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+          <div class="w-10 h-10 bg-olive-500 rounded-lg flex items-center justify-center">
             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>
@@ -92,9 +92,9 @@
 
         <router-link
           to="/admin/users"
-          class="flex items-center gap-3 p-4 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors"
+          class="flex items-center gap-3 p-4 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors"
         >
-          <div class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
+          <div class="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center">
             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
             </svg>
@@ -104,9 +104,9 @@
 
         <router-link
           to="/admin/subcategories"
-          class="flex items-center gap-3 p-4 bg-orange-50 hover:bg-orange-100 rounded-lg transition-colors"
+          class="flex items-center gap-3 p-4 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors"
         >
-          <div class="w-10 h-10 bg-orange-600 rounded-lg flex items-center justify-center">
+          <div class="w-10 h-10 bg-purple-600 rounded-lg flex items-center justify-center">
             <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
             </svg>

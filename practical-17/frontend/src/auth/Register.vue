@@ -2,13 +2,13 @@
   <section class="min-h-screen bg-[#f8f6f3] flex items-center justify-center px-4 py-8">
     <div class="w-full max-w-md">
       
-      <div class="bg-white rounded-3xl shadow-xl p-10 border border-gray-100 animate-fade-in">
+      <div class="bg-white rounded-3xl shadow-xl p-10 border border-olive-100 animate-fade-in">
         
         <div class="text-center mb-8">
-          <h1 class="text-4xl font-light tracking-widest text-gray-900">
+          <h1 class="text-4xl tracking-widest text-olive-700">
             StyleSphere
           </h1>
-          <p class="text-sm text-gray-500 mt-2 tracking-wide">
+          <p class="text-sm text-gray-600 mt-2 tracking-wide">
             {{ isAdminRegistration ? 'Create Admin Account' : 'Create your account' }}
           </p>
         </div>
@@ -31,7 +31,7 @@
               v-model="formData.name"
               type="text"
               placeholder="Enter your full name"
-              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-black focus:border-black transition-all outline-none"
+              class="w-full px-4 py-3 border border-olive-300 rounded-xl focus:ring-2 focus:ring-olive-600 focus:border-olive-600 transition-all outline-none"
               :class="{ 'border-red-500': errors.name }"
               required
             />
@@ -46,7 +46,7 @@
               v-model="formData.email"
               type="email"
               placeholder="Enter your email"
-              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-black focus:border-black transition-all outline-none"
+              class="w-full px-4 py-3 border border-olive-300 rounded-xl focus:ring-2 focus:ring-olive-600 focus:border-olive-600 transition-all outline-none"
               :class="{ 'border-red-500': errors.email }"
               required
             />
@@ -61,7 +61,7 @@
               v-model="formData.password"
               type="password"
               placeholder="Create a password"
-              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-black focus:border-black transition-all outline-none"
+              class="w-full px-4 py-3 border border-olive-300 rounded-xl focus:ring-2 focus:ring-olive-600 focus:border-olive-600 transition-all outline-none"
               :class="{ 'border-red-500': errors.password }"
               required
             />
@@ -76,7 +76,7 @@
               v-model="formData.confirmPassword"
               type="password"
               placeholder="Confirm your password"
-              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-black focus:border-black transition-all outline-none"
+              class="w-full px-4 py-3 border border-olive-300 rounded-xl focus:ring-2 focus:ring-olive-600 focus:border-olive-600 transition-all outline-none"
               :class="{ 'border-red-500': errors.confirmPassword }"
               required
             />
@@ -94,7 +94,7 @@
           <button
             type="submit"
             :disabled="loading"
-            class="w-full py-3 bg-black text-white rounded-xl font-medium tracking-wide hover:bg-gray-900 transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            class="w-full py-3 bg-olive-600 text-white rounded-xl font-medium tracking-wide hover:bg-olive-700 transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {{ loading ? 'Creating account...' : 'Create Account' }}
           </button>
@@ -109,7 +109,7 @@
 
         <p class="text-center text-sm text-gray-600">
           Already have an account?
-          <router-link to="/login" class="text-black font-medium hover:underline ml-1">
+          <router-link to="/login" class="text-olive-700 font-medium hover:underline ml-1">
             Sign In
           </router-link>
         </p>

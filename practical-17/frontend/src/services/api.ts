@@ -59,7 +59,6 @@ export const productAPI = {
   getById: (id: number) => api.get(`/admin/products/${id}`),
   create: async (data: {
     name: string;
-    description: string;
     price: number;
     stock: number;
     categoryId: number;
@@ -68,7 +67,6 @@ export const productAPI = {
   }) => {
     const formData = new FormData();
     formData.append('name', data.name);
-    formData.append('description', data.description);
     formData.append('price', data.price.toString());
     formData.append('stock', data.stock.toString());
     formData.append('categoryId', data.categoryId.toString());
@@ -82,7 +80,6 @@ export const productAPI = {
   },
   update: async (id: number, data: {
     name?: string;
-    description?: string;
     price?: number;
     stock?: number;
     categoryId?: number;
@@ -91,7 +88,6 @@ export const productAPI = {
   }) => {
     const formData = new FormData();
     if (data.name) formData.append('name', data.name);
-    if (data.description) formData.append('description', data.description);
     if (data.price !== undefined) formData.append('price', data.price.toString());
     if (data.stock !== undefined) formData.append('stock', data.stock.toString());
     if (data.categoryId !== undefined) formData.append('categoryId', data.categoryId.toString());

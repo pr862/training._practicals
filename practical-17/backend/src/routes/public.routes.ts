@@ -66,8 +66,7 @@ router.get('/products', async (req: Request, res: Response) => {
     if (search) {
       const { Op } = require('sequelize');
       where[Op.or] = [
-        { name: { [Op.iLike]: `%${search}%` } },
-        { description: { [Op.iLike]: `%${search}%` } }
+        { name: { [Op.iLike]: `%${search}%` } }
       ];
     }
 
@@ -182,8 +181,7 @@ router.get('/search', async (req: Request, res: Response) => {
     
     const where: any = {
       [Op.or]: [
-        { name: { [Op.iLike]: `%${q}%` } },
-        { description: { [Op.iLike]: `%${q}%` } }
+        { name: { [Op.iLike]: `%${q}%` } }
       ]
     };
 

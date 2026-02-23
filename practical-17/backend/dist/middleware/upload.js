@@ -7,12 +7,10 @@ exports.uploadProductImage = exports.upload = void 0;
 const multer_1 = __importDefault(require("multer"));
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
-// Ensure upload directory exists
 const uploadDir = path_1.default.join(__dirname, '../../uploads');
 if (!fs_1.default.existsSync(uploadDir)) {
     fs_1.default.mkdirSync(uploadDir, { recursive: true });
 }
-// Configure storage
 const storage = multer_1.default.diskStorage({
     destination: (req, file, cb) => {
         cb(null, uploadDir);
@@ -23,7 +21,6 @@ const storage = multer_1.default.diskStorage({
         cb(null, 'product-' + uniqueSuffix + ext);
     }
 });
-// File filter for images only
 const fileFilter = (req, file, cb) => {
     const allowedTypes = /jpeg|jpg|png|gif|webp/;
     const extname = allowedTypes.test(path_1.default.extname(file.originalname).toLowerCase());
@@ -35,13 +32,11 @@ const fileFilter = (req, file, cb) => {
         cb(new Error('Only image files are allowed (jpeg, jpg, png, gif, webp)'));
     }
 };
-// Create multer upload instance
 exports.upload = (0, multer_1.default)({
     storage,
     limits: {
-        fileSize: 5 * 1024 * 1024 // 5MB limit
+        fileSize: 5 * 1024 * 1024
     },
     fileFilter
 });
-// Middleware for single product image upload
 exports.uploadProductImage = exports.upload.single('image');

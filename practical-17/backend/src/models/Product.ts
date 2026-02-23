@@ -5,7 +5,6 @@ import sequelize from '../config/database';
 export class Product extends Model {
   public id!: number;
   public name!: string;
-  public description!: string;
   public price!: number;
   public stock!: number;
   public image!: string;
@@ -23,11 +22,6 @@ Product.init(
 
     name: {
       type: DataTypes.STRING,
-      allowNull: false,
-    },
-
-    description: {
-      type: DataTypes.TEXT,
       allowNull: false,
     },
 

@@ -5,9 +5,9 @@
       <p class="text-gray-500 mt-1">View and manage registered users</p>
     </div>
 
-    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+    <div class="bg-white rounded-xl shadow-sm border border-olive-100 overflow-hidden">
       <table class="w-full">
-        <thead class="bg-gray-50">
+        <thead class="bg-olive-50">
           <tr>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
             <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
@@ -18,11 +18,11 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
-          <tr v-for="user in users" :key="user.id" class="hover:bg-gray-50">
+          <tr v-for="user in users" :key="user.id" class="hover:bg-olive-50">
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.id }}</td>
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="flex items-center">
-                <div class="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center mr-3">
+                <div class="w-8 h-8 rounded-full bg-olive-500 flex items-center justify-center mr-3">
                   <span class="text-sm font-bold text-white">{{ getInitials(user.name) }}</span>
                 </div>
                 <span class="text-sm font-medium text-gray-900">{{ user.name }}</span>
