@@ -3,7 +3,7 @@
     <aside class="w-full lg:w-64 flex-shrink-0">
       <div class="bg-white rounded-2xl shadow-sm p-6 sticky top-24">
         <div class="flex items-center justify-between mb-6">
-          <h2 class="text-lg font-semibold text-gray-900">Filters</h2>
+          <h2 class="text-lg font-semibold text-olive-900">Filters</h2>
           <button 
             v-if="hasActiveFilters"
             @click="clearFilters"
@@ -21,7 +21,7 @@
                 type="radio"
                 :checked="selectedCategory === null"
                 @change="setCategory(null)"
-                class="w-4 h-4 text-black border-gray-300 focus:ring-black"
+                class="size-4 text-black border-gray-300 focus:ring-black"
               />
               <span class="text-sm text-gray-600 group-hover:text-gray-900">All Categories</span>
             </label>
@@ -35,7 +35,7 @@
                 type="radio"
                 :checked="selectedCategory === category.id"
                 @change="setCategory(category.id)"
-                class="w-4 h-4 text-black border-gray-300 focus:ring-black"
+                class="size-4 text-black border-gray-300 focus:ring-black"
               />
               <span class="text-sm text-gray-600 group-hover:text-gray-900">{{ category.name }}</span>
             </label>
@@ -50,7 +50,7 @@
                 type="radio"
                 :checked="selectedSubcategory === null"
                 @change="setSubcategory(null)"
-                class="w-4 h-4 text-black border-gray-300 focus:ring-black"
+                class="size-4 text-black border-gray-300 focus:ring-black"
               />
               <span class="text-sm text-gray-600 group-hover:text-gray-900">All Subcategories</span>
             </label>
@@ -64,7 +64,7 @@
                 type="radio"
                 :checked="selectedSubcategory === subcategory.id"
                 @change="setSubcategory(subcategory.id)"
-                class="w-4 h-4 text-black border-gray-300 focus:ring-black"
+                class="size-4 text-black border-gray-300 focus:ring-black"
               />
               <span class="text-sm text-gray-600 group-hover:text-gray-900">{{ subcategory.name }}</span>
             </label>
@@ -78,19 +78,19 @@
               v-model.number="minPrice"
               type="number"
               placeholder="Min"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none text-sm"
+              class="w-full px-3 py-2 border border-olive-300 rounded-lg focus:ring-2 focus:ring-olive-500 focus:border-olive-500 outline-none text-sm"
             />
             <span class="text-gray-400">-</span>
             <input
               v-model.number="maxPrice"
               type="number"
               placeholder="Max"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:border-black outline-none text-sm"
+              class="w-full px-3 py-2 border border-olive-300 rounded-lg focus:ring-2 focus:ring-olive-500 focus:border-olive-500 outline-none text-sm"
             />
           </div>
           <button
             @click="applyFilters"
-            class="w-full mt-3 px-4 py-2 bg-black text-white text-sm font-medium rounded-lg hover:bg-gray-900 transition-colors"
+            class="w-full mt-3 px-4 py-2 bg-olive-800 text-white text-sm font-medium rounded-lg hover:bg-olive-900 transition-colors"
           >
             Apply Filters
           </button>
@@ -100,7 +100,7 @@
 
     <div class="flex-1">
       <div v-if="loading" class="flex items-center justify-center py-20">
-        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black"></div>
+        <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-olive-500"></div>
       </div>
 
       <div v-else-if="error" class="bg-red-50 border border-red-200 rounded-lg p-4 text-red-600">
@@ -135,7 +135,7 @@
                 :class="favoritesStore.isFavorite(product.id) ? 'text-pink-500' : 'text-gray-400'"
               >
                 <svg 
-                  class="w-5 h-5" 
+                  class="size-5" 
                   :fill="favoritesStore.isFavorite(product.id) ? 'currentColor' : 'none'"
                   stroke="currentColor" 
                   viewBox="0 0 24 24"
@@ -150,7 +150,7 @@
                 @click.stop="redirectToLogin"
                 class="absolute top-3 right-3 p-2 rounded-full bg-white shadow-md text-gray-400"
               >
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                     d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>

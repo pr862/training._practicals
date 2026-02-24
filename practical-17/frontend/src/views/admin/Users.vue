@@ -22,7 +22,7 @@
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.id }}</td>
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="flex items-center">
-                <div class="w-8 h-8 rounded-full bg-olive-500 flex items-center justify-center mr-3">
+                <div class="size-8 rounded-full bg-olive-500 flex items-center justify-center mr-3">
                   <span class="text-sm font-bold text-white">{{ getInitials(user.name) }}</span>
                 </div>
                 <span class="text-sm font-medium text-gray-900">{{ user.name }}</span>

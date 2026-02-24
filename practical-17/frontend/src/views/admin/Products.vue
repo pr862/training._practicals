@@ -9,7 +9,7 @@
         @click="openModal()"
         class="flex items-center gap-2 px-4 py-2 bg-olive-500 hover:bg-olive-600 text-white rounded-lg transition-colors"
       >
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
         </svg>
         Add Product
@@ -38,11 +38,11 @@
                 v-if="product.image" 
                 :src="getImageUrl(product.image)" 
                 alt="Product" 
-                class="w-16 h-16 object-contain rounded-lg cursor-pointer hover:scale-110 transition-transform"
+                class="size-16 object-contain rounded-lg cursor-pointer hover:scale-110 transition-transform"
                 @click="openImageModal(getImageUrl(product.image))"
               />
-              <div v-else class="w-16 h-16 bg-olive-200 rounded-lg flex items-center justify-center">
-                <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div v-else class="size-16 bg-olive-200 rounded-lg flex items-center justify-center">
+                <svg class="size-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
               </div>
@@ -180,10 +180,10 @@
                   v-if="formData.image || formData.existingImage" 
                   :src="formData.image ? URL.createObjectURL(formData.image) : getImageUrl(formData.existingImage)" 
                   alt="Preview" 
-                  class="w-24 h-24 object-contain rounded-lg border border-olive-300"
+                  class="size-24 object-contain rounded-lg border border-olive-300"
                 />
-                <div v-else class="w-24 h-24 bg-gray-100 rounded-lg  flex items-center justify-center">
-                  <svg class="w-10 h-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div v-else class="size-24 bg-gray-100 rounded-lg  flex items-center justify-center">
+                  <svg class="size-10 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                   </svg>
                 </div>
@@ -229,7 +229,7 @@
         @click="closeImageModal"
         class="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors"
       >
-        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="size-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
         </svg>
       </button>

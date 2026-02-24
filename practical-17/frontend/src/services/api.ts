@@ -155,4 +155,7 @@ export const userAPI = {
   removeFavorite: (productId: number) => api.delete(`/user/favorites/${productId}`),
   
   checkFavorite: (productId: number) => api.get(`/user/favorites/${productId}/check`),
+  
+  sendFeedback: (data: { subject: string; message: string }) => 
+    api.post('/user/feedback', data),
 };

@@ -50,7 +50,7 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async register(name: string, email: string, password: string) {
+    async register(name: string, email: string, password: string, role: string) {
       this.loading = true;
       this.error = null;
       try {

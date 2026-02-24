@@ -119,15 +119,10 @@ const handleSubmit = async () => {
   const success = await authStore.login(formData.value.email, formData.value.password);
   
   if (success) {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    
-    const token = localStorage.getItem('token');
-    const user = localStorage.getItem('user');
-    
-    if (token && user) {
-      router.push('/admin/dashboard');
+    if (authStore.isAdmin) {
+      router.push('/admin/dashboard')
     } else {
-      error.value = 'Authentication state not properly saved. Please try again.';
+      router.push({ name: 'Home' })
     }
   } else {
     error.value = authStore.error || 'Login failed. Please try again.';

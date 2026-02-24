@@ -7,6 +7,7 @@ import Login from '../auth/Login.vue';
 import Register from '../auth/Register.vue';
 import HomePage from '../views/users/HomePage.vue';
 import UserFavorites from '../views/users/UserFavorites.vue';
+import Feedback from '../views/users/Feedback.vue';
 import Dashboard from '../views/admin/Dashboard.vue';
 import Categories from '../views/admin/Categories.vue';
 import Subcategories from '../views/admin/Subcategories.vue';
@@ -27,6 +28,12 @@ const routes = [
         path: 'favorites',
         name: 'Favorites',
         component: UserFavorites,
+        meta: { requiresAuth: true },
+      },
+      {
+        path: 'feedback',
+        name: 'Feedback',
+        component: Feedback,
         meta: { requiresAuth: true },
       },
     ],

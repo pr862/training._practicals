@@ -9,7 +9,7 @@
             StyleSphere
           </h1>
           <p class="text-sm text-gray-600 mt-2 tracking-wide">
-            {{ isAdminRegistration ? 'Create Admin Account' : 'Create your account' }}
+            Create your account
           </p>
         </div>
 
@@ -83,12 +83,17 @@
             <p v-if="errors.confirmPassword" class="mt-1 text-sm text-red-500">{{ errors.confirmPassword }}</p>
           </div>
 
-          <div v-if="isAdminRegistration">
-            <label class="flex items-center gap-2 text-sm text-gray-600">
-              <input type="checkbox" v-model="formData.isAdmin" class="accent-black">
-              Register as Admin
+          <div>
+            <label class="block text-sm text-gray-600 mb-2 tracking-wide">
+              Select Role
             </label>
-            <p class="text-xs text-gray-500 mt-1">Check this if you're creating an admin account</p>
+            <select
+              v-model="formData.role"
+              class="w-full px-4 py-3 border border-olive-300 rounded-xl focus:ring-2 focus:ring-olive-600 focus:border-olive-600 transition-all outline-none"
+            >
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
           </div>
 
           <button
@@ -123,19 +128,16 @@ import { ref, computed } from 'vue';
 import { useRouter, useRoute } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 
-const router = useRouter();
-const route = useRoute();
-const authStore = useAuthStore();
-
-const isAdminRegistration = computed(() => route.path === '/admin/register' || route.query.admin === 'true');
+const router = useRouter()
+const authStore = useAuthStore()
 
 const formData = ref({
   name: '',
   email: '',
   password: '',
   confirmPassword: '',
-  isAdmin: isAdminRegistration.value,
-});
+  role: 'user'
+})
 
 const errors = ref<Record<string, string>>({});
 const loading = ref(false);
@@ -175,47 +177,39 @@ const validateForm = () => {
 };
 
 const handleSubmit = async () => {
-  if (!validateForm()) return;
-  
-  loading.value = true;
-  error.value = '';
-  successMessage.value = '';
-  
-  let success: boolean;
-  
-  if (formData.value.isAdmin) {
-    success = await authStore.register(
-      formData.value.name,
-      formData.value.email,
-      formData.value.password,
-    );
-  } else {
+  if (!validateForm()) return
+
+  loading.value = true
+  error.value = ''
+  successMessage.value = ''
+
+  let success: boolean
+
+if (formData.value.role === 'user') {
     success = await authStore.registerUser(
       formData.value.name,
       formData.value.email,
       formData.value.password,
     );
+  } else {
+    success = await authStore.register(
+      formData.value.name,
+      formData.value.email,
+      formData.value.password,
+      formData.value.role
+    )
   }
   
   if (success) {
-    successMessage.value = 'Account created successfully! Redirecting...';
-    
-    await new Promise(resolve => setTimeout(resolve, 200));
-    
-    const token = localStorage.getItem('token');
-    const user = localStorage.getItem('user');
-    
-    if (token && user) {
-      if (authStore.isAdmin) {
-        router.push('/admin/dashboard');
-      } else {
-        router.push('/');
-      }
+    successMessage.value = 'Account created successfully! Redirecting...'
+
+    if (formData.value.role === 'admin') {
+      router.push('/admin/dashboard')
     } else {
-      error.value = 'Authentication state not properly saved. Please try logging in.';
+      router.push('/')
     }
   } else {
-    error.value = authStore.error || 'Registration failed. Please try again.';
+    error.value = authStore.error || 'Registration failed. Please try again.'
   }
   
   loading.value = false;

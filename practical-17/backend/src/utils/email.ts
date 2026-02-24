@@ -13,7 +13,7 @@ export const sendWelcomeEmail = async (email: string, name: string): Promise<voi
           <style>
             body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
             .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background-color: #4CAF50; color: white; padding: 20px; text-align: center; }
+            .header { background-color: #50502d; color: white; padding: 20px; text-align: center; }
             .content { padding: 20px; background-color: #f9f9f9; }
             .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
           </style>

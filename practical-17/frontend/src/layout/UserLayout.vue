@@ -19,7 +19,7 @@
                 @keyup.enter="handleSearch"
               />
               <svg 
-                class="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-olive-50"
+                class="absolute left-3.5 top-1/2 -translate-y-1/2 size-5 text-olive-50"
                 fill="none" 
                 stroke="currentColor" 
                 viewBox="0 0 24 24"
@@ -31,7 +31,7 @@
                 @click="clearSearch"
                 class="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-olive-50 transition-colors"
               >
-                <svg class="w-5 h-5 text-olive-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg class="size-5 text-olive-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
@@ -56,6 +56,13 @@
                 <span v-if="favoritesStore.favoriteCount > 0" class="ml-1 bg-pink-500 text-white text-xs px-2 py-0.5 rounded-full">
                   {{ favoritesStore.favoriteCount }}
                 </span>
+              </router-link>
+              <router-link 
+                to="/feedback" 
+                class="text-olive-50 hover:text-olive-500 transition-colors"
+                :class="{ 'text-gray-900 font-medium': $route.path === '/feedback' }"
+              >
+                reviews
               </router-link>
             </template>
           </nav>
