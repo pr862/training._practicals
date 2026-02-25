@@ -1,5 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { Category, Subcategory, Product, User } from '../models/Index';
+import path from 'path';
+import fs from 'fs';
 
 const router = Router();
 
@@ -121,6 +123,29 @@ router.get('/products/:id', async (req, res) => {
     res.json(product);
   } catch (error) {
     res.status(500).json({ message: 'Error fetching product' });
+  }
+});
+
+router.get('/products/:id/image', async (req, res) => {
+  try {
+    const product = await Product.findByPk(req.params.id);
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+    
+    if (!product.image) {
+      return res.status(404).json({ message: 'Image not found' });
+    }
+    
+    const imagePath = path.join(__dirname, '../../', product.image);
+    
+    if (!fs.existsSync(imagePath)) {
+      return res.status(404).json({ message: 'Image file not found' });
+    }
+    
+    res.sendFile(imagePath);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching product image' });
   }
 });
 router.get('/categories/:categoryId/subcategories', async (req, res) => {
