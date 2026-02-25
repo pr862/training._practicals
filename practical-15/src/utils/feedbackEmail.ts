@@ -20,7 +20,7 @@ const getAdminEmail = async (): Promise<string> => {
     return adminUser.email;
   }
   
-  return process.env.ADMIN_EMAIL || 'princyvithani09@gmail.com';
+  return process.env.ADMIN_EMAIL!;
 };
 
 export const sendFeedbackEmail = async (feedback: FeedbackData): Promise<void> => {
