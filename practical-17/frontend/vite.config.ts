@@ -7,11 +7,27 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'http://localhost:3500',
+        target: 'https://stylesphere-4qp1.onrender.com',
+        changeOrigin: true,
+      },
+      '/public': {
+        target: 'https://stylesphere-4qp1.onrender.com',
         changeOrigin: true,
       },
       '/uploads': {
-        target: 'http://localhost:3500',
+        target: 'https://stylesphere-4qp1.onrender.com',
+        changeOrigin: true,
+      },
+      '/auth': {
+        target: 'https://stylesphere-4qp1.onrender.com',
+        changeOrigin: true,
+      },
+      '/user': {
+        target: 'https://stylesphere-4qp1.onrender.com',
+        changeOrigin: true,
+      },
+      '/admin': {
+        target: 'https://stylesphere-4qp1.onrender.com',
         changeOrigin: true,
       },
     },

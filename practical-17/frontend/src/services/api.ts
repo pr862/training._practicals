@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: 'https://stylesphere-4qp1.onrender.com',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -29,34 +29,34 @@ api.interceptors.response.use(
 
 export const authAPI = {
   login: (data: { email: string; password: string }) => 
-    api.post('/auth/login', data),
+    api.post('/api/auth/login', data),
   
   registerAdmin: (data: { name: string; email: string; password: string }) => 
-    api.post('/auth/admin/signup', data),
+    api.post('/api/auth/admin/signup', data),
   
   registerUser: (data: { name: string; email: string; password: string }) => 
-    api.post('/auth/user/signup', data),
+    api.post('/api/auth/user/signup', data),
 };
 
 export const categoryAPI = {
-  getAll: () => api.get('/admin/categories'),
-  getById: (id: number) => api.get(`/admin/categories/${id}`),
-  create: (data: { name: string }) => api.post('/admin/categories', data),
-  update: (id: number, data: { name: string }) => api.put(`/admin/categories/${id}`, data),
-  delete: (id: number) => api.delete(`/admin/categories/${id}`),
+  getAll: () => api.get('/api/admin/categories'),
+  getById: (id: number) => api.get(`/api/admin/categories/${id}`),
+  create: (data: { name: string }) => api.post('/api/admin/categories', data),
+  update: (id: number, data: { name: string }) => api.put(`/api/admin/categories/${id}`, data),
+  delete: (id: number) => api.delete(`/api/admin/categories/${id}`),
 };
 
 export const subcategoryAPI = {
-  getAll: () => api.get('/admin/subcategories'),
-  getById: (id: number) => api.get(`/admin/subcategories/${id}`),
-  create: (data: { name: string; categoryId: number }) => api.post('/admin/subcategories', data),
-  update: (id: number, data: { name: string; categoryId: number }) => api.put(`/admin/subcategories/${id}`, data),
-  delete: (id: number) => api.delete(`/admin/subcategories/${id}`),
+  getAll: () => api.get('/api/admin/subcategories'),
+  getById: (id: number) => api.get(`/api/admin/subcategories/${id}`),
+  create: (data: { name: string; categoryId: number }) => api.post('/api/admin/subcategories', data),
+  update: (id: number, data: { name: string; categoryId: number }) => api.put(`/api/admin/subcategories/${id}`, data),
+  delete: (id: number) => api.delete(`/api/admin/subcategories/${id}`),
 };
 
 export const productAPI = {
-  getAll: () => api.get('/admin/products'),
-  getById: (id: number) => api.get(`/admin/products/${id}`),
+  getAll: () => api.get('/api/admin/products'),
+  getById: (id: number) => api.get(`/api/admin/products/${id}`),
   create: async (data: {
     name: string;
     price: number;
@@ -74,7 +74,7 @@ export const productAPI = {
     if (data.image) {
       formData.append('image', data.image);
     }
-    return api.post('/admin/products', formData, {
+    return api.post('/api/admin/products', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
@@ -95,21 +95,21 @@ export const productAPI = {
     if (data.image) {
       formData.append('image', data.image);
     }
-    return api.put(`/admin/products/${id}`, formData, {
+    return api.put(`/api/admin/products/${id}`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
-  delete: (id: number) => api.delete(`/admin/products/${id}`),
+  delete: (id: number) => api.delete(`/api/admin/products/${id}`),
 };
 
 export const adminUserAPI = {
-  getAll: () => api.get('/admin/users'),
-  getById: (id: number) => api.get(`/admin/users/${id}`),
-  delete: (id: number) => api.delete(`/admin/users/${id}`),
+  getAll: () => api.get('/api/admin/users'),
+  getById: (id: number) => api.get(`/api/admin/users/${id}`),
+  delete: (id: number) => api.delete(`/api/admin/users/${id}`),
 };
 
 export const statsAPI = {
-  get: () => api.get('/admin/stats'),
+  get: () => api.get('/api/admin/stats'),
 };
 
 export const publicAPI = {
@@ -121,22 +121,22 @@ export const publicAPI = {
     maxPrice?: number;
     sortBy?: string;
     sortOrder?: string;
-  }) => api.get('/public/products', { params }),
+  }) => api.get('/api/public/products', { params }),
   
-  getProductById: (id: number) => api.get(`/public/products/${id}`),
+  getProductById: (id: number) => api.get(`/api/public/products/${id}`),
   
-  getCategories: () => api.get('/public/categories'),
+  getCategories: () => api.get('/api/public/categories'),
   
-  getSubcategories: () => api.get('/public/subcategories'),
+  getSubcategories: () => api.get('/api/public/subcategories'),
   
   getSubcategoriesByCategory: (categoryId: number) => 
-    api.get(`/public/categories/${categoryId}/subcategories`),
+    api.get(`/api/public/categories/${categoryId}/subcategories`),
   
   getProductsByCategory: (categoryId: number) => 
-    api.get(`/public/categories/${categoryId}/products`),
+    api.get(`/api/public/categories/${categoryId}/products`),
   
   getProductsBySubcategory: (subcategoryId: number) => 
-    api.get(`/public/subcategories/${subcategoryId}/products`),
+    api.get(`/api/public/subcategories/${subcategoryId}/products`),
   
   searchProducts: (params: {
     q: string;
@@ -144,18 +144,19 @@ export const publicAPI = {
     maxPrice?: number;
     categoryId?: number;
     limit?: number;
-  }) => api.get('/public/search', { params }),
+  }) => api.get('/api/public/search', { params }),
 };
 
 export const userAPI = {
-  getFavorites: () => api.get('/user/favorites'),
+  getFavorites: () => api.get('/api/user/favorites'),
   
-  addFavorite: (productId: number) => api.post(`/user/favorites/${productId}`),
+  addFavorite: (productId: number) => api.post(`/api/user/favorites/${productId}`),
   
-  removeFavorite: (productId: number) => api.delete(`/user/favorites/${productId}`),
+  removeFavorite: (productId: number) => api.delete(`/api/user/favorites/${productId}`),
   
-  checkFavorite: (productId: number) => api.get(`/user/favorites/${productId}/check`),
+  checkFavorite: (productId: number) => api.get(`/api/user/favorites/${productId}/check`),
   
   sendFeedback: (data: { subject: string; message: string }) => 
-    api.post('/user/feedback', data),
+    api.post('/api/user/feedback', data),
 };
+
