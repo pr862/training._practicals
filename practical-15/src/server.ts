@@ -13,10 +13,10 @@ app.use(express.json());
 
 app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
-import authRoutes from './routes/auth.routes';
-import adminRoutes from './routes/admin.routes';
-import publicRoutes from './routes/public.routes';
-import userRoutes from './routes/user.routes';
+import authRoutes from './routes/auth';
+import adminRoutes from './routes/admin';
+import publicRoutes from './routes/public';
+import userRoutes from './routes/user';
 
 app.use('/api/auth', authRoutes);
 app.use('/api/admin', adminRoutes);
