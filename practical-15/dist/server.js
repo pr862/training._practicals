@@ -14,16 +14,16 @@ const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
 app.use('/uploads', express_1.default.static(path_1.default.join(__dirname, '../uploads')));
-const auth_routes_1 = __importDefault(require("./routes/auth.routes"));
-const admin_routes_1 = __importDefault(require("./routes/admin.routes"));
-const public_routes_1 = __importDefault(require("./routes/public.routes"));
-const user_routes_1 = __importDefault(require("./routes/user.routes"));
-app.use('/api/auth', auth_routes_1.default);
-app.use('/api/admin', admin_routes_1.default);
-app.use('/api/public', public_routes_1.default);
-app.use('/api/user', user_routes_1.default);
+const auth_1 = __importDefault(require("./routes/auth"));
+const admin_1 = __importDefault(require("./routes/admin"));
+const public_1 = __importDefault(require("./routes/public"));
+const user_1 = __importDefault(require("./routes/user"));
+app.use('/api/auth', auth_1.default);
+app.use('/api/admin', admin_1.default);
+app.use('/api/public', public_1.default);
+app.use('/api/user', user_1.default);
 app.use(errorHandler_1.errorHandler);
-const PORT = process.env.PORT || 3500;
+const PORT = process.env.PORT;
 Index_1.sequelize.sync({ alter: true }).then(() => {
     console.log('Database synced');
     app.listen(PORT, () => {

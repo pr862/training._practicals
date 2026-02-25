@@ -11,7 +11,7 @@ const getAdminEmail = async () => {
     if (adminUser) {
         return adminUser.email;
     }
-    return process.env.ADMIN_EMAIL || 'princyvithani09@gmail.com';
+    return process.env.ADMIN_EMAIL;
 };
 const sendFeedbackEmail = async (feedback) => {
     const adminEmail = await getAdminEmail();
