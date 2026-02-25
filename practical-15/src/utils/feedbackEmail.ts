@@ -1,5 +1,7 @@
-import { transporter } from './mailer';
+import { Resend } from 'resend';
 import { User } from '../models/Index';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 interface FeedbackData {
   userId: number;
@@ -25,8 +27,8 @@ export const sendFeedbackEmail = async (feedback: FeedbackData): Promise<void> =
   const adminEmail = await getAdminEmail();
   
   try {
-    await transporter.sendMail({
-      from: process.env.SMTP_FROM || '"StyleSphere App" <noreply@ecommerce.com>',
+   await resend.emails.send({
+      from: 'StyleSphere <noreply@stylesphere.com>',
       to: adminEmail,
       subject: `Feedback from ${feedback.userName}: ${feedback.subject}`,
       html: `
@@ -86,11 +88,7 @@ export const sendFeedbackEmail = async (feedback: FeedbackData): Promise<void> =
       `,
     });
     console.log(`Feedback email sent to admin: ${adminEmail}`);
-  } catch (error) {
-    console.error('Error sending feedback email to admin:', error);
-    throw error;
+  } catch (error: any) {
+    console.error('Email failed but feedback saved successfully:', error.message);
   }
 };
-
-export default transporter;
-

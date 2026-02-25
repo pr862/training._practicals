@@ -1,8 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendFeedbackEmail = void 0;
-const mailer_1 = require("./mailer");
+const resend_1 = require("resend");
 const Index_1 = require("../models/Index");
+const resend = new resend_1.Resend(process.env.RESEND_API_KEY);
 const getAdminEmail = async () => {
     const adminUser = await Index_1.User.findOne({
         where: { role: 'admin' }
@@ -15,8 +16,8 @@ const getAdminEmail = async () => {
 const sendFeedbackEmail = async (feedback) => {
     const adminEmail = await getAdminEmail();
     try {
-        await mailer_1.transporter.sendMail({
-            from: process.env.SMTP_FROM || '"StyleSphere App" <noreply@ecommerce.com>',
+        await resend.emails.send({
+            from: 'StyleSphere <noreply@stylesphere.com>',
             to: adminEmail,
             subject: `Feedback from ${feedback.userName}: ${feedback.subject}`,
             html: `
@@ -26,7 +27,7 @@ const sendFeedbackEmail = async (feedback) => {
           <style>
             body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
             .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background-color: #2196F3; color: white; padding: 20px; text-align: center; }
+            .header { background-color: #50502d; color: white; padding: 20px; text-align: center; }
             .content { padding: 20px; background-color: #f9f9f9; }
             .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
             .info-row { margin: 10px 0; }
@@ -78,9 +79,7 @@ const sendFeedbackEmail = async (feedback) => {
         console.log(`Feedback email sent to admin: ${adminEmail}`);
     }
     catch (error) {
-        console.error('Error sending feedback email to admin:', error);
-        throw error;
+        console.error('Email failed but feedback saved successfully:', error.message);
     }
 };
 exports.sendFeedbackEmail = sendFeedbackEmail;
-exports.default = mailer_1.transporter;

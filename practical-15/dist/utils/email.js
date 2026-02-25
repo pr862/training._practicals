@@ -1,11 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendWelcomeEmail = void 0;
-const mailer_1 = require("./mailer");
+const resend_1 = require("resend");
+const resend = new resend_1.Resend(process.env.RESEND_API_KEY);
 const sendWelcomeEmail = async (email, name) => {
     try {
-        await mailer_1.transporter.sendMail({
-            from: process.env.SMTP_FROM || '"StyleSphere App" <noreply@ecommerce.com>',
+        await resend.emails.send({
+            from: 'StyleSphere <noreply@stylesphere.com>',
             to: email,
             subject: 'Welcome to StyleSphere App!',
             html: `
@@ -15,7 +16,7 @@ const sendWelcomeEmail = async (email, name) => {
           <style>
             body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
             .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background-color: #4CAF50; color: white; padding: 20px; text-align: center; }
+            .header { background-color: #50502d; color: white; padding: 20px; text-align: center; }
             .content { padding: 20px; background-color: #f9f9f9; }
             .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
           </style>
@@ -48,8 +49,7 @@ const sendWelcomeEmail = async (email, name) => {
         console.log(`Welcome email sent to ${email}`);
     }
     catch (error) {
-        console.error(`Error sending welcome email to ${email}:`, error);
+        console.error(`Error sending welcome email to ${email}:`, error.message);
     }
 };
 exports.sendWelcomeEmail = sendWelcomeEmail;
-exports.default = mailer_1.transporter;

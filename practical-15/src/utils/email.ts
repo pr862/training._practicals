@@ -1,9 +1,14 @@
-import { transporter } from './mailer';
+import { Resend } from 'resend';
 
-export const sendWelcomeEmail = async (email: string, name: string): Promise<void> => {
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+export const sendWelcomeEmail = async (
+  email: string,
+  name: string
+): Promise<void> => {
   try {
-    await transporter.sendMail({
-      from: process.env.SMTP_FROM || '"StyleSphere App" <noreply@ecommerce.com>',
+    await resend.emails.send({
+      from: 'StyleSphere <noreply@stylesphere.com>',
       to: email,
       subject: 'Welcome to StyleSphere App!',
       html: `
@@ -44,10 +49,7 @@ export const sendWelcomeEmail = async (email: string, name: string): Promise<voi
       `,
     });
     console.log(`Welcome email sent to ${email}`);
-  } catch (error) {
-    console.error(`Error sending welcome email to ${email}:`, error);
+  } catch (error: any) {
+    console.error(`Error sending welcome email to ${email}:`, error.message);
   }
 };
-
-export default transporter;
-
