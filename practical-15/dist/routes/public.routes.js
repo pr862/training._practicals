@@ -1,7 +1,12 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const Index_1 = require("../models/Index");
+const path_1 = __importDefault(require("path"));
+const fs_1 = __importDefault(require("fs"));
 const router = (0, express_1.Router)();
 router.get('/categories', async (_, res) => {
     try {
@@ -116,6 +121,25 @@ router.get('/products/:id', async (req, res) => {
     }
     catch (error) {
         res.status(500).json({ message: 'Error fetching product' });
+    }
+});
+router.get('/products/:id/image', async (req, res) => {
+    try {
+        const product = await Index_1.Product.findByPk(req.params.id);
+        if (!product) {
+            return res.status(404).json({ message: 'Product not found' });
+        }
+        if (!product.image) {
+            return res.status(404).json({ message: 'Image not found' });
+        }
+        const imagePath = path_1.default.join(__dirname, '../../', product.image);
+        if (!fs_1.default.existsSync(imagePath)) {
+            return res.status(404).json({ message: 'Image file not found' });
+        }
+        res.sendFile(imagePath);
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Error fetching product image' });
     }
 });
 router.get('/categories/:categoryId/subcategories', async (req, res) => {
