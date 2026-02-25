@@ -124,8 +124,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
-import { useRouter, useRoute } from 'vue-router';
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 
 const router = useRouter()
@@ -195,8 +195,7 @@ if (formData.value.role === 'user') {
     success = await authStore.register(
       formData.value.name,
       formData.value.email,
-      formData.value.password,
-      formData.value.role
+      formData.value.password
     )
   }
   

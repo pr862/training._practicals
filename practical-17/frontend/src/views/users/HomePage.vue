@@ -120,11 +120,11 @@
             class="bg-olive-50 rounded-2xl border border-olive-200 shadow-sm overflow-hidden hover:shadow-md transition-shadow group"
           >
            <div class="relative aspect-square bg-olive-50 overflow-hidden cursor-pointer">
-              <img
+<img
                 v-if="product.image"
-                :src="product.image.startsWith('/uploads/') ? product.image : `/uploads/${product.image}`"
+                :src="getImageUrl(product.image.startsWith('/uploads/') ? product.image : `/uploads/${product.image}`)"
                 :alt="product.name"
-                @click="openImageModal(product.image.startsWith('/uploads/') ? product.image : `/uploads/${product.image}`)"
+                @click="openImageModal(getImageUrl(product.image.startsWith('/uploads/') ? product.image : `/uploads/${product.image}`))"
                 class="w-full h-full object-contain cursor-pointer"
               />
 
@@ -278,6 +278,14 @@ const toggleFavorite = async (productId: number) => {
 const redirectToLogin = () => {
   router.push('/login')
 }
+
+const getImageUrl = (imagePath: string) => {
+  if (!imagePath) return '';
+  if (imagePath.startsWith('http')) {
+    return imagePath;
+  }
+  return `https://stylesphere-4qp1.onrender.com${imagePath}`;
+};
 
 const openImageModal = (imageSrc: string) => {
   selectedImage.value = imageSrc

@@ -293,10 +293,11 @@ const formData = ref({
 });
 
 const getImageUrl = (imagePath: string) => {
+  if (!imagePath) return '';
   if (imagePath.startsWith('http')) {
     return imagePath;
   }
-  return imagePath;
+  return `https://stylesphere-4qp1.onrender.com${imagePath}`;
 };
 
 const handleImageChange = (event: Event) => {
