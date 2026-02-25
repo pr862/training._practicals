@@ -31,11 +31,11 @@ router.get('/favorites', asyncHandler(async (req: AuthRequest, res) => {
   res.json(products);
 }));
 
-router.post('/favorites/:productId',
+router.post('/favorites/:id',
   validate(productIdValidation),
   asyncHandler(async (req: AuthRequest, res) => {
     const userId = req.user!.id;
-    const { productId } = req.params;
+    const { id: productId } = req.params;
 
     const product = await Product.findByPk(productId);
     if (!product) {
@@ -59,11 +59,11 @@ router.post('/favorites/:productId',
   })
 );
 
-router.delete('/favorites/:productId',
+router.delete('/favorites/:id',
   validate(productIdValidation),
   asyncHandler(async (req: AuthRequest, res) => {
     const userId = req.user!.id;
-    const { productId } = req.params;
+    const { id: productId } = req.params;
 
     const favorite = await UserFavorite.findOne({
       where: { userId, productId: parseInt(productId) }
@@ -78,11 +78,11 @@ router.delete('/favorites/:productId',
   })
 );
 
-router.get('/favorites/:productId/check',
+router.get('/favorites/:id/check',
   validate(productIdValidation),
   asyncHandler(async (req: AuthRequest, res) => {
     const userId = req.user!.id;
-    const { productId } = req.params;
+    const { id: productId } = req.params;
 
     const favorite = await UserFavorite.findOne({
       where: { userId, productId: parseInt(productId) }

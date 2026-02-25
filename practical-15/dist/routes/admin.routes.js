@@ -6,6 +6,7 @@ const auth_1 = require("../middleware/auth");
 const admin_1 = require("../middleware/admin");
 const asyncHandler_1 = require("../middleware/asyncHandler");
 const validation_1 = require("../middleware/validation");
+const upload_1 = require("../middleware/upload");
 const router = (0, express_1.Router)();
 router.use(auth_1.auth);
 router.use(admin_1.adminOnly);
@@ -122,16 +123,36 @@ router.get('/products/:id', (0, validation_1.validate)(validation_1.productIdVal
     }
     res.json(product);
 }));
-router.post('/products', (0, validation_1.validate)(validation_1.productValidation), (0, asyncHandler_1.asyncHandler)(async (req, res) => {
-    const product = await Index_1.Product.create(req.body);
+router.post('/products', upload_1.uploadProductImage, (0, asyncHandler_1.asyncHandler)(async (req, res) => {
+    const productData = {
+        ...req.body,
+        price: parseFloat(req.body.price),
+        stock: parseInt(req.body.stock),
+        categoryId: parseInt(req.body.categoryId),
+        subcategoryId: parseInt(req.body.subcategoryId),
+    };
+    if (req.file) {
+        productData.image = `/uploads/${req.file.filename}`;
+    }
+    const product = await Index_1.Product.create(productData);
     res.status(201).json(product);
 }));
-router.put('/products/:id', (0, validation_1.validate)([...validation_1.productIdValidation, ...validation_1.productValidation]), (0, asyncHandler_1.asyncHandler)(async (req, res) => {
+router.put('/products/:id', upload_1.uploadProductImage, (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const product = await Index_1.Product.findByPk(req.params.id);
     if (!product) {
         return res.status(404).json({ message: 'Product not found' });
     }
-    await product.update(req.body);
+    const updateData = {
+        ...req.body,
+        price: parseFloat(req.body.price),
+        stock: parseInt(req.body.stock),
+        categoryId: parseInt(req.body.categoryId),
+        subcategoryId: parseInt(req.body.subcategoryId),
+    };
+    if (req.file) {
+        updateData.image = `/uploads/${req.file.filename}`;
+    }
+    await product.update(updateData);
     res.json(product);
 }));
 router.delete('/products/:id', (0, validation_1.validate)(validation_1.productIdValidation), (0, asyncHandler_1.asyncHandler)(async (req, res) => {

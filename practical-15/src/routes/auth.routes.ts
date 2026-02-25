@@ -30,7 +30,15 @@ router.post('/admin/signup',
 
     const token = generateToken(admin.id, admin.role);
 
-    res.status(201).json({ token });
+    res.status(201).json({ 
+      token,
+      user: {
+        id: admin.id,
+        name: admin.name,
+        email: admin.email,
+        role: admin.role
+      }
+    });
   })
 );
 
@@ -55,9 +63,19 @@ router.post('/user/signup',
 
     const token = generateToken(user.id, user.role);
 
-    await sendWelcomeEmail(user.email, user.name);
+    sendWelcomeEmail(user.email, user.name).catch(err => 
+      console.error('Failed to send welcome email:', err)
+    );
 
-    res.status(201).json({ token });
+    res.status(201).json({
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
   })
 );
 

@@ -5,9 +5,9 @@ import sequelize from '../config/database';
 export class Product extends Model {
   public id!: number;
   public name!: string;
-  public description!: string;
   public price!: number;
   public stock!: number;
+  public image!: string;
   public categoryId!: number;
   public subcategoryId!: number;
 }
@@ -25,11 +25,6 @@ Product.init(
       allowNull: false,
     },
 
-    description: {
-      type: DataTypes.TEXT,
-      allowNull: false,
-    },
-
     price: {
       type: DataTypes.FLOAT,
       allowNull: false,
@@ -39,6 +34,11 @@ Product.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       defaultValue: 0,
+    },
+
+    image: {
+      type: DataTypes.STRING,
+      allowNull: true,
     },
 
     categoryId: {

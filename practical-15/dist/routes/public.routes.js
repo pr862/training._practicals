@@ -62,17 +62,17 @@ router.get('/products', async (req, res) => {
         if (search) {
             const { Op } = require('sequelize');
             where[Op.or] = [
-                { name: { [Op.iLike]: `%${search}%` } },
-                { description: { [Op.iLike]: `%${search}%` } }
+                { name: { [Op.iLike]: `%${search}%` } }
             ];
         }
         if (minPrice || maxPrice) {
+            const { Op } = require('sequelize');
             where.price = {};
             if (minPrice) {
-                where.price.$gte = parseFloat(minPrice);
+                where.price[Op.gte] = parseFloat(minPrice);
             }
             if (maxPrice) {
-                where.price.$lte = parseFloat(maxPrice);
+                where.price[Op.lte] = parseFloat(maxPrice);
             }
         }
         const order = [];
@@ -172,8 +172,7 @@ router.get('/search', async (req, res) => {
         const { Op } = require('sequelize');
         const where = {
             [Op.or]: [
-                { name: { [Op.iLike]: `%${q}%` } },
-                { description: { [Op.iLike]: `%${q}%` } }
+                { name: { [Op.iLike]: `%${q}%` } }
             ]
         };
         if (minPrice || maxPrice) {

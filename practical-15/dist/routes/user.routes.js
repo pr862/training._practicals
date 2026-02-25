@@ -26,9 +26,9 @@ router.get('/favorites', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const products = favorites.map(fav => fav.Product);
     res.json(products);
 }));
-router.post('/favorites/:productId', (0, validation_1.validate)(validation_1.productIdValidation), (0, asyncHandler_1.asyncHandler)(async (req, res) => {
+router.post('/favorites/:id', (0, validation_1.validate)(validation_1.productIdValidation), (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const userId = req.user.id;
-    const { productId } = req.params;
+    const { id: productId } = req.params;
     const product = await Index_1.Product.findByPk(productId);
     if (!product) {
         return res.status(404).json({ message: 'Product not found' });
@@ -45,9 +45,9 @@ router.post('/favorites/:productId', (0, validation_1.validate)(validation_1.pro
     });
     res.status(201).json({ message: 'Product added to favorites', favorite });
 }));
-router.delete('/favorites/:productId', (0, validation_1.validate)(validation_1.productIdValidation), (0, asyncHandler_1.asyncHandler)(async (req, res) => {
+router.delete('/favorites/:id', (0, validation_1.validate)(validation_1.productIdValidation), (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const userId = req.user.id;
-    const { productId } = req.params;
+    const { id: productId } = req.params;
     const favorite = await Index_1.UserFavorite.findOne({
         where: { userId, productId: parseInt(productId) }
     });
@@ -57,9 +57,9 @@ router.delete('/favorites/:productId', (0, validation_1.validate)(validation_1.p
     await favorite.destroy();
     res.json({ message: 'Product removed from favorites' });
 }));
-router.get('/favorites/:productId/check', (0, validation_1.validate)(validation_1.productIdValidation), (0, asyncHandler_1.asyncHandler)(async (req, res) => {
+router.get('/favorites/:id/check', (0, validation_1.validate)(validation_1.productIdValidation), (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const userId = req.user.id;
-    const { productId } = req.params;
+    const { id: productId } = req.params;
     const favorite = await Index_1.UserFavorite.findOne({
         where: { userId, productId: parseInt(productId) }
     });

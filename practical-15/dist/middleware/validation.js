@@ -93,12 +93,6 @@ exports.productValidation = [
         .withMessage('Product name is required')
         .isLength({ min: 2, max: 100 })
         .withMessage('Product name must be between 2 and 100 characters'),
-    (0, express_validator_1.body)('description')
-        .trim()
-        .notEmpty()
-        .withMessage('Product description is required')
-        .isLength({ min: 10, max: 1000 })
-        .withMessage('Description must be between 10 and 1000 characters'),
     (0, express_validator_1.body)('price')
         .isFloat({ min: 0.01 })
         .withMessage('Price must be a positive number'),
@@ -113,7 +107,7 @@ exports.productValidation = [
         .withMessage('Valid subcategory ID is required')
 ];
 exports.productIdValidation = [
-    (0, express_validator_1.param)('productId')
+    (0, express_validator_1.param)('id')
         .isInt({ min: 1 })
         .withMessage('Valid product ID is required')
 ];

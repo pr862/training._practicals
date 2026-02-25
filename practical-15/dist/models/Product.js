@@ -19,10 +19,6 @@ Product.init({
         type: sequelize_1.DataTypes.STRING,
         allowNull: false,
     },
-    description: {
-        type: sequelize_1.DataTypes.TEXT,
-        allowNull: false,
-    },
     price: {
         type: sequelize_1.DataTypes.FLOAT,
         allowNull: false,
@@ -31,6 +27,10 @@ Product.init({
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
+    },
+    image: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true,
     },
     categoryId: {
         type: sequelize_1.DataTypes.INTEGER,

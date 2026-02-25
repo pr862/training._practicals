@@ -13,6 +13,7 @@ import {
   productIdValidation,
   userIdValidation
 } from '../middleware/validation';
+import { uploadProductImage } from '../middleware/upload';
 
 const router = Router();
 
@@ -186,21 +187,46 @@ router.get('/products/:id',
 );
 
 router.post('/products',
-  validate(productValidation),
+  uploadProductImage,
   asyncHandler(async (req, res) => {
-    const product = await Product.create(req.body);
+    const productData = {
+      ...req.body,
+      price: parseFloat(req.body.price),
+      stock: parseInt(req.body.stock),
+      categoryId: parseInt(req.body.categoryId),
+      subcategoryId: parseInt(req.body.subcategoryId),
+    };
+    
+    if (req.file) {
+      productData.image = `/uploads/${req.file.filename}`;
+    }
+    
+    const product = await Product.create(productData);
     res.status(201).json(product);
   })
 );
 
 router.put('/products/:id',
-  validate([...productIdValidation, ...productValidation]),
+  uploadProductImage,
   asyncHandler(async (req, res) => {
     const product = await Product.findByPk(req.params.id);
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
-    await product.update(req.body);
+    
+    const updateData: any = {
+      ...req.body,
+      price: parseFloat(req.body.price),
+      stock: parseInt(req.body.stock),
+      categoryId: parseInt(req.body.categoryId),
+      subcategoryId: parseInt(req.body.subcategoryId),
+    };
+    
+    if (req.file) {
+      updateData.image = `/uploads/${req.file.filename}`;
+    }
+    
+    await product.update(updateData);
     res.json(product);
   })
 );

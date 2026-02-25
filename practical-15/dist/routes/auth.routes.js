@@ -25,7 +25,15 @@ router.post('/admin/signup', (0, validation_1.validate)(validation_1.adminSignup
         role: 'admin'
     });
     const token = (0, jwt_1.generateToken)(admin.id, admin.role);
-    res.status(201).json({ token });
+    res.status(201).json({
+        token,
+        user: {
+            id: admin.id,
+            name: admin.name,
+            email: admin.email,
+            role: admin.role
+        }
+    });
 }));
 router.post('/user/signup', (0, validation_1.validate)(validation_1.userSignupValidation), (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const { name, email, password } = req.body;
@@ -41,8 +49,16 @@ router.post('/user/signup', (0, validation_1.validate)(validation_1.userSignupVa
         role: 'user'
     });
     const token = (0, jwt_1.generateToken)(user.id, user.role);
-    await (0, email_1.sendWelcomeEmail)(user.email, user.name);
-    res.status(201).json({ token });
+    (0, email_1.sendWelcomeEmail)(user.email, user.name).catch(err => console.error('Failed to send welcome email:', err));
+    res.status(201).json({
+        token,
+        user: {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role
+        }
+    });
 }));
 router.post('/login', (0, validation_1.validate)(validation_1.loginValidation), (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const { email, password } = req.body;

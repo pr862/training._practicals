@@ -3,13 +3,13 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const sequelize = new Sequelize(
-  'ecommerce',
-  'postgres',
-  '123456',
+  process.env.DB_NAME || 'ecommerce',
+  process.env.DB_USER || 'postgres',
+  process.env.DB_PASSWORD || '123456',
   {
-    host: 'localhost',
+    host: process.env.DB_HOST || 'localhost',
     dialect: 'postgres',
-    port: 5432,
+    port: parseInt(process.env.DB_PORT || '5432', 10),
   }
 );
 
