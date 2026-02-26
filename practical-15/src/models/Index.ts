@@ -5,8 +5,8 @@ import { Subcategory } from './Subcategory';
 import { Product } from './Product';
 import { UserFavorite } from './UserFavorite';
 
-Category.hasMany(Subcategory, { foreignKey: 'categoryId' });
-Subcategory.belongsTo(Category, { foreignKey: 'categoryId' });
+Category.hasMany(Category, {as: 'subcategories',foreignKey: 'parent_id',});
+Category.belongsTo(Category, {as: 'parent',foreignKey: 'parent_id',});
 
 Category.hasMany(Product, { foreignKey: 'categoryId' });
 Product.belongsTo(Category, { foreignKey: 'categoryId' });
