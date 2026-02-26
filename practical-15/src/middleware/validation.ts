@@ -45,11 +45,15 @@ export const signupValidation = [
     .isLength({ min: 6 })
     .withMessage('Password must be at least 6 characters')
     .matches(/\d/)
-    .withMessage('Password must contain at least one number')
+    .withMessage('Password must contain at least one number'),
+
+  body('role')
+    .optional()
+    .isIn(['user', 'admin'])
+    .withMessage('Role must be either "user" or "admin"')
 ];
 
-export const adminSignupValidation = signupValidation;
-export const userSignupValidation = signupValidation;
+
 
 export const loginValidation = [
   body('email')

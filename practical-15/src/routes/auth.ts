@@ -4,48 +4,14 @@ import { User } from '../models/User';
 import { sendWelcomeEmail } from '../utils/email';
 import { generateToken } from '../utils/jwt';
 import { asyncHandler } from '../middleware/asyncHandler';
-import { validate, adminSignupValidation, userSignupValidation, loginValidation } from '../middleware/validation';
+import { validate, signupValidation, loginValidation } from '../middleware/validation';
 
 const router = Router();
 
-
-router.post('/admin/signup',
-  validate(adminSignupValidation),
+router.post('/signup',
+  validate(signupValidation),
   asyncHandler(async (req, res) => {
-    const { name, email, password } = req.body;
-
-    const existing = await User.findOne({ where: { email } });
-    if (existing) {
-      return res.status(400).json({ message: 'Admin already exists' });
-    }
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    const admin = await User.create({
-      name,
-      email,
-      password: hashedPassword,
-      role: 'admin'
-    });
-
-    const token = generateToken(admin.id, admin.role);
-
-    res.status(201).json({ 
-      token,
-      user: {
-        id: admin.id,
-        name: admin.name,
-        email: admin.email,
-        role: admin.role
-      }
-    });
-  })
-);
-
-router.post('/user/signup',
-  validate(userSignupValidation),
-  asyncHandler(async (req, res) => {
-    const { name, email, password } = req.body;
+    const { name, email, password, role } = req.body;
 
     const existing = await User.findOne({ where: { email } });
     if (existing) {
@@ -53,19 +19,23 @@ router.post('/user/signup',
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
+    
+    const userRole = role === 'admin' ? 'admin' : 'user';
 
     const user = await User.create({
       name,
       email,
       password: hashedPassword,
-      role: 'user'
+      role: userRole
     });
 
     const token = generateToken(user.id, user.role);
 
-    sendWelcomeEmail(user.email, user.name).catch(err => 
-      console.error('Failed to send welcome email:', err)
-    );
+    if (userRole === 'user') {
+      sendWelcomeEmail(user.email, user.name).catch(err => 
+        console.error('Failed to send welcome email:', err)
+      );
+    }
 
     res.status(201).json({
       token,

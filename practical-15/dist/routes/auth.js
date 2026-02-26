@@ -11,45 +11,24 @@ const jwt_1 = require("../utils/jwt");
 const asyncHandler_1 = require("../middleware/asyncHandler");
 const validation_1 = require("../middleware/validation");
 const router = (0, express_1.Router)();
-router.post('/admin/signup', (0, validation_1.validate)(validation_1.adminSignupValidation), (0, asyncHandler_1.asyncHandler)(async (req, res) => {
-    const { name, email, password } = req.body;
-    const existing = await User_1.User.findOne({ where: { email } });
-    if (existing) {
-        return res.status(400).json({ message: 'Admin already exists' });
-    }
-    const hashedPassword = await bcrypt_1.default.hash(password, 10);
-    const admin = await User_1.User.create({
-        name,
-        email,
-        password: hashedPassword,
-        role: 'admin'
-    });
-    const token = (0, jwt_1.generateToken)(admin.id, admin.role);
-    res.status(201).json({
-        token,
-        user: {
-            id: admin.id,
-            name: admin.name,
-            email: admin.email,
-            role: admin.role
-        }
-    });
-}));
-router.post('/user/signup', (0, validation_1.validate)(validation_1.userSignupValidation), (0, asyncHandler_1.asyncHandler)(async (req, res) => {
-    const { name, email, password } = req.body;
+router.post('/signup', (0, validation_1.validate)(validation_1.signupValidation), (0, asyncHandler_1.asyncHandler)(async (req, res) => {
+    const { name, email, password, role } = req.body;
     const existing = await User_1.User.findOne({ where: { email } });
     if (existing) {
         return res.status(400).json({ message: 'User already exists' });
     }
     const hashedPassword = await bcrypt_1.default.hash(password, 10);
+    const userRole = role === 'admin' ? 'admin' : 'user';
     const user = await User_1.User.create({
         name,
         email,
         password: hashedPassword,
-        role: 'user'
+        role: userRole
     });
     const token = (0, jwt_1.generateToken)(user.id, user.role);
-    (0, email_1.sendWelcomeEmail)(user.email, user.name).catch(err => console.error('Failed to send welcome email:', err));
+    if (userRole === 'user') {
+        (0, email_1.sendWelcomeEmail)(user.email, user.name).catch(err => console.error('Failed to send welcome email:', err));
+    }
     res.status(201).json({
         token,
         user: {

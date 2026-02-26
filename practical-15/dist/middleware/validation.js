@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.feedbackValidation = exports.userIdValidation = exports.productIdValidation = exports.productValidation = exports.subcategoryIdValidation = exports.subcategoryValidation = exports.categoryIdValidation = exports.categoryValidation = exports.loginValidation = exports.userSignupValidation = exports.adminSignupValidation = exports.signupValidation = exports.validate = void 0;
+exports.feedbackValidation = exports.userIdValidation = exports.productIdValidation = exports.productValidation = exports.subcategoryIdValidation = exports.subcategoryValidation = exports.categoryIdValidation = exports.categoryValidation = exports.loginValidation = exports.signupValidation = exports.validate = void 0;
 const express_validator_1 = require("express-validator");
 const validate = (validations) => {
     return async (req, res, next) => {
@@ -41,10 +41,12 @@ exports.signupValidation = [
         .isLength({ min: 6 })
         .withMessage('Password must be at least 6 characters')
         .matches(/\d/)
-        .withMessage('Password must contain at least one number')
+        .withMessage('Password must contain at least one number'),
+    (0, express_validator_1.body)('role')
+        .optional()
+        .isIn(['user', 'admin'])
+        .withMessage('Role must be either "user" or "admin"')
 ];
-exports.adminSignupValidation = exports.signupValidation;
-exports.userSignupValidation = exports.signupValidation;
 exports.loginValidation = [
     (0, express_validator_1.body)('email')
         .trim()
