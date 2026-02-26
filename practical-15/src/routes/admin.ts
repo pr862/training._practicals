@@ -48,7 +48,7 @@ router.delete('/users/:id',
   })
 );
 
-router.get('/stats', asyncHandler(async (req, res) => {
+router.get('/analytics', asyncHandler(async (req, res) => {
   const totalUsers = await User.count();
   const adminCount = await User.count({ where: { role: 'admin' } });
   const userCount = await User.count({ where: { role: 'user' } });

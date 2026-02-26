@@ -36,7 +36,7 @@ router.delete('/users/:id', (0, validation_1.validate)(validation_1.userIdValida
     await user.destroy();
     res.json({ message: 'User deleted successfully' });
 }));
-router.get('/stats', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
+router.get('/analytics', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const totalUsers = await Index_1.User.count();
     const adminCount = await Index_1.User.count({ where: { role: 'admin' } });
     const userCount = await Index_1.User.count({ where: { role: 'user' } });
