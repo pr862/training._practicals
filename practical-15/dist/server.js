@@ -17,16 +17,12 @@ app.use('/uploads', express_1.default.static(path_1.default.join(__dirname, '../
 const auth_1 = __importDefault(require("./routes/auth"));
 const admin_1 = __importDefault(require("./routes/admin"));
 const category_1 = __importDefault(require("./routes/category"));
-const subcategory_1 = __importDefault(require("./routes/subcategory"));
 const product_1 = __importDefault(require("./routes/product"));
-const public_1 = __importDefault(require("./routes/public"));
 const user_1 = __importDefault(require("./routes/user"));
 app.use('/api/auth', auth_1.default);
 app.use('/api/admin', admin_1.default);
 app.use('/api/categories', category_1.default);
-app.use('/api/subcategories', subcategory_1.default);
 app.use('/api/products', product_1.default);
-app.use('/api/public', public_1.default);
 app.use('/api/user', user_1.default);
 app.use(errorHandler_1.errorHandler);
 const PORT = process.env.PORT;

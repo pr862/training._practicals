@@ -1,5 +1,5 @@
 import { Router, Request, Response } from 'express';
-import { Product, Category, Subcategory } from '../models/Index';
+import { Product, Category } from '../models/Index';
 import { auth } from '../middleware/auth';
 import { adminOnly } from '../middleware/admin';
 import { asyncHandler } from '../middleware/asyncHandler';
@@ -14,17 +14,15 @@ import fs from 'fs';
 
 const router = Router();
 
+router.use(auth);
+
 router.get('/', asyncHandler(async (req: Request, res: Response) => {
-  const { categoryId, subcategoryId, search, minPrice, maxPrice, sortBy, sortOrder } = req.query;
+  const { categoryId, search, minPrice, maxPrice, sortBy, sortOrder } = req.query;
 
   const where: any = {};
 
   if (categoryId) {
     where.categoryId = parseInt(categoryId as string);
-  }
-
-  if (subcategoryId) {
-    where.subcategoryId = parseInt(subcategoryId as string);
   }
 
   if (search) {
@@ -60,8 +58,7 @@ router.get('/', asyncHandler(async (req: Request, res: Response) => {
     where,
     order,
     include: [
-      { model: Category, as: 'Category' },
-      { model: Subcategory, as: 'Subcategory' }
+      { model: Category, as: 'Category' }
     ]
   });
   res.json(products);
@@ -70,8 +67,7 @@ router.get('/', asyncHandler(async (req: Request, res: Response) => {
 router.get('/:id', asyncHandler(async (req, res) => {
   const product = await Product.findByPk(req.params.id, {
     include: [
-      { model: Category, as: 'Category' },
-      { model: Subcategory, as: 'Subcategory' }
+      { model: Category, as: 'Category' }
     ]
   });
   if (!product) {
@@ -99,22 +95,12 @@ router.get('/:id/image', asyncHandler(async (req, res) => {
   res.sendFile(imagePath);
 }));
 
-router.get('/category/:categoryId/subcategories', asyncHandler(async (req, res) => {
-  const { categoryId } = req.params;
-  const subcategories = await Subcategory.findAll({
-    where: { categoryId: parseInt(categoryId) },
-    include: [{ model: Category, as: 'Category' }]
-  });
-  res.json(subcategories);
-}));
-
 router.get('/category/:categoryId/products', asyncHandler(async (req, res) => {
   const { categoryId } = req.params;
   const products = await Product.findAll({
     where: { categoryId: parseInt(categoryId) },
     include: [
-      { model: Category, as: 'Category' },
-      { model: Subcategory, as: 'Subcategory' }
+      { model: Category, as: 'Category' }
     ]
   });
   res.json(products);
@@ -122,15 +108,25 @@ router.get('/category/:categoryId/products', asyncHandler(async (req, res) => {
 
 router.get('/subcategory/:subcategoryId/products', asyncHandler(async (req, res) => {
   const { subcategoryId } = req.params;
+  
+  const subcategory = await Category.findByPk(parseInt(subcategoryId));
+  if (!subcategory) {
+    return res.status(404).json({ message: 'Subcategory not found' });
+  }
+  
+  if (!subcategory.parent_id) {
+    return res.status(400).json({ message: 'The provided ID is a main category, not a subcategory' });
+  }
+  
   const products = await Product.findAll({
-    where: { subcategoryId: parseInt(subcategoryId) },
+    where: { categoryId: parseInt(subcategoryId) },
     include: [
-      { model: Category, as: 'Category' },
-      { model: Subcategory, as: 'Subcategory' }
+      { model: Category, as: 'Category' }
     ]
   });
   res.json(products);
 }));
+
 
 router.get('/search', asyncHandler(async (req: Request, res: Response) => {
   const { q, minPrice, maxPrice, categoryId, limit = 10 } = req.query;
@@ -171,8 +167,7 @@ router.get('/search', asyncHandler(async (req: Request, res: Response) => {
     where,
     limit: parseInt(limit as string),
     include: [
-      { model: Category, as: 'Category' },
-      { model: Subcategory, as: 'Subcategory' }
+      { model: Category, as: 'Category' }
     ]
   });
 
@@ -192,7 +187,7 @@ router.post('/',
       price: parseFloat(req.body.price),
       stock: parseInt(req.body.stock),
       categoryId: parseInt(req.body.categoryId),
-      subcategoryId: parseInt(req.body.subcategoryId),
+      
     };
     
     if (req.file) {
@@ -219,7 +214,6 @@ router.put('/:id',
       price: parseFloat(req.body.price),
       stock: parseInt(req.body.stock),
       categoryId: parseInt(req.body.categoryId),
-      subcategoryId: parseInt(req.body.subcategoryId),
     };
     
     if (req.file) {

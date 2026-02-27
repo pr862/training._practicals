@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.feedbackValidation = exports.userIdValidation = exports.productIdValidation = exports.productValidation = exports.subcategoryIdValidation = exports.subcategoryValidation = exports.categoryIdValidation = exports.categoryValidation = exports.loginValidation = exports.signupValidation = exports.validate = void 0;
+exports.feedbackValidation = exports.userIdValidation = exports.productIdValidation = exports.productValidation = exports.categoryIdValidation = exports.categoryValidation = exports.loginValidation = exports.signupValidation = exports.validate = void 0;
 const express_validator_1 = require("express-validator");
 const validate = (validations) => {
     return async (req, res, next) => {
@@ -65,28 +65,16 @@ exports.categoryValidation = [
         .notEmpty()
         .withMessage('Category name is required')
         .isLength({ min: 2, max: 50 })
-        .withMessage('Category name must be between 2 and 50 characters')
+        .withMessage('Category name must be between 2 and 50 characters'),
+    (0, express_validator_1.body)('parent_id')
+        .optional({ nullable: true })
+        .isInt({ min: 1 })
+        .withMessage('Valid parent category ID is required')
 ];
 exports.categoryIdValidation = [
     (0, express_validator_1.param)('id')
         .isInt({ min: 1 })
         .withMessage('Valid category ID is required')
-];
-exports.subcategoryValidation = [
-    (0, express_validator_1.body)('name')
-        .trim()
-        .notEmpty()
-        .withMessage('Subcategory name is required')
-        .isLength({ min: 2, max: 50 })
-        .withMessage('Subcategory name must be between 2 and 50 characters'),
-    (0, express_validator_1.body)('categoryId')
-        .isInt({ min: 1 })
-        .withMessage('Valid category ID is required')
-];
-exports.subcategoryIdValidation = [
-    (0, express_validator_1.param)('id')
-        .isInt({ min: 1 })
-        .withMessage('Valid subcategory ID is required')
 ];
 exports.productValidation = [
     (0, express_validator_1.body)('name')
@@ -103,10 +91,7 @@ exports.productValidation = [
         .withMessage('Stock must be a non-negative integer'),
     (0, express_validator_1.body)('categoryId')
         .isInt({ min: 1 })
-        .withMessage('Valid category ID is required'),
-    (0, express_validator_1.body)('subcategoryId')
-        .isInt({ min: 1 })
-        .withMessage('Valid subcategory ID is required')
+        .withMessage('Valid category ID is required')
 ];
 exports.productIdValidation = [
     (0, express_validator_1.param)('id')

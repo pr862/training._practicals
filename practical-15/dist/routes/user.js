@@ -18,7 +18,6 @@ router.get('/favorites', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
                 as: 'Product',
                 include: [
                     { model: Index_1.Category, as: 'Category' },
-                    { model: Index_1.Subcategory, as: 'Subcategory' }
                 ]
             }
         ]

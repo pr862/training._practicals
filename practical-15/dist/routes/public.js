@@ -17,6 +17,24 @@ router.get('/categories', async (_, res) => {
         res.status(500).json({ message: 'Error fetching categories' });
     }
 });
+router.get('/categories/tree', async (_, res) => {
+    try {
+        const categories = await Index_1.Category.findAll();
+        const buildTree = (parentId) => {
+            return categories
+                .filter(cat => cat.parent_id === parentId)
+                .map(cat => ({
+                ...cat.toJSON(),
+                children: buildTree(cat.id)
+            }));
+        };
+        const tree = buildTree(null);
+        res.json(tree);
+    }
+    catch (error) {
+        res.status(500).json({ message: 'Error fetching category tree' });
+    }
+});
 router.get('/categories/:id', async (req, res) => {
     try {
         const category = await Index_1.Category.findByPk(req.params.id);
@@ -29,40 +47,23 @@ router.get('/categories/:id', async (req, res) => {
         res.status(500).json({ message: 'Error fetching category' });
     }
 });
-router.get('/subcategories', async (_, res) => {
+router.get('/categories/:id/subcategories', async (req, res) => {
     try {
-        const data = await Index_1.Subcategory.findAll({
-            include: [{ model: Index_1.Category, as: 'Category' }]
+        const subcategories = await Index_1.Category.findAll({
+            where: { parent_id: parseInt(req.params.id) }
         });
-        res.json(data);
+        res.json(subcategories);
     }
     catch (error) {
         res.status(500).json({ message: 'Error fetching subcategories' });
     }
 });
-router.get('/subcategories/:id', async (req, res) => {
-    try {
-        const subcategory = await Index_1.Subcategory.findByPk(req.params.id, {
-            include: [{ model: Index_1.Category, as: 'Category' }]
-        });
-        if (!subcategory) {
-            return res.status(404).json({ message: 'Subcategory not found' });
-        }
-        res.json(subcategory);
-    }
-    catch (error) {
-        res.status(500).json({ message: 'Error fetching subcategory' });
-    }
-});
 router.get('/products', async (req, res) => {
     try {
-        const { categoryId, subcategoryId, search, minPrice, maxPrice, sortBy, sortOrder } = req.query;
+        const { categoryId, search, minPrice, maxPrice, sortBy, sortOrder } = req.query;
         const where = {};
         if (categoryId) {
             where.categoryId = parseInt(categoryId);
-        }
-        if (subcategoryId) {
-            where.subcategoryId = parseInt(subcategoryId);
         }
         if (search) {
             const { Op } = require('sequelize');
@@ -95,8 +96,7 @@ router.get('/products', async (req, res) => {
             where,
             order,
             include: [
-                { model: Index_1.Category, as: 'Category' },
-                { model: Index_1.Subcategory, as: 'Subcategory' }
+                { model: Index_1.Category, as: 'Category' }
             ]
         });
         res.json(products);
@@ -110,8 +110,7 @@ router.get('/products/:id', async (req, res) => {
     try {
         const product = await Index_1.Product.findByPk(req.params.id, {
             include: [
-                { model: Index_1.Category, as: 'Category' },
-                { model: Index_1.Subcategory, as: 'Subcategory' }
+                { model: Index_1.Category, as: 'Category' }
             ]
         });
         if (!product) {
@@ -142,43 +141,13 @@ router.get('/products/:id/image', async (req, res) => {
         res.status(500).json({ message: 'Error fetching product image' });
     }
 });
-router.get('/categories/:categoryId/subcategories', async (req, res) => {
-    try {
-        const { categoryId } = req.params;
-        const subcategories = await Index_1.Subcategory.findAll({
-            where: { categoryId: parseInt(categoryId) },
-            include: [{ model: Index_1.Category, as: 'Category' }]
-        });
-        res.json(subcategories);
-    }
-    catch (error) {
-        res.status(500).json({ message: 'Error fetching subcategories' });
-    }
-});
 router.get('/categories/:categoryId/products', async (req, res) => {
     try {
         const { categoryId } = req.params;
         const products = await Index_1.Product.findAll({
             where: { categoryId: parseInt(categoryId) },
             include: [
-                { model: Index_1.Category, as: 'Category' },
-                { model: Index_1.Subcategory, as: 'Subcategory' }
-            ]
-        });
-        res.json(products);
-    }
-    catch (error) {
-        res.status(500).json({ message: 'Error fetching products' });
-    }
-});
-router.get('/subcategories/:subcategoryId/products', async (req, res) => {
-    try {
-        const { subcategoryId } = req.params;
-        const products = await Index_1.Product.findAll({
-            where: { subcategoryId: parseInt(subcategoryId) },
-            include: [
-                { model: Index_1.Category, as: 'Category' },
-                { model: Index_1.Subcategory, as: 'Subcategory' }
+                { model: Index_1.Category, as: 'Category' }
             ]
         });
         res.json(products);
@@ -223,8 +192,7 @@ router.get('/search', async (req, res) => {
             where,
             limit: parseInt(limit),
             include: [
-                { model: Index_1.Category, as: 'Category' },
-                { model: Index_1.Subcategory, as: 'Subcategory' }
+                { model: Index_1.Category, as: 'Category' }
             ]
         });
         res.json({

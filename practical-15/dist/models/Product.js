@@ -36,10 +36,6 @@ Product.init({
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
     },
-    subcategoryId: {
-        type: sequelize_1.DataTypes.INTEGER,
-        allowNull: false,
-    },
 }, {
     sequelize: database_1.default,
     tableName: 'products',

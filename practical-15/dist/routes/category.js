@@ -7,9 +7,16 @@ const admin_1 = require("../middleware/admin");
 const asyncHandler_1 = require("../middleware/asyncHandler");
 const validation_1 = require("../middleware/validation");
 const router = (0, express_1.Router)();
+router.use(auth_1.auth);
 router.get('/', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const categories = await Index_1.Category.findAll();
     res.json(categories);
+}));
+router.get('/:id/subcategories', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
+    const subcategories = await Index_1.Category.findAll({
+        where: { parent_id: parseInt(req.params.id) }
+    });
+    res.json(subcategories);
 }));
 router.get('/:id', (0, validation_1.validate)(validation_1.categoryIdValidation), (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const category = await Index_1.Category.findByPk(req.params.id);

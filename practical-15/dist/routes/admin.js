@@ -42,14 +42,12 @@ router.get('/analytics', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const userCount = await Index_1.User.count({ where: { role: 'user' } });
     const productCount = await Index_2.Product.count();
     const categoryCount = await Index_2.Category.count();
-    const subcategoryCount = await Index_2.Subcategory.count();
     res.json({
         totalUsers,
         adminCount,
         userCount,
         productCount,
-        categoryCount,
-        subcategoryCount
+        categoryCount
     });
 }));
 exports.default = router;

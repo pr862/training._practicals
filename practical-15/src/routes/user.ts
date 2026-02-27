@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { Product, UserFavorite, User, Category, Subcategory } from '../models/Index';
+import { Product, UserFavorite, User, Category } from '../models/Index';
 import { auth, AuthRequest } from '../middleware/auth';
 import { asyncHandler } from '../middleware/asyncHandler';
 import { validate, productIdValidation, feedbackValidation } from '../middleware/validation';
@@ -21,7 +21,6 @@ router.get('/favorites', asyncHandler(async (req: AuthRequest, res) => {
         as: 'Product',
         include: [
           { model: Category, as: 'Category' },
-          { model: Subcategory, as: 'Subcategory' }
         ]
       }
     ]

@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { User } from '../models/Index';
-import { Category, Subcategory, Product } from '../models/Index';
+import { Category, Product } from '../models/Index';
 import { auth } from '../middleware/auth';
 import { adminOnly } from '../middleware/admin';
 import { asyncHandler } from '../middleware/asyncHandler';
@@ -54,15 +54,13 @@ router.get('/analytics', asyncHandler(async (req, res) => {
   const userCount = await User.count({ where: { role: 'user' } });
   const productCount = await Product.count();
   const categoryCount = await Category.count();
-  const subcategoryCount = await Subcategory.count();
 
   res.json({
     totalUsers,
     adminCount,
     userCount,
     productCount,
-    categoryCount,
-    subcategoryCount
+    categoryCount
   });
 }));
 

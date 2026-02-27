@@ -75,32 +75,18 @@ export const categoryValidation = [
     .notEmpty()
     .withMessage('Category name is required')
     .isLength({ min: 2, max: 50 })
-    .withMessage('Category name must be between 2 and 50 characters')
+    .withMessage('Category name must be between 2 and 50 characters'),
+
+  body('parent_id')
+    .optional({ nullable: true })
+    .isInt({ min: 1 })
+    .withMessage('Valid parent category ID is required')
 ];
 
 export const categoryIdValidation = [
   param('id')
     .isInt({ min: 1 })
     .withMessage('Valid category ID is required')
-];
-
-export const subcategoryValidation = [
-  body('name')
-    .trim()
-    .notEmpty()
-    .withMessage('Subcategory name is required')
-    .isLength({ min: 2, max: 50 })
-    .withMessage('Subcategory name must be between 2 and 50 characters'),
-
-  body('categoryId')
-    .isInt({ min: 1 })
-    .withMessage('Valid category ID is required')
-];
-
-export const subcategoryIdValidation = [
-  param('id')
-    .isInt({ min: 1 })
-    .withMessage('Valid subcategory ID is required')
 ];
 
 export const productValidation = [
@@ -121,11 +107,7 @@ export const productValidation = [
 
   body('categoryId')
     .isInt({ min: 1 })
-    .withMessage('Valid category ID is required'),
-
-  body('subcategoryId')
-    .isInt({ min: 1 })
-    .withMessage('Valid subcategory ID is required')
+    .withMessage('Valid category ID is required')
 ];
 
 export const productIdValidation = [

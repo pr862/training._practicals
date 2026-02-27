@@ -13,14 +13,12 @@ const upload_1 = require("../middleware/upload");
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 const router = (0, express_1.Router)();
+router.use(auth_1.auth);
 router.get('/', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
-    const { categoryId, subcategoryId, search, minPrice, maxPrice, sortBy, sortOrder } = req.query;
+    const { categoryId, search, minPrice, maxPrice, sortBy, sortOrder } = req.query;
     const where = {};
     if (categoryId) {
         where.categoryId = parseInt(categoryId);
-    }
-    if (subcategoryId) {
-        where.subcategoryId = parseInt(subcategoryId);
     }
     if (search) {
         const { Op } = require('sequelize');
@@ -53,8 +51,7 @@ router.get('/', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
         where,
         order,
         include: [
-            { model: Index_1.Category, as: 'Category' },
-            { model: Index_1.Subcategory, as: 'Subcategory' }
+            { model: Index_1.Category, as: 'Category' }
         ]
     });
     res.json(products);
@@ -62,8 +59,7 @@ router.get('/', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
 router.get('/:id', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const product = await Index_1.Product.findByPk(req.params.id, {
         include: [
-            { model: Index_1.Category, as: 'Category' },
-            { model: Index_1.Subcategory, as: 'Subcategory' }
+            { model: Index_1.Category, as: 'Category' }
         ]
     });
     if (!product) {
@@ -85,32 +81,29 @@ router.get('/:id/image', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     }
     res.sendFile(imagePath);
 }));
-router.get('/category/:categoryId/subcategories', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
-    const { categoryId } = req.params;
-    const subcategories = await Index_1.Subcategory.findAll({
-        where: { categoryId: parseInt(categoryId) },
-        include: [{ model: Index_1.Category, as: 'Category' }]
-    });
-    res.json(subcategories);
-}));
 router.get('/category/:categoryId/products', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const { categoryId } = req.params;
     const products = await Index_1.Product.findAll({
         where: { categoryId: parseInt(categoryId) },
         include: [
-            { model: Index_1.Category, as: 'Category' },
-            { model: Index_1.Subcategory, as: 'Subcategory' }
+            { model: Index_1.Category, as: 'Category' }
         ]
     });
     res.json(products);
 }));
 router.get('/subcategory/:subcategoryId/products', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const { subcategoryId } = req.params;
+    const subcategory = await Index_1.Category.findByPk(parseInt(subcategoryId));
+    if (!subcategory) {
+        return res.status(404).json({ message: 'Subcategory not found' });
+    }
+    if (!subcategory.parent_id) {
+        return res.status(400).json({ message: 'The provided ID is a main category, not a subcategory' });
+    }
     const products = await Index_1.Product.findAll({
-        where: { subcategoryId: parseInt(subcategoryId) },
+        where: { categoryId: parseInt(subcategoryId) },
         include: [
-            { model: Index_1.Category, as: 'Category' },
-            { model: Index_1.Subcategory, as: 'Subcategory' }
+            { model: Index_1.Category, as: 'Category' }
         ]
     });
     res.json(products);
@@ -150,8 +143,7 @@ router.get('/search', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
         where,
         limit: parseInt(limit),
         include: [
-            { model: Index_1.Category, as: 'Category' },
-            { model: Index_1.Subcategory, as: 'Subcategory' }
+            { model: Index_1.Category, as: 'Category' }
         ]
     });
     res.json({
@@ -165,7 +157,6 @@ router.post('/', auth_1.auth, admin_1.adminOnly, upload_1.uploadProductImage, (0
         price: parseFloat(req.body.price),
         stock: parseInt(req.body.stock),
         categoryId: parseInt(req.body.categoryId),
-        subcategoryId: parseInt(req.body.subcategoryId),
     };
     if (req.file) {
         productData.image = `/uploads/${req.file.filename}`;
@@ -183,7 +174,6 @@ router.put('/:id', auth_1.auth, admin_1.adminOnly, upload_1.uploadProductImage, 
         price: parseFloat(req.body.price),
         stock: parseInt(req.body.stock),
         categoryId: parseInt(req.body.categoryId),
-        subcategoryId: parseInt(req.body.subcategoryId),
     };
     if (req.file) {
         updateData.image = `/uploads/${req.file.filename}`;

@@ -11,9 +11,18 @@ import {
 
 const router = Router();
 
+router.use(auth);
+
 router.get('/', asyncHandler(async (req, res) => {
   const categories = await Category.findAll();
   res.json(categories);
+}));
+
+router.get('/:id/subcategories', asyncHandler(async (req, res) => {
+  const subcategories = await Category.findAll({
+    where: { parent_id: parseInt(req.params.id) }
+  });
+  res.json(subcategories);
 }));
 
 router.get('/:id',
