@@ -1,0 +1,81 @@
+import { Router } from 'express';
+import bcrypt from 'bcrypt';
+import { User } from '../models/User';
+import { sendWelcomeEmail } from '../utils/email';
+import { generateToken } from '../utils/jwt';
+import { asyncHandler } from '../middleware/asyncHandler';
+import { validate, signupValidation, loginValidation } from '../middleware/validation';
+
+const router = Router();
+
+router.post('/signup',
+  validate(signupValidation),
+  asyncHandler(async (req, res) => {
+    const { name, email, password, role } = req.body;
+
+    const existing = await User.findOne({ where: { email } });
+    if (existing) {
+      return res.status(400).json({ message: 'User already exists' });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+    
+    const userRole = role === 'admin' ? 'admin' : 'user';
+
+    const user = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      role: userRole
+    });
+
+    const token = generateToken(user.id, user.role);
+
+    if (userRole === 'user') {
+      sendWelcomeEmail(user.email, user.name).catch(err => 
+        console.error('Failed to send welcome email:', err)
+      );
+    }
+
+    res.status(201).json({
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
+  })
+);
+
+router.post('/login',
+  validate(loginValidation),
+  asyncHandler(async (req, res) => {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
+
+    const token = generateToken(user.id, user.role);
+
+    res.json({
+      token,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
+  })
+);
+
+export default router;

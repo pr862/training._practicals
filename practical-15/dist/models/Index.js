@@ -1,0 +1,24 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserFavorite = exports.Product = exports.Category = exports.User = exports.sequelize = void 0;
+const database_1 = __importDefault(require("../config/database"));
+exports.sequelize = database_1.default;
+const User_1 = require("./User");
+Object.defineProperty(exports, "User", { enumerable: true, get: function () { return User_1.User; } });
+const Category_1 = require("./Category");
+Object.defineProperty(exports, "Category", { enumerable: true, get: function () { return Category_1.Category; } });
+const Product_1 = require("./Product");
+Object.defineProperty(exports, "Product", { enumerable: true, get: function () { return Product_1.Product; } });
+const UserFavorite_1 = require("./UserFavorite");
+Object.defineProperty(exports, "UserFavorite", { enumerable: true, get: function () { return UserFavorite_1.UserFavorite; } });
+Category_1.Category.hasMany(Category_1.Category, { as: 'subcategories', foreignKey: 'parent_id', });
+Category_1.Category.belongsTo(Category_1.Category, { as: 'parent', foreignKey: 'parent_id', });
+Category_1.Category.hasMany(Product_1.Product, { foreignKey: 'categoryId' });
+Product_1.Product.belongsTo(Category_1.Category, { foreignKey: 'categoryId' });
+User_1.User.hasMany(UserFavorite_1.UserFavorite, { foreignKey: 'userId' });
+UserFavorite_1.UserFavorite.belongsTo(User_1.User, { foreignKey: 'userId' });
+Product_1.Product.hasMany(UserFavorite_1.UserFavorite, { foreignKey: 'productId' });
+UserFavorite_1.UserFavorite.belongsTo(Product_1.Product, { foreignKey: 'productId' });
