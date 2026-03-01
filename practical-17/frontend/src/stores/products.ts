@@ -1,6 +1,6 @@
 
 import { defineStore } from 'pinia';
-import { publicAPI } from '../services/api';
+import { categoryAPI, subcategoryAPI, productAPI } from '../services/api';
 
 interface Category {
   id: number;
@@ -76,8 +76,8 @@ export const useProductsStore = defineStore('products', {
   actions: {
     async fetchCategories() {
       try {
-        const response = await publicAPI.getCategories();
-        this.categories = response.data;
+        const response = await categoryAPI.getAll();
+        this.categories = response.data.filter((cat: any) => !cat.parent_id);
       } catch (error) {
         console.error('Failed to fetch categories:', error);
         this.error = 'Failed to load categories';
@@ -86,8 +86,13 @@ export const useProductsStore = defineStore('products', {
 
     async fetchSubcategories() {
       try {
-        const response = await publicAPI.getSubcategories();
-        this.subcategories = response.data;
+        const response = await subcategoryAPI.getAll();
+        this.subcategories = response.data.map((cat: any) => ({
+          id: cat.id,
+          name: cat.name,
+          categoryId: cat.parent_id,
+          Category: cat.Category,
+        }));
       } catch (error) {
         console.error('Failed to fetch subcategories:', error);
         this.error = 'Failed to load subcategories';
@@ -106,7 +111,7 @@ export const useProductsStore = defineStore('products', {
       this.loading = true;
       this.error = null;
       try {
-        const response = await publicAPI.getProducts(filters);
+        const response = await productAPI.getAll(filters);
         this.products = response.data;
       } catch (error) {
         console.error('Failed to fetch products:', error);

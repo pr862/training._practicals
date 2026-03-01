@@ -335,14 +335,41 @@ const fetchCategories = async () => {
 const fetchSubcategories = async () => {
   try {
     const response = await subcategoryAPI.getAll();
-    subcategories.value = response.data;
+    subcategories.value = response.data.map((cat: any) => ({
+      id: cat.id,
+      name: cat.name,
+      categoryId: cat.parent_id,
+    }));
   } catch (error) {
     console.error('Failed to fetch subcategories:', error);
   }
 };
 
-watch(() => formData.value.categoryId, () => {
+const fetchSubcategoriesByCategory = async (categoryId: number) => {
+  try {
+    const response = await subcategoryAPI.getByCategory(categoryId);
+    const mappedData = response.data.map((sub: any) => ({
+      id: sub.id,
+      name: sub.name,
+      categoryId: sub.parent_id,
+    }));
+    
+    const existingIds = subcategories.value.map(s => s.id);
+    const newSubs = mappedData.filter((s: any) => !existingIds.includes(s.id));
+    
+    if (newSubs.length > 0) {
+      subcategories.value = [...subcategories.value, ...newSubs];
+    }
+  } catch (error) {
+    console.error('Failed to fetch subcategories by category:', error);
+  }
+};
+
+watch(() => formData.value.categoryId, (newCategoryId) => {
   formData.value.subcategoryId = '';
+  if (newCategoryId) {
+    fetchSubcategoriesByCategory(Number(newCategoryId));
+  }
 });
 
 const openModal = (product?: Product) => {

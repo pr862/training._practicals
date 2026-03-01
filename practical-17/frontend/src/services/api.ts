@@ -1,4 +1,4 @@
-import axios from 'axios';
+ import axios from 'axios';
 
 const api = axios.create({
   baseURL: 'https://stylesphere-4qp1.onrender.com',
@@ -21,7 +21,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      window.location.href = '/admin';
+      window.location.href = '/login';
     }
     return Promise.reject(error);
   }
@@ -32,37 +32,62 @@ export const authAPI = {
     api.post('/api/auth/login', data),
   
   registerAdmin: (data: { name: string; email: string; password: string }) => 
-    api.post('/api/auth/admin/signup', data),
+    api.post('/api/auth/signup', { ...data, role: 'admin' }),
   
   registerUser: (data: { name: string; email: string; password: string }) => 
-    api.post('/api/auth/user/signup', data),
+    api.post('/api/auth/signup', { ...data, role: 'user' }),
 };
 
 export const categoryAPI = {
-  getAll: () => api.get('/api/admin/categories'),
-  getById: (id: number) => api.get(`/api/admin/categories/${id}`),
-  create: (data: { name: string }) => api.post('/api/admin/categories', data),
-  update: (id: number, data: { name: string }) => api.put(`/api/admin/categories/${id}`, data),
-  delete: (id: number) => api.delete(`/api/admin/categories/${id}`),
+  getAll: () => api.get('/api/categories'),
+  getById: (id: number) => api.get(`/api/categories/${id}`),
+  create: (data: { name: string }) => api.post('/api/categories', data),
+  update: (id: number, data: { name: string }) => api.put(`/api/categories/${id}`, data),
+  delete: (id: number) => api.delete(`/api/categories/${id}`),
 };
 
 export const subcategoryAPI = {
-  getAll: () => api.get('/api/admin/subcategories'),
-  getById: (id: number) => api.get(`/api/admin/subcategories/${id}`),
-  create: (data: { name: string; categoryId: number }) => api.post('/api/admin/subcategories', data),
-  update: (id: number, data: { name: string; categoryId: number }) => api.put(`/api/admin/subcategories/${id}`, data),
-  delete: (id: number) => api.delete(`/api/admin/subcategories/${id}`),
+  getByCategory: (categoryId: number) => 
+    api.get(`/api/categories/${categoryId}/subcategories`),
+  
+  getAll: async () => {
+    const response = await api.get('/api/categories');
+    const allCategories = response.data;
+    return {
+      data: allCategories.filter((cat: any) => cat.parent_id !== null)
+    };
+  },
+  
+  getById: (id: number) => api.get(`/api/categories/${id}`),
+  
+  create: (data: { name: string; categoryId: number }) => 
+    api.post('/api/categories', { name: data.name, parent_id: data.categoryId }),
+  
+  update: (id: number, data: { name: string; categoryId: number }) => 
+    api.put(`/api/categories/${id}`, { name: data.name, parent_id: data.categoryId }),
+  
+  delete: (id: number) => api.delete(`/api/categories/${id}`),
 };
 
 export const productAPI = {
-  getAll: () => api.get('/api/admin/products'),
-  getById: (id: number) => api.get(`/api/admin/products/${id}`),
+  getAll: (params?: {
+    search?: string;
+    categoryId?: number;
+    subcategoryId?: number;
+    minPrice?: number;
+    maxPrice?: number;
+    sortBy?: string;
+    sortOrder?: string;
+  }) => {
+    return api.get('/api/products', { params });
+  },
+  getById: (id: number) => api.get(`/api/products/${id}`),
   create: async (data: {
     name: string;
     price: number;
     stock: number;
     categoryId: number;
-    subcategoryId: number;
+    subcategoryId?: number;
     image?: File;
   }) => {
     const formData = new FormData();
@@ -70,11 +95,13 @@ export const productAPI = {
     formData.append('price', data.price.toString());
     formData.append('stock', data.stock.toString());
     formData.append('categoryId', data.categoryId.toString());
-    formData.append('subcategoryId', data.subcategoryId.toString());
+    if (data.subcategoryId) {
+      formData.append('subcategoryId', data.subcategoryId.toString());
+    }
     if (data.image) {
       formData.append('image', data.image);
     }
-    return api.post('/api/admin/products', formData, {
+    return api.post('/api/products', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
@@ -95,11 +122,11 @@ export const productAPI = {
     if (data.image) {
       formData.append('image', data.image);
     }
-    return api.put(`/api/admin/products/${id}`, formData, {
+    return api.put(`/api/products/${id}`, formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },
-  delete: (id: number) => api.delete(`/api/admin/products/${id}`),
+  delete: (id: number) => api.delete(`/api/products/${id}`),
 };
 
 export const adminUserAPI = {
@@ -109,42 +136,7 @@ export const adminUserAPI = {
 };
 
 export const statsAPI = {
-  get: () => api.get('/api/admin/stats'),
-};
-
-export const publicAPI = {
-  getProducts: (params?: {
-    categoryId?: number;
-    subcategoryId?: number;
-    search?: string;
-    minPrice?: number;
-    maxPrice?: number;
-    sortBy?: string;
-    sortOrder?: string;
-  }) => api.get('/api/public/products', { params }),
-  
-  getProductById: (id: number) => api.get(`/api/public/products/${id}`),
-  
-  getCategories: () => api.get('/api/public/categories'),
-  
-  getSubcategories: () => api.get('/api/public/subcategories'),
-  
-  getSubcategoriesByCategory: (categoryId: number) => 
-    api.get(`/api/public/categories/${categoryId}/subcategories`),
-  
-  getProductsByCategory: (categoryId: number) => 
-    api.get(`/api/public/categories/${categoryId}/products`),
-  
-  getProductsBySubcategory: (subcategoryId: number) => 
-    api.get(`/api/public/subcategories/${subcategoryId}/products`),
-  
-  searchProducts: (params: {
-    q: string;
-    minPrice?: number;
-    maxPrice?: number;
-    categoryId?: number;
-    limit?: number;
-  }) => api.get('/api/public/search', { params }),
+  get: () => api.get('/api/admin/analytics'),
 };
 
 export const userAPI = {

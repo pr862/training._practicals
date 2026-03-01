@@ -125,7 +125,7 @@ const formData = ref({
 const fetchCategories = async () => {
   try {
     const response = await categoryAPI.getAll();
-    categories.value = response.data;
+    categories.value = response.data.filter((cat: any) => !cat.parent_id);
   } catch (error) {
     console.error('Failed to fetch categories:', error);
   }

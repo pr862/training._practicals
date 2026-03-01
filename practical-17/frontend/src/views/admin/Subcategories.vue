@@ -152,7 +152,13 @@ const formData = ref({
 const fetchSubcategories = async () => {
   try {
     const response = await subcategoryAPI.getAll();
-    subcategories.value = response.data;
+    subcategories.value = response.data.map((cat: any) => ({
+      id: cat.id,
+      name: cat.name,
+      categoryId: cat.parent_id,
+      Category: cat.Category,
+      createdAt: cat.createdAt,
+    }));
   } catch (error) {
     console.error('Failed to fetch subcategories:', error);
   }
@@ -161,7 +167,7 @@ const fetchSubcategories = async () => {
 const fetchCategories = async () => {
   try {
     const response = await categoryAPI.getAll();
-    categories.value = response.data;
+    categories.value = response.data.filter((cat: any) => !cat.parent_id);
   } catch (error) {
     console.error('Failed to fetch categories:', error);
   }
