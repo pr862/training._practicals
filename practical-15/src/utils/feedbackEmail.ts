@@ -1,7 +1,17 @@
-import { Resend } from 'resend';
+import nodemailer from 'nodemailer';
 import { User } from '../models/Index';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const transporter = nodemailer.createTransport({
+  host: process.env.SMTP_HOST,
+  port: Number(process.env.SMTP_PORT || 587),
+  secure: process.env.SMTP_SECURE === 'true',
+  auth: {
+    user: process.env.SMTP_USER,
+    pass: process.env.SMTP_PASS,
+  },
+});
+
+const fromEmail = process.env.SMTP_FROM || 'StyleSphere <noreply@stylesphere.com>';
 
 interface FeedbackData {
   userId: number;
@@ -20,15 +30,15 @@ const getAdminEmail = async (): Promise<string> => {
     return adminUser.email;
   }
   
-  return process.env.ADMIN_EMAIL!;
+  return process.env.ADMIN_EMAIL || process.env.SMTP_USER || '';
 };
 
 export const sendFeedbackEmail = async (feedback: FeedbackData): Promise<void> => {
   const adminEmail = await getAdminEmail();
   
   try {
-   await resend.emails.send({
-      from: 'StyleSphere <noreply@stylesphere.com>',
+   await transporter.sendMail({
+      from: fromEmail,
       to: adminEmail,
       subject: `Feedback from ${feedback.userName}: ${feedback.subject}`,
       html: `

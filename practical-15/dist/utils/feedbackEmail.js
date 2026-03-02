@@ -1,9 +1,21 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendFeedbackEmail = void 0;
-const resend_1 = require("resend");
+const nodemailer_1 = __importDefault(require("nodemailer"));
 const Index_1 = require("../models/Index");
-const resend = new resend_1.Resend(process.env.RESEND_API_KEY);
+const transporter = nodemailer_1.default.createTransport({
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT || 587),
+    secure: process.env.SMTP_SECURE === 'true',
+    auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+    },
+});
+const fromEmail = process.env.SMTP_FROM || 'StyleSphere <noreply@stylesphere.com>';
 const getAdminEmail = async () => {
     const adminUser = await Index_1.User.findOne({
         where: { role: 'admin' }
@@ -11,13 +23,13 @@ const getAdminEmail = async () => {
     if (adminUser) {
         return adminUser.email;
     }
-    return process.env.ADMIN_EMAIL;
+    return process.env.ADMIN_EMAIL || process.env.SMTP_USER || '';
 };
 const sendFeedbackEmail = async (feedback) => {
     const adminEmail = await getAdminEmail();
     try {
-        await resend.emails.send({
-            from: 'StyleSphere <noreply@stylesphere.com>',
+        await transporter.sendMail({
+            from: fromEmail,
             to: adminEmail,
             subject: `Feedback from ${feedback.userName}: ${feedback.subject}`,
             html: `
