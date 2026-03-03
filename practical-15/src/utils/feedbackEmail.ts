@@ -3,7 +3,7 @@ import { User } from '../models/Index';
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
-  port: Number(process.env.SMTP_PORT || 587),
+  port: Number(process.env.SMTP_PORT),
   secure: process.env.SMTP_SECURE === 'true',
   auth: {
     user: process.env.SMTP_USER,
@@ -11,7 +11,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-const fromEmail = process.env.SMTP_FROM || 'StyleSphere <noreply@stylesphere.com>';
+const fromEmail = process.env.SMTP_FROM ;
 
 interface FeedbackData {
   userId: number;
