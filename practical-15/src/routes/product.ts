@@ -14,8 +14,6 @@ import fs from 'fs';
 
 const router = Router();
 
-router.use(auth);
-
 router.get('/', asyncHandler(async (req: Request, res: Response) => {
   const { categoryId, search, minPrice, maxPrice, sortBy, sortOrder } = req.query;
 

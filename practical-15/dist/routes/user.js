@@ -2,12 +2,10 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const Index_1 = require("../models/Index");
-const auth_1 = require("../middleware/auth");
 const asyncHandler_1 = require("../middleware/asyncHandler");
 const validation_1 = require("../middleware/validation");
 const feedbackEmail_1 = require("../utils/feedbackEmail");
 const router = (0, express_1.Router)();
-router.use(auth_1.auth);
 router.get('/favorites', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const userId = req.user.id;
     const favorites = await Index_1.UserFavorite.findAll({

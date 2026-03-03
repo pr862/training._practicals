@@ -13,7 +13,6 @@ const upload_1 = require("../middleware/upload");
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 const router = (0, express_1.Router)();
-router.use(auth_1.auth);
 router.get('/', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const { categoryId, search, minPrice, maxPrice, sortBy, sortOrder } = req.query;
     const where = {};
