@@ -7,14 +7,14 @@ exports.sendWelcomeEmail = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const transporter = nodemailer_1.default.createTransport({
     host: process.env.SMTP_HOST,
-    port: Number(process.env.SMTP_PORT || 587),
+    port: Number(process.env.SMTP_PORT),
     secure: process.env.SMTP_SECURE === 'true',
     auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
     },
 });
-const fromEmail = process.env.SMTP_FROM || 'StyleSphere <noreply@stylesphere.com>';
+const fromEmail = process.env.SMTP_FROM;
 const sendWelcomeEmail = async (email, name) => {
     try {
         await transporter.sendMail({

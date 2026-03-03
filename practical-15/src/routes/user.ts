@@ -6,9 +6,7 @@ import { validate, productIdValidation, feedbackValidation } from '../middleware
 import { sendFeedbackEmail } from '../utils/feedbackEmail';
 
 const router = Router();
-
 router.use(auth);
-
 
 router.get('/favorites', asyncHandler(async (req: AuthRequest, res) => {
   const userId = req.user!.id;
