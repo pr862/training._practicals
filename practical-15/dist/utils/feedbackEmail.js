@@ -19,18 +19,26 @@ const getAdminEmail = async () => {
     return '';
 };
 const sendFeedbackEmail = async (feedback) => {
+    const brevoApiKey = process.env.BREVO_API_KEY;
+    const verifiedEmail = process.env.VERIFIED_EMAIL;
+    if (!brevoApiKey) {
+        throw new Error('Email service is not configured. Please contact administrator. (Missing BREVO_API_KEY)');
+    }
+    if (!verifiedEmail) {
+        throw new Error('Email service is not configured. Please contact administrator. (Missing VERIFIED_EMAIL)');
+    }
     const adminEmail = await getAdminEmail();
     if (!adminEmail) {
-        throw new Error('Feedback recipient email is not configured');
+        throw new Error('Feedback recipient email is not configured. Please contact administrator. (No admin user found)');
     }
     try {
         console.log(`Sending feedback email to: ${adminEmail}`);
         const client = sib_api_v3_sdk_1.default.ApiClient.instance;
         const apiKey = client.authentications['api-key'];
-        apiKey.apiKey = process.env.BREVO_API_KEY;
+        apiKey.apiKey = brevoApiKey;
         const apiInstance = new sib_api_v3_sdk_1.default.TransactionalEmailsApi();
         const sendSmtpEmail = {
-            sender: { email: process.env.VERIFIED_EMAIL },
+            sender: { email: verifiedEmail },
             to: [{ email: adminEmail }],
             subject: `Feedback from ${feedback.userName}: ${feedback.subject}`,
             html: `

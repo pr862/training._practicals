@@ -26,10 +26,21 @@ const getAdminEmail = async (): Promise<string> => {
 };
 
 export const sendFeedbackEmail = async (feedback: FeedbackData): Promise<void> => {
+  const brevoApiKey = process.env.BREVO_API_KEY;
+  const verifiedEmail = process.env.VERIFIED_EMAIL;
+  
+  if (!brevoApiKey) {
+    throw new Error('Email service is not configured. Please contact administrator. (Missing BREVO_API_KEY)');
+  }
+  
+  if (!verifiedEmail) {
+    throw new Error('Email service is not configured. Please contact administrator. (Missing VERIFIED_EMAIL)');
+  }
+
   const adminEmail = await getAdminEmail();
 
   if (!adminEmail) {
-    throw new Error('Feedback recipient email is not configured');
+    throw new Error('Feedback recipient email is not configured. Please contact administrator. (No admin user found)');
   }
 
   try {
@@ -37,12 +48,12 @@ export const sendFeedbackEmail = async (feedback: FeedbackData): Promise<void> =
 
     const client = SibApiV3Sdk.ApiClient.instance;
     const apiKey = client.authentications['api-key'];
-    apiKey.apiKey = process.env.BREVO_API_KEY;
+    apiKey.apiKey = brevoApiKey;
 
     const apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
     const sendSmtpEmail = {
-      sender: { email: process.env.VERIFIED_EMAIL as string },
+      sender: { email: verifiedEmail },
       to: [{ email: adminEmail }],
       subject: `Feedback from ${feedback.userName}: ${feedback.subject}`,
       html: `
