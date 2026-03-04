@@ -89,8 +89,19 @@ const sendFeedbackEmail = async (feedback) => {
         console.log('Feedback email sent successfully via Brevo');
     }
     catch (error) {
-        console.error('Feedback email send failed:', error.message);
-        throw new Error(`Failed to send feedback email: ${error.message}`);
+        console.error('Feedback email send failed:', error);
+        let errorMessage = 'Failed to send feedback email';
+        if (error.message === 'Forbidden') {
+            errorMessage = 'Email service authentication failed. Please check your BREVO_API_KEY and ensure sender email is verified in Brevo dashboard.';
+        }
+        else if (error.response && error.response.body) {
+            const body = error.response.body;
+            errorMessage = `Email service error: ${body.message || JSON.stringify(body)}`;
+        }
+        else {
+            errorMessage = `Failed to send feedback email: ${error.message}`;
+        }
+        throw new Error(errorMessage);
     }
 };
 exports.sendFeedbackEmail = sendFeedbackEmail;
