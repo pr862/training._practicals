@@ -22,6 +22,10 @@ interface FeedbackData {
 }
 
 const getAdminEmail = async (): Promise<string> => {
+  if (process.env.ADMIN_EMAIL) {
+    return process.env.ADMIN_EMAIL;
+  }
+
   const adminUser = await User.findOne({
     where: { role: 'admin' }
   });
@@ -35,9 +39,15 @@ const getAdminEmail = async (): Promise<string> => {
 
 export const sendFeedbackEmail = async (feedback: FeedbackData): Promise<void> => {
   const adminEmail = await getAdminEmail();
-  
+
+  if (!adminEmail) {
+    throw new Error('Feedback recipient email is not configured');
+  }
+
   try {
-   await transporter.sendMail({
+    console.log(`Sending feedback email to: ${adminEmail}`);
+
+    const info = await transporter.sendMail({
       from: fromEmail,
       to: adminEmail,
       subject: `Feedback from ${feedback.userName}: ${feedback.subject}`,
@@ -97,8 +107,15 @@ export const sendFeedbackEmail = async (feedback: FeedbackData): Promise<void> =
         ${feedback.message}
       `,
     });
-    console.log(`Feedback email sent to admin: ${adminEmail}`);
+
+    console.log('Feedback email accepted by SMTP:', info.accepted);
+    console.log('Feedback email rejected by SMTP:', info.rejected);
+
+    if (!info.accepted || info.accepted.length === 0) {
+      throw new Error('SMTP did not accept feedback email for delivery');
+    }
   } catch (error: any) {
-    console.error('Email failed but feedback saved successfully:', error.message);
+    console.error('Feedback email send failed:', error.message);
+    throw new Error(`Failed to send feedback email: ${error.message}`);
   }
 };
