@@ -17,6 +17,8 @@ const transporter = nodemailer_1.default.createTransport({
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
     },
+    logger: true,
+    debug: true,
 });
 const fromEmail = process.env.SMTP_FROM || process.env.SMTP_USER;
 const getAdminEmail = async () => {
