@@ -10,12 +10,15 @@ const transporter = nodemailer_1.default.createTransport({
     host: process.env.SMTP_HOST,
     port: Number(process.env.SMTP_PORT),
     secure: process.env.SMTP_SECURE === 'true',
+    connectionTimeout: 10000,
+    greetingTimeout: 10000,
+    socketTimeout: 20000,
     auth: {
         user: process.env.SMTP_USER,
         pass: process.env.SMTP_PASS,
     },
 });
-const fromEmail = process.env.SMTP_FROM;
+const fromEmail = process.env.SMTP_FROM || process.env.SMTP_USER;
 const getAdminEmail = async () => {
     if (process.env.ADMIN_EMAIL) {
         return process.env.ADMIN_EMAIL;

@@ -100,17 +100,19 @@ router.post('/feedback',
       return res.status(404).json({ message: 'User not found' });
     }
 
-    await sendFeedbackEmail({
+    sendFeedbackEmail({
       userId: user.id,
       userName: user.name,
       userEmail: user.email,
       subject,
       message
+    }).catch((error: any) => {
+      console.error('Background feedback email send failed:', error?.message || error);
     });
 
-    res.status(200).json({ 
+    res.status(202).json({ 
       success: true,
-      message: 'Feedback sent successfully. Thank you for your input!' 
+      message: 'Feedback submitted successfully. Thank you for your input!'
     });
   })
 );
