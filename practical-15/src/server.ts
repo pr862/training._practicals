@@ -11,7 +11,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
+app.use('/uploads', express.static(path.join(__dirname, '../uploads'), {
+  maxAge: 0, 
+  etag: true,
+  lastModified: true
+}));
 
 import authRoutes from './routes/auth';
 import adminRoutes from './routes/admin';

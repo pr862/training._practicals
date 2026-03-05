@@ -185,6 +185,12 @@ router.delete('/:id', auth_1.auth, admin_1.adminOnly, (0, validation_1.validate)
     if (!product) {
         return res.status(404).json({ message: 'Product not found' });
     }
+    if (product.image) {
+        const imagePath = path_1.default.join(__dirname, '../../', product.image);
+        if (fs_1.default.existsSync(imagePath)) {
+            fs_1.default.unlinkSync(imagePath);
+        }
+    }
     await product.destroy();
     res.json({ message: 'Product deleted successfully' });
 }));

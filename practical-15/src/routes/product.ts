@@ -232,6 +232,14 @@ router.delete('/:id',
     if (!product) {
       return res.status(404).json({ message: 'Product not found' });
     }
+    
+    if (product.image) {
+      const imagePath = path.join(__dirname, '../../', product.image);
+      if (fs.existsSync(imagePath)) {
+        fs.unlinkSync(imagePath);
+      }
+    }
+    
     await product.destroy();
     res.json({ message: 'Product deleted successfully' });
   })
