@@ -4,34 +4,33 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendFeedbackEmail = void 0;
-const sib_api_v3_sdk_1 = __importDefault(require("sib-api-v3-sdk"));
+const nodemailer_1 = __importDefault(require("nodemailer"));
 const Index_1 = require("../models/Index");
+const transporter = nodemailer_1.default.createTransport({
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT),
+    secure: process.env.SMTP_SECURE === 'true',
+    auth: {
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
+    },
+});
+const fromEmail = process.env.SMTP_FROM;
 const getAdminEmail = async () => {
-    if (process.env.ADMIN_EMAIL) {
-        return process.env.ADMIN_EMAIL;
-    }
     const adminUser = await Index_1.User.findOne({
         where: { role: 'admin' }
     });
     if (adminUser) {
         return adminUser.email;
     }
-    return '';
+    return process.env.ADMIN_EMAIL || process.env.SMTP_USER || '';
 };
 const sendFeedbackEmail = async (feedback) => {
     const adminEmail = await getAdminEmail();
-    if (!adminEmail) {
-        throw new Error('Feedback recipient email is not configured');
-    }
     try {
-        console.log(`Sending feedback email to: ${adminEmail}`);
-        const client = sib_api_v3_sdk_1.default.ApiClient.instance;
-        const apiKey = client.authentications['api-key'];
-        apiKey.apiKey = process.env.BREVO_API_KEY;
-        const apiInstance = new sib_api_v3_sdk_1.default.TransactionalEmailsApi();
-        const sendSmtpEmail = {
-            sender: { email: process.env.VERIFIED_EMAIL },
-            to: [{ email: adminEmail }],
+        await transporter.sendMail({
+            from: fromEmail,
+            to: adminEmail,
             subject: `Feedback from ${feedback.userName}: ${feedback.subject}`,
             html: `
         <!DOCTYPE html>
@@ -67,22 +66,32 @@ const sendFeedbackEmail = async (feedback) => {
               </div>
               <div class="info-row">
                 <span class="label">Message:</span>
-            <p>${feedback.message}</p>
-          </div>
+                <p>${feedback.message}</p>
+              </div>
             </div>
             <div class="footer">
               <p>&copy; ${new Date().getFullYear()} StyleSphere App. All rights reserved.</p>
             </div>
           </div>
-        </div>
+        </body>
+        </html>
       `,
-        };
-        await apiInstance.sendTransacEmail(sendSmtpEmail);
-        console.log('Feedback email sent successfully via Brevo');
+            text: `
+        New Feedback Received
+        
+        User Name: ${feedback.userName}
+        User Email: ${feedback.userEmail}
+        User ID: ${feedback.userId}
+        Subject: ${feedback.subject}
+        
+        Message:
+        ${feedback.message}
+      `,
+        });
+        console.log(`Feedback email sent to admin: ${adminEmail}`);
     }
     catch (error) {
-        console.error('Feedback email send failed:', error.message);
-        throw new Error(`Failed to send feedback email: ${error.message}`);
+        console.error('Email failed but feedback saved successfully:', error.message);
     }
 };
 exports.sendFeedbackEmail = sendFeedbackEmail;
