@@ -6,16 +6,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendFeedbackEmail = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const Index_1 = require("../models/Index");
+const smtpUser = process.env.SMTP_USER?.trim();
+const smtpPass = process.env.SMTP_PASS?.trim();
 const transporter = nodemailer_1.default.createTransport({
     host: process.env.SMTP_HOST,
     port: Number(process.env.SMTP_PORT),
-    secure: process.env.SMTP_SECURE === 'false',
+    secure: process.env.SMTP_SECURE === 'true',
     connectionTimeout: 30000,
     greetingTimeout: 30000,
     socketTimeout: 30000,
     auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+        user: smtpUser,
+        pass: smtpPass,
     },
     logger: true,
     debug: true,
