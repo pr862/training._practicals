@@ -25,7 +25,9 @@ const getAdminEmail = async (): Promise<string> => {
   return '';
 };
 
-export const sendFeedbackEmail = async (feedback: FeedbackData): Promise<void> => {
+export const sendFeedbackEmail = async (
+  feedback: FeedbackData
+): Promise<void> => {
   const adminEmail = await getAdminEmail();
 
   if (!adminEmail) {
@@ -35,6 +37,7 @@ export const sendFeedbackEmail = async (feedback: FeedbackData): Promise<void> =
   try {
     console.log(`Sending feedback email to: ${adminEmail}`);
 
+    // Configure Brevo API
     const client = SibApiV3Sdk.ApiClient.instance;
     const apiKey = client.authentications['api-key'];
     apiKey.apiKey = process.env.BREVO_API_KEY;
@@ -45,46 +48,21 @@ export const sendFeedbackEmail = async (feedback: FeedbackData): Promise<void> =
       sender: { email: process.env.VERIFIED_EMAIL as string },
       to: [{ email: adminEmail }],
       subject: `Feedback from ${feedback.userName}: ${feedback.subject}`,
-      html: `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <style>
-            body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
-            .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-            .header { background-color: #50502d; color: white; padding: 20px; text-align: center; }
-            .content { padding: 20px; background-color: #f9f9f9; }
-            .footer { padding: 20px; text-align: center; font-size: 12px; color: #666; }
-            .info-row { margin: 10px 0; }
-            .label { font-weight: bold; }
-          </style>
-        </head>
-        <body>
-          <div class="container">
-            <div class="header">
-              <h1>New Feedback Received</h1>
-            </div>
-            <div class="content">
-              <div class="info-row">
-                <span class="label">User Name:</span> ${feedback.userName}
-              </div>
-              <div class="info-row">
-                <span class="label">User Email:</span> ${feedback.userEmail}
-              </div>
-              <div class="info-row">
-                <span class="label">User ID:</span> ${feedback.userId}
-              </div>
-              <div class="info-row">
-                <span class="label">Subject:</span> ${feedback.subject}
-              </div>
-              <div class="info-row">
-                <span class="label">Message:</span>
+      htmlContent: `
+        <div style="font-family: Arial, sans-serif; max-width:600px; margin:auto;">
+          <h2 style="background:#50502d;color:white;padding:15px;text-align:center;">
+            New Feedback Received
+          </h2>
+          <div style="padding:20px;background:#f9f9f9;">
+            <p><strong>User Name:</strong> ${feedback.userName}</p>
+            <p><strong>User Email:</strong> ${feedback.userEmail}</p>
+            <p><strong>User ID:</strong> ${feedback.userId}</p>
+            <p><strong>Subject:</strong> ${feedback.subject}</p>
+            <p><strong>Message:</strong></p>
             <p>${feedback.message}</p>
           </div>
-            </div>
-            <div class="footer">
-              <p>&copy; ${new Date().getFullYear()} StyleSphere App. All rights reserved.</p>
-            </div>
+          <div style="text-align:center;font-size:12px;color:#666;padding:15px;">
+            © ${new Date().getFullYear()} StyleSphere App
           </div>
         </div>
       `,
