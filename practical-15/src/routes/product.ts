@@ -83,6 +83,10 @@ router.get('/:id/image', asyncHandler(async (req, res) => {
   if (!product.image) {
     return res.status(404).json({ message: 'Image not found' });
   }
+
+  if (product.image.startsWith('http://') || product.image.startsWith('https://')) {
+    return res.redirect(product.image);
+  }
   
   const imagePath = path.join(__dirname, '../../', product.image);
   
@@ -189,7 +193,7 @@ router.post('/',
     };
     
     if (req.file) {
-      productData.image = `/uploads/${req.file.filename}`;
+      productData.image = (req.file as any).path;
     }
     
     const product = await Product.create(productData);
@@ -215,7 +219,7 @@ router.put('/:id',
     };
     
     if (req.file) {
-      updateData.image = `/uploads/${req.file.filename}`;
+      updateData.image = (req.file as any).path;
     }
     
     await product.update(updateData);
@@ -234,9 +238,11 @@ router.delete('/:id',
     }
     
     if (product.image) {
-      const imagePath = path.join(__dirname, '../../', product.image);
-      if (fs.existsSync(imagePath)) {
-        fs.unlinkSync(imagePath);
+      if (product.image.startsWith('/uploads/')) {
+        const imagePath = path.join(__dirname, '../../', product.image);
+        if (fs.existsSync(imagePath)) {
+          fs.unlinkSync(imagePath);
+        }
       }
     }
     

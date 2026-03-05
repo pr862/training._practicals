@@ -5,38 +5,33 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uploadProductImage = exports.upload = void 0;
 const multer_1 = __importDefault(require("multer"));
-const path_1 = __importDefault(require("path"));
-const fs_1 = __importDefault(require("fs"));
-const uploadDir = path_1.default.join(__dirname, '../../uploads');
-if (!fs_1.default.existsSync(uploadDir)) {
-    fs_1.default.mkdirSync(uploadDir, { recursive: true });
-}
-const storage = multer_1.default.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadDir);
-    },
-    filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        const ext = path_1.default.extname(file.originalname);
-        cb(null, 'product-' + uniqueSuffix + ext);
-    }
-});
+const multer_storage_cloudinary_1 = require("multer-storage-cloudinary");
+const cloudinary_1 = __importDefault(require("../config/cloudinary"));
 const fileFilter = (req, file, cb) => {
     const allowedTypes = /jpeg|jpg|png|gif|webp/;
-    const extname = allowedTypes.test(path_1.default.extname(file.originalname).toLowerCase());
+    const extname = allowedTypes.test(file.originalname.split('.').pop()?.toLowerCase() || '');
     const mimetype = allowedTypes.test(file.mimetype);
     if (extname && mimetype) {
         return cb(null, true);
     }
-    else {
-        cb(new Error('Only image files are allowed (jpeg, jpg, png, gif, webp)'));
-    }
+    cb(new Error('Only image files are allowed (jpeg, jpg, png, gif, webp)'));
 };
+const storage = new multer_storage_cloudinary_1.CloudinaryStorage({
+    cloudinary: cloudinary_1.default,
+    params: {
+        folder: 'products',
+        allowed_formats: ['jpg', 'jpeg', 'png', 'gif', 'webp'],
+        public_id: (_req, _file) => {
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+            return `product-${uniqueSuffix}`;
+        }
+    },
+});
 exports.upload = (0, multer_1.default)({
     storage,
     limits: {
-        fileSize: 5 * 1024 * 1024
+        fileSize: 5 * 1024 * 1024,
     },
-    fileFilter
+    fileFilter,
 });
 exports.uploadProductImage = exports.upload.single('image');

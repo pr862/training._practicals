@@ -74,6 +74,9 @@ router.get('/:id/image', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     if (!product.image) {
         return res.status(404).json({ message: 'Image not found' });
     }
+    if (product.image.startsWith('http://') || product.image.startsWith('https://')) {
+        return res.redirect(product.image);
+    }
     const imagePath = path_1.default.join(__dirname, '../../', product.image);
     if (!fs_1.default.existsSync(imagePath)) {
         return res.status(404).json({ message: 'Image file not found' });
@@ -158,7 +161,7 @@ router.post('/', auth_1.auth, admin_1.adminOnly, upload_1.uploadProductImage, (0
         categoryId: parseInt(req.body.categoryId),
     };
     if (req.file) {
-        productData.image = `/uploads/${req.file.filename}`;
+        productData.image = req.file.path;
     }
     const product = await Index_1.Product.create(productData);
     res.status(201).json(product);
@@ -175,7 +178,7 @@ router.put('/:id', auth_1.auth, admin_1.adminOnly, upload_1.uploadProductImage, 
         categoryId: parseInt(req.body.categoryId),
     };
     if (req.file) {
-        updateData.image = `/uploads/${req.file.filename}`;
+        updateData.image = req.file.path;
     }
     await product.update(updateData);
     res.json(product);
@@ -186,9 +189,11 @@ router.delete('/:id', auth_1.auth, admin_1.adminOnly, (0, validation_1.validate)
         return res.status(404).json({ message: 'Product not found' });
     }
     if (product.image) {
-        const imagePath = path_1.default.join(__dirname, '../../', product.image);
-        if (fs_1.default.existsSync(imagePath)) {
-            fs_1.default.unlinkSync(imagePath);
+        if (product.image.startsWith('/uploads/')) {
+            const imagePath = path_1.default.join(__dirname, '../../', product.image);
+            if (fs_1.default.existsSync(imagePath)) {
+                fs_1.default.unlinkSync(imagePath);
+            }
         }
     }
     await product.destroy();
