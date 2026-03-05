@@ -7,6 +7,12 @@ const databaseUrl = process.env.DATABASE_URL;
 const sequelize = databaseUrl
   ? new Sequelize(databaseUrl, {
       dialect: 'postgres',
+      dialectOptions: {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false, 
+        },
+      },
     })
   : new Sequelize(
       process.env.DB_NAME!,
@@ -16,10 +22,17 @@ const sequelize = databaseUrl
         host: process.env.DB_HOST!,
         dialect: 'postgres',
         port: parseInt(process.env.DB_PORT!, 10),
+        dialectOptions: {
+          ssl: {
+            require: true,
+            rejectUnauthorized: false,
+          },
+        },
       }
     );
 
 sequelize.authenticate()
   .then(() => console.log('Database connected successfully'))
   .catch((err) => console.error('Unable to connect to DB:', err));
+
 export default sequelize;
