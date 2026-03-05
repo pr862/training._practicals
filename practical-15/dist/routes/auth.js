@@ -26,9 +26,7 @@ router.post('/signup', (0, validation_1.validate)(validation_1.signupValidation)
         role: userRole
     });
     const token = (0, jwt_1.generateToken)(user.id, user.role);
-    if (userRole === 'user') {
-        (0, email_1.sendWelcomeEmail)(user.email, user.name).catch(err => console.error('Failed to send welcome email:', err));
-    }
+    (0, email_1.sendWelcomeEmail)(user.email, user.name).catch(err => console.error('Failed to send welcome email:', err));
     res.status(201).json({
         token,
         user: {
