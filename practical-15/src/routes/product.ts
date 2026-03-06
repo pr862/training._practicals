@@ -15,9 +15,13 @@ import fs from 'fs';
 const router = Router();
 
 router.get('/', asyncHandler(async (req: Request, res: Response) => {
-  const { categoryId, search, minPrice, maxPrice, sortBy, sortOrder } = req.query;
+  const { categoryId, search, minPrice, maxPrice, sortBy, sortOrder, adminId } = req.query;
 
   const where: any = {};
+
+  if (adminId) {
+    where.adminId = parseInt(adminId as string);
+  }
 
   if (categoryId) {
     where.categoryId = parseInt(categoryId as string);

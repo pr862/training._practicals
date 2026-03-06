@@ -12,7 +12,15 @@ import {
 const router = Router();
 
 router.get('/', asyncHandler(async (req, res) => {
-  const categories = await Category.findAll();
+  const adminId = req.query.adminId;
+  
+  const where: any = {};
+  
+  if (adminId) {
+    where.adminId = parseInt(adminId as string);
+  }
+  
+  const categories = await Category.findAll({ where });
   res.json(categories);
 }));
 

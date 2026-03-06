@@ -15,6 +15,7 @@ router.use(adminOnly);
 
 router.get('/users', asyncHandler(async (req, res) => {
   const users = await User.findAll({
+    where: { role: 'user' },
     attributes: ['id', 'name', 'email', 'role', 'createdAt']
   });
   res.json(users);
@@ -51,11 +52,9 @@ router.delete('/users/:id',
 router.get('/analytics', asyncHandler(async (req: AuthRequest, res: Response) => {
   const adminId = req.user!.id;
   
-  // Get stats for the current admin only
   const productCount = await Product.count({ where: { adminId } });
   const categoryCount = await Category.count({ where: { adminId } });
   
-  // Total users (admins can still see all users)
   const totalUsers = await User.count();
   const adminCount = await User.count({ where: { role: 'admin' } });
   const userCount = await User.count({ where: { role: 'user' } });
@@ -69,7 +68,6 @@ router.get('/analytics', asyncHandler(async (req: AuthRequest, res: Response) =>
   });
 }));
 
-// New endpoint to get admin's own products
 router.get('/products', asyncHandler(async (req: AuthRequest, res: Response) => {
   const adminId = req.user!.id;
   
@@ -80,7 +78,6 @@ router.get('/products', asyncHandler(async (req: AuthRequest, res: Response) => 
   res.json(products);
 }));
 
-// New endpoint to get admin's own categories
 router.get('/categories', asyncHandler(async (req: AuthRequest, res: Response) => {
   const adminId = req.user!.id;
   
