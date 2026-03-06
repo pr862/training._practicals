@@ -8,7 +8,12 @@ const asyncHandler_1 = require("../middleware/asyncHandler");
 const validation_1 = require("../middleware/validation");
 const router = (0, express_1.Router)();
 router.get('/', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
-    const categories = await Index_1.Category.findAll();
+    const adminId = req.query.adminId;
+    const where = {};
+    if (adminId) {
+        where.adminId = parseInt(adminId);
+    }
+    const categories = await Index_1.Category.findAll({ where });
     res.json(categories);
 }));
 router.get('/:id/subcategories', (0, asyncHandler_1.asyncHandler)(async (req, res) => {

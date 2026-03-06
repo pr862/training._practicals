@@ -14,8 +14,11 @@ const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 const router = (0, express_1.Router)();
 router.get('/', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
-    const { categoryId, search, minPrice, maxPrice, sortBy, sortOrder } = req.query;
+    const { categoryId, search, minPrice, maxPrice, sortBy, sortOrder, adminId } = req.query;
     const where = {};
+    if (adminId) {
+        where.adminId = parseInt(adminId);
+    }
     if (categoryId) {
         where.categoryId = parseInt(categoryId);
     }

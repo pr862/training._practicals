@@ -12,6 +12,7 @@ router.use(auth_1.auth);
 router.use(admin_1.adminOnly);
 router.get('/users', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const users = await Index_1.User.findAll({
+        where: { role: 'user' },
         attributes: ['id', 'name', 'email', 'role', 'createdAt']
     });
     res.json(users);
@@ -38,10 +39,8 @@ router.delete('/users/:id', (0, validation_1.validate)(validation_1.userIdValida
 }));
 router.get('/analytics', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const adminId = req.user.id;
-    // Get stats for the current admin only
     const productCount = await Index_2.Product.count({ where: { adminId } });
     const categoryCount = await Index_2.Category.count({ where: { adminId } });
-    // Total users (admins can still see all users)
     const totalUsers = await Index_1.User.count();
     const adminCount = await Index_1.User.count({ where: { role: 'admin' } });
     const userCount = await Index_1.User.count({ where: { role: 'user' } });
@@ -53,7 +52,6 @@ router.get('/analytics', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
         categoryCount
     });
 }));
-// New endpoint to get admin's own products
 router.get('/products', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const adminId = req.user.id;
     const products = await Index_2.Product.findAll({
@@ -62,7 +60,6 @@ router.get('/products', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     });
     res.json(products);
 }));
-// New endpoint to get admin's own categories
 router.get('/categories', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const adminId = req.user.id;
     const categories = await Index_2.Category.findAll({

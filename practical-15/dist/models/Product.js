@@ -38,7 +38,7 @@ Product.init({
     },
     adminId: {
         type: sequelize_1.DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
     },
 }, {
     sequelize: database_1.default,
