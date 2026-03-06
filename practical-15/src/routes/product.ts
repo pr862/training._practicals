@@ -1,6 +1,6 @@
 import { Router, Request, Response } from 'express';
 import { Product, Category } from '../models/Index';
-import { auth } from '../middleware/auth';
+import { auth, AuthRequest } from '../middleware/auth';
 import { adminOnly } from '../middleware/admin';
 import { asyncHandler } from '../middleware/asyncHandler';
 import {
@@ -183,13 +183,15 @@ router.post('/',
   auth,
   adminOnly,
   uploadProductImage,
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: AuthRequest, res: Response) => {
+    const adminId = req.user!.id;
+    
     const productData: any = {
       ...req.body,
       price: parseFloat(req.body.price),
       stock: parseInt(req.body.stock),
       categoryId: parseInt(req.body.categoryId),
-      
+      adminId: adminId,
     };
     
     if (req.file) {
@@ -205,10 +207,17 @@ router.put('/:id',
   auth,
   adminOnly,
   uploadProductImage,
-  asyncHandler(async (req, res) => {
-    const product = await Product.findByPk(req.params.id);
+  asyncHandler(async (req: AuthRequest, res: Response) => {
+    const adminId = req.user!.id;
+    
+    const product = await Product.findOne({
+      where: {
+        id: req.params.id,
+        adminId: adminId
+      }
+    });
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+      return res.status(404).json({ message: 'Product not found or you do not have permission to edit it' });
     }
     
     const updateData: any = {
@@ -231,10 +240,17 @@ router.delete('/:id',
   auth,
   adminOnly,
   validate(productIdValidation),
-  asyncHandler(async (req, res) => {
-    const product = await Product.findByPk(req.params.id);
+  asyncHandler(async (req: AuthRequest, res: Response) => {
+    const adminId = req.user!.id;
+    
+    const product = await Product.findOne({
+      where: {
+        id: req.params.id,
+        adminId: adminId
+      }
+    });
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+      return res.status(404).json({ message: 'Product not found or you do not have permission to delete it' });
     }
     
     if (product.image) {

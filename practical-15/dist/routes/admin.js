@@ -37,11 +37,14 @@ router.delete('/users/:id', (0, validation_1.validate)(validation_1.userIdValida
     res.json({ message: 'User deleted successfully' });
 }));
 router.get('/analytics', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
+    const adminId = req.user.id;
+    // Get stats for the current admin only
+    const productCount = await Index_2.Product.count({ where: { adminId } });
+    const categoryCount = await Index_2.Category.count({ where: { adminId } });
+    // Total users (admins can still see all users)
     const totalUsers = await Index_1.User.count();
     const adminCount = await Index_1.User.count({ where: { role: 'admin' } });
     const userCount = await Index_1.User.count({ where: { role: 'user' } });
-    const productCount = await Index_2.Product.count();
-    const categoryCount = await Index_2.Category.count();
     res.json({
         totalUsers,
         adminCount,
@@ -49,5 +52,22 @@ router.get('/analytics', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
         productCount,
         categoryCount
     });
+}));
+// New endpoint to get admin's own products
+router.get('/products', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
+    const adminId = req.user.id;
+    const products = await Index_2.Product.findAll({
+        where: { adminId },
+        order: [['createdAt', 'DESC']]
+    });
+    res.json(products);
+}));
+// New endpoint to get admin's own categories
+router.get('/categories', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
+    const adminId = req.user.id;
+    const categories = await Index_2.Category.findAll({
+        where: { adminId }
+    });
+    res.json(categories);
 }));
 exports.default = router;

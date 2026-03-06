@@ -9,6 +9,7 @@ export class Product extends Model {
   public stock!: number;
   public image!: string;
   public categoryId!: number;
+  public adminId!: number;
 }
 
 Product.init(
@@ -41,6 +42,11 @@ Product.init(
     },
 
     categoryId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+
+    adminId: {
       type: DataTypes.INTEGER,
       allowNull: false,
     },
