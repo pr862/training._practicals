@@ -1,0 +1,130 @@
+<template>
+  <section class="min-h-screen bg-[#f8f6f3] flex items-center justify-center px-4">
+    <div class="w-full max-w-md">
+      
+      <div class="bg-white rounded-3xl shadow-xl p-10 border border-olive-100 animate-fade-in">
+        
+        <div class="text-center mb-8">
+          <h1 class="text-4xl font-light tracking-widest text-olive-700">
+            StyleSphere
+          </h1>
+          <p class="text-sm text-gray-500 mt-2 tracking-wide">
+            Welcome back to your style
+          </p>
+        </div>
+
+        <div v-if="error" class="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+          <p class="text-sm text-red-600">{{ error }}</p>
+        </div>
+
+        <form @submit.prevent="handleSubmit" class="space-y-6">
+
+          <div>
+            <label class="block text-sm text-gray-600 mb-2 tracking-wide">
+              Email Address
+            </label>
+            <input
+              v-model.trim="formData.email"
+              type="email"
+              placeholder="Enter your email"
+              class="w-full px-4 py-3 border border-olive-300 rounded-xl focus:ring-2 focus:ring-olive-500 focus:border-olive-500 transition-all outline-none"
+              :class="{ 'border-red-500': errors.email }"
+              maxlength="100"
+              autocomplete="email"
+              required
+            />
+            <p v-if="errors.email" class="mt-1 text-sm text-red-500">{{ errors.email }}</p>
+          </div>
+
+          <div>
+            <label class="block text-sm text-gray-600 mb-2 tracking-wide">
+              Password
+            </label>
+            <input
+              v-model="formData.password"
+              type="password"
+              placeholder="Enter your password"
+              class="w-full px-4 py-3 border border-olive-300 rounded-xl focus:ring-2 focus:ring-olive-500 focus:border-olive-500 transition-all outline-none"
+              :class="{ 'border-red-500': errors.password }"
+              minlength="6"
+              maxlength="128"
+              autocomplete="current-password"
+              required
+            />
+            <p v-if="errors.password" class="mt-1 text-sm text-red-500">{{ errors.password }}</p>
+          </div>
+ 
+
+          <button
+            type="submit"
+            :disabled="loading"
+            class="w-full py-3 bg-olive-600 text-white rounded-xl font-medium tracking-wide hover:bg-olive-700 transition-all duration-300 hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {{ loading ? 'Signing in...' : 'Sign In' }}
+          </button>
+
+        </form>
+
+        <div class="my-8 flex items-center">
+          <div class="flex-1 h-px bg-gray-200"></div>
+          <span class="px-4 text-gray-400 text-sm">OR</span>
+          <div class="flex-1 h-px bg-gray-200"></div>
+        </div>
+
+        <p class="text-center text-sm text-gray-600">
+          Need admin access?
+          <router-link to="/register" class="text-olive-700 font-medium hover:underline ml-1">
+            Create Admin Account
+          </router-link>
+        </p>
+      </div>
+    </div>
+  </section>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
+import { useAuthStore } from '@/store';
+import { normalizeEmail, validateLoginForm } from '@/utils/validators';
+
+const router = useRouter();
+const authStore = useAuthStore();
+
+const formData = ref({
+  email: '',
+  password: '',
+});
+
+const errors = ref<Record<string, string>>({});
+const loading = ref(false);
+const error = ref('');
+
+const validateForm = () => {
+  errors.value = validateLoginForm(formData.value);
+  return Object.keys(errors.value).length === 0;
+};
+
+const handleSubmit = async () => {
+  if (!validateForm()) return;
+  
+  loading.value = true;
+  error.value = '';
+
+  const normalizedEmail = normalizeEmail(formData.value.email);
+  const success = await authStore.login(normalizedEmail, formData.value.password);
+  
+  if (success) {
+    if (authStore.isAdmin) {
+      router.push('/admin/dashboard');
+    } else {
+      authStore.logout();
+      error.value = 'Admin access only.';
+    }
+  } else {
+    error.value = authStore.error || 'Login failed. Please try again.';
+  }
+  
+  loading.value = false;
+};
+</script>
