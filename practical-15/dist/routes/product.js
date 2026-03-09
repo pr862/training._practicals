@@ -158,8 +158,14 @@ router.get('/search', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
 }));
 router.post('/', auth_1.auth, admin_1.adminOnly, upload_1.uploadProductImage, (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const adminId = req.user.id;
+    const lastProduct = await Index_1.Product.findOne({
+        where: { adminId },
+        order: [['productNumber', 'DESC']]
+    });
+    const productNumber = lastProduct ? lastProduct.productNumber + 1 : 1;
     const productData = {
         ...req.body,
+        productNumber,
         price: parseFloat(req.body.price),
         stock: parseInt(req.body.stock),
         categoryId: parseInt(req.body.categoryId),
