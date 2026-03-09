@@ -5,8 +5,6 @@ export interface AdminUser extends AppUser {
 }
 
 export interface Analytics {
-  totalUsers: number;
-  adminCount: number;
   userCount: number;
   productCount: number;
   categoryCount: number;

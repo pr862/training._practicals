@@ -10,22 +10,12 @@
         <div class="flex items-center justify-between">
           <div>
             <p class="text-sm text-gray-500">Total Users</p>
-            <p class="text-3xl font-bold text-gray-900 mt-1">{{ analytics.totalUsers }}</p>
+            <p class="text-3xl font-bold text-gray-900 mt-1">{{ analytics.userCount }}</p>
           </div>
           <div class="size-12 bg-olive-100 rounded-lg flex items-center justify-center">
             <svg class="size-6 text-olive-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
             </svg>
-          </div>
-        </div>
-        <div class="mt-4 flex gap-4">
-          <div>
-            <p class="text-xs text-gray-500">Admins</p>
-            <p class="text-lg font-semibold text-purple-600">{{ analytics.adminCount }}</p>
-          </div>
-          <div>
-            <p class="text-xs text-gray-500">Customers</p>
-            <p class="text-lg font-semibold text-green-600">{{ analytics.userCount }}</p>
           </div>
         </div>
       </div>
@@ -124,8 +114,6 @@ import type { Analytics } from '@/types';
 const authStore = useAuthStore();
 
 const analytics = ref<Analytics>({
-  totalUsers: 0,
-  adminCount: 0,
   userCount: 0,
   productCount: 0,
   categoryCount: 0,
