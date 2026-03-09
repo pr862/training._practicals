@@ -250,11 +250,7 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import { productAPI, categoryAPI } from '@/services';
 import { API_BASE_URL } from '@/services';
-import { useAuthStore } from '@/store/auth';
 import type { Category, Product, ProductUpsertInput } from '@/types';
-
-const authStore = useAuthStore();
-const currentAdminId = computed(() => authStore.user?.id);
 
 
 const URL = window.URL;
@@ -491,35 +487,9 @@ const getSubcategoryName = (product: Product) => {
   return '';
 };
 
-// Check if product is owned by current admin
-const isProductOwned = (product: Product) => {
-  // If product has admin_id and matches current admin, it's owned
-  if (product.admin_id && product.admin_id === currentAdminId.value) {
-    return true;
-  }
-  // If no admin_id is set (legacy products), allow edit/delete for now
-  if (product.admin_id === undefined || product.admin_id === null) {
-    return false; // Treat as not owned for new admins
-  }
-  return false;
-};
 
-const handleEdit = (product: Product) => {
-  if (!isProductOwned(product)) {
-    alert('You cannot edit this product. You can only edit products created by you.');
-    return;
-  }
-  openModal(product);
-};
 
-const handleDelete = (id: number) => {
-  const product = products.value.find(p => p.id === id);
-  if (product && !isProductOwned(product)) {
-    alert('You cannot delete this product. You can only delete products created by you.');
-    return;
-  }
-  deleteProduct(id);
-};
+
 onMounted(() => {
   fetchProducts();
   fetchCategories();
