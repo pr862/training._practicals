@@ -300,9 +300,10 @@ const availableSubcategories = computed(() => {
 });
 
 watch(() => formData.value.parentCategoryId, () => {
-  formData.value.categoryId = '';
+  if (!editingProduct.value) {
+    formData.value.categoryId = '';
+  }
 });
-
 const getImageUrl = (imagePath: string) => {
   if (!imagePath) return '';
   if (imagePath.startsWith('http')) {
