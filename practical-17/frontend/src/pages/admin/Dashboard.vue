@@ -118,7 +118,7 @@
 import { ref, onMounted } from 'vue';
 import { onBeforeRouteUpdate } from 'vue-router';
 import { useAuthStore } from '@/store';
-import { analyticsAPI } from '@/services';
+import { analyticsAPI, categoryAPI } from '@/services';
 import type { Analytics } from '@/types';
 
 const authStore = useAuthStore();
@@ -134,8 +134,18 @@ const analytics = ref<Analytics>({
 const fetchanalytics = async () => {
   try {
     analytics.value = await analyticsAPI.get();
+    
+ 
+    const categories = await categoryAPI.getAll();
+    analytics.value.categoryCount = categories.length;
   } catch (error) {
     console.error('Failed to fetch analytics:', error);
+    try {
+      const categories = await categoryAPI.getAll();
+      analytics.value.categoryCount = categories.length;
+    } catch (catError) {
+      console.error('Failed to fetch categories:', catError);
+    }
   }
 };
 

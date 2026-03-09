@@ -2,6 +2,7 @@ export interface Category {
   id: number;
   name: string;
   parent_id: number | null;
+  admin_id?: number | null;
   createdAt?: string;
   updatedAt?: string;
 }

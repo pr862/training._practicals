@@ -5,6 +5,8 @@ interface CategoryApiResponse {
   id: number | string;
   name: string;
   parent_id: number | string | null;
+  adminId?: number | string;
+  admin_id?: number | string | null;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -13,6 +15,7 @@ const normalizeCategory = (category: CategoryApiResponse): Category => ({
   id: Number(category.id),
   name: category.name,
   parent_id: category.parent_id !== null ? Number(category.parent_id) : null,
+  admin_id: category.adminId !== undefined ? Number(category.adminId) : (category.admin_id !== undefined ? Number(category.admin_id) : undefined),
   createdAt: category.createdAt,
   updatedAt: category.updatedAt,
 });

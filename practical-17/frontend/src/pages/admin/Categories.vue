@@ -40,7 +40,7 @@
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ formatDate(category.createdAt || '') }}</td>
               <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
                 <button
-                  @click="openModal(category)"
+                  @click="handleEdit(category)"
                   class="text-olive-700 mr-4"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -50,7 +50,7 @@
 
                 </button>
                 <button
-                  @click="deleteCategory(category.id)"
+                  @click="handleDelete(category.id)"
                   class="text-red-600 hover:text-red-900"
                 >
                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -87,7 +87,7 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200">
-            <tr v-for="category in subcategories" :key="category.id" class="hover:bg-olive-50">
+<tr v-for="category in subcategories" :key="category.id" class="hover:bg-olive-50">
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ category.id }}</td>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ category.name }}</td>
               <td class="px-6 py-4 whitespace-nowrap">
@@ -98,7 +98,7 @@
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ formatDate(category.createdAt || '') }}</td>
               <td class="px-6 py-4 whitespace-nowrap text-right text-sm">
                 <button
-                  @click="openModal(category)"
+                  @click="handleEdit(category)"
                   class="text-olive-700 mr-4"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -108,7 +108,7 @@
 
                 </button>
                 <button
-                  @click="deleteCategory(category.id)"
+                  @click="handleDelete(category.id)"
                   class="text-red-600 hover:text-red-900"
                 >
                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -184,7 +184,11 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue';
 import { categoryAPI } from '@/services';
+import { useAuthStore } from '@/store/auth';
 import type { Category } from '@/types';
+
+const authStore = useAuthStore();
+const currentAdminId = computed(() => authStore.user?.id);
 
 
 const categories = ref<Category[]>([]);
@@ -210,6 +214,34 @@ const getParentName = (parentId: number | null) => {
   if (!parentId) return 'N/A';
   const parent = categories.value.find(cat => cat.id === parentId);
   return parent?.name || 'N/A';
+};
+
+const isCategoryOwned = (category: Category) => {
+  if (category.admin_id && category.admin_id === currentAdminId.value) {
+    return true;
+  }
+
+  if (category.admin_id === undefined || category.admin_id === null) {
+    return false; 
+  }
+  return false;
+};
+
+const handleEdit = (category: Category) => {
+  if (!isCategoryOwned(category)) {
+    alert('You cannot edit this category. You can only edit categories created by you.');
+    return;
+  }
+  openModal(category);
+};
+
+const handleDelete = (id: number) => {
+  const category = categories.value.find(c => c.id === id);
+  if (category && !isCategoryOwned(category)) {
+    alert('You cannot delete this category. You can only delete categories created by you.');
+    return;
+  }
+  deleteCategory(id);
 };
 
 const fetchCategories = async () => {

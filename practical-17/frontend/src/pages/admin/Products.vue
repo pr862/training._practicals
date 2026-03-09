@@ -31,9 +31,9 @@
             <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
           </tr>
         </thead>
-        <tbody class="divide-y divide-gray-200">
-          <tr v-for="product in products" :key="product.id" class="hover:bg-olive-50">
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ product.id }}</td>
+<tbody class="divide-y divide-gray-200">
+          <tr v-for="product in productsWithIndex" :key="product.id" class="hover:bg-olive-50">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ product.localId }}</td>
             <td class="px-6 py-4 whitespace-nowrap">
               <img 
                 v-if="product.image" 
@@ -250,13 +250,24 @@
 import { ref, computed, onMounted, watch } from 'vue';
 import { productAPI, categoryAPI } from '@/services';
 import { API_BASE_URL } from '@/services';
+import { useAuthStore } from '@/store/auth';
 import type { Category, Product, ProductUpsertInput } from '@/types';
+
+const authStore = useAuthStore();
+const currentAdminId = computed(() => authStore.user?.id);
 
 
 const URL = window.URL;
 
 const products = ref<Product[]>([]);
 const categories = ref<Category[]>([]);
+
+const productsWithIndex = computed(() => {
+  return products.value.map((product, index) => ({
+    ...product,
+    localId: index + 1
+  }));
+});
 
 const parentCategories = computed(() => {
   return categories.value.filter((cat: Category) => {
@@ -478,6 +489,36 @@ const getSubcategoryName = (product: Product) => {
     return category.name;
   }
   return '';
+};
+
+// Check if product is owned by current admin
+const isProductOwned = (product: Product) => {
+  // If product has admin_id and matches current admin, it's owned
+  if (product.admin_id && product.admin_id === currentAdminId.value) {
+    return true;
+  }
+  // If no admin_id is set (legacy products), allow edit/delete for now
+  if (product.admin_id === undefined || product.admin_id === null) {
+    return false; // Treat as not owned for new admins
+  }
+  return false;
+};
+
+const handleEdit = (product: Product) => {
+  if (!isProductOwned(product)) {
+    alert('You cannot edit this product. You can only edit products created by you.');
+    return;
+  }
+  openModal(product);
+};
+
+const handleDelete = (id: number) => {
+  const product = products.value.find(p => p.id === id);
+  if (product && !isProductOwned(product)) {
+    alert('You cannot delete this product. You can only delete products created by you.');
+    return;
+  }
+  deleteProduct(id);
 };
 onMounted(() => {
   fetchProducts();
