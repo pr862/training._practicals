@@ -1,11 +1,10 @@
 import { Router, Request, Response } from 'express';
 import { Product, Category } from '../models/Index';
-import { auth } from '../middleware/auth';
+import { auth, AuthRequest } from '../middleware/auth';
 import { adminOnly } from '../middleware/admin';
 import { asyncHandler } from '../middleware/asyncHandler';
 import {
   validate,
-  productValidation,
   productIdValidation
 } from '../middleware/validation';
 import { uploadProductImage } from '../middleware/upload';
@@ -15,9 +14,13 @@ import fs from 'fs';
 const router = Router();
 
 router.get('/', asyncHandler(async (req: Request, res: Response) => {
-  const { categoryId, search, minPrice, maxPrice, sortBy, sortOrder } = req.query;
+  const { categoryId, search, minPrice, maxPrice, sortBy, sortOrder, adminId } = req.query;
 
   const where: any = {};
+
+  if (adminId) {
+    where.adminId = parseInt(adminId as string);
+  }
 
   if (categoryId) {
     where.categoryId = parseInt(categoryId as string);
@@ -82,6 +85,10 @@ router.get('/:id/image', asyncHandler(async (req, res) => {
   
   if (!product.image) {
     return res.status(404).json({ message: 'Image not found' });
+  }
+
+  if (product.image.startsWith('http://') || product.image.startsWith('https://')) {
+    return res.redirect(product.image);
   }
   
   const imagePath = path.join(__dirname, '../../', product.image);
@@ -179,17 +186,27 @@ router.post('/',
   auth,
   adminOnly,
   uploadProductImage,
-  asyncHandler(async (req, res) => {
+  asyncHandler(async (req: AuthRequest, res: Response) => {
+    const adminId = req.user!.id;
+    
+    const lastProduct = await Product.findOne({
+      where: { adminId },
+      order: [['productNumber', 'DESC']]
+    });
+    
+    const productNumber = lastProduct ? lastProduct.productNumber + 1 : 1;
+    
     const productData: any = {
       ...req.body,
+      productNumber,
       price: parseFloat(req.body.price),
       stock: parseInt(req.body.stock),
       categoryId: parseInt(req.body.categoryId),
-      
+      adminId: adminId,
     };
     
     if (req.file) {
-      productData.image = `/uploads/${req.file.filename}`;
+      productData.image = (req.file as any).path;
     }
     
     const product = await Product.create(productData);
@@ -201,10 +218,17 @@ router.put('/:id',
   auth,
   adminOnly,
   uploadProductImage,
-  asyncHandler(async (req, res) => {
-    const product = await Product.findByPk(req.params.id);
+  asyncHandler(async (req: AuthRequest, res: Response) => {
+    const adminId = req.user!.id;
+    
+    const product = await Product.findOne({
+      where: {
+        id: req.params.id,
+        adminId: adminId
+      }
+    });
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+      return res.status(404).json({ message: 'Product not found or you do not have permission to edit it' });
     }
     
     const updateData: any = {
@@ -215,7 +239,7 @@ router.put('/:id',
     };
     
     if (req.file) {
-      updateData.image = `/uploads/${req.file.filename}`;
+      updateData.image = (req.file as any).path;
     }
     
     await product.update(updateData);
@@ -227,11 +251,28 @@ router.delete('/:id',
   auth,
   adminOnly,
   validate(productIdValidation),
-  asyncHandler(async (req, res) => {
-    const product = await Product.findByPk(req.params.id);
+  asyncHandler(async (req: AuthRequest, res: Response) => {
+    const adminId = req.user!.id;
+    
+    const product = await Product.findOne({
+      where: {
+        id: req.params.id,
+        adminId: adminId
+      }
+    });
     if (!product) {
-      return res.status(404).json({ message: 'Product not found' });
+      return res.status(404).json({ message: 'Product not found or you do not have permission to delete it' });
     }
+    
+    if (product.image) {
+      if (product.image.startsWith('/uploads/')) {
+        const imagePath = path.join(__dirname, '../../', product.image);
+        if (fs.existsSync(imagePath)) {
+          fs.unlinkSync(imagePath);
+        }
+      }
+    }
+    
     await product.destroy();
     res.json({ message: 'Product deleted successfully' });
   })

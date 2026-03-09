@@ -6,17 +6,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sendFeedbackEmail = void 0;
 const nodemailer_1 = __importDefault(require("nodemailer"));
 const Index_1 = require("../models/Index");
+const smtpUser = process.env.SMTP_USER?.trim();
+const smtpPass = process.env.SMTP_PASS?.trim();
 const transporter = nodemailer_1.default.createTransport({
     host: process.env.SMTP_HOST,
     port: Number(process.env.SMTP_PORT),
     secure: process.env.SMTP_SECURE === 'true',
+    connectionTimeout: 30000,
+    greetingTimeout: 30000,
+    socketTimeout: 30000,
     auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+        user: smtpUser,
+        pass: smtpPass,
     },
+    logger: true,
+    debug: true,
 });
-const fromEmail = process.env.SMTP_FROM;
+const fromEmail = process.env.SMTP_FROM || process.env.SMTP_USER;
 const getAdminEmail = async () => {
+    if (process.env.ADMIN_EMAIL) {
+        return process.env.ADMIN_EMAIL;
+    }
     const adminUser = await Index_1.User.findOne({
         where: { role: 'admin' }
     });
@@ -27,8 +37,12 @@ const getAdminEmail = async () => {
 };
 const sendFeedbackEmail = async (feedback) => {
     const adminEmail = await getAdminEmail();
+    if (!adminEmail) {
+        throw new Error('Feedback recipient email is not configured');
+    }
     try {
-        await transporter.sendMail({
+        console.log(`Sending feedback email to: ${adminEmail}`);
+        const info = await transporter.sendMail({
             from: fromEmail,
             to: adminEmail,
             subject: `Feedback from ${feedback.userName}: ${feedback.subject}`,
@@ -88,10 +102,15 @@ const sendFeedbackEmail = async (feedback) => {
         ${feedback.message}
       `,
         });
-        console.log(`Feedback email sent to admin: ${adminEmail}`);
+        console.log('Feedback email accepted by SMTP:', info.accepted);
+        console.log('Feedback email rejected by SMTP:', info.rejected);
+        if (!info.accepted || info.accepted.length === 0) {
+            throw new Error('SMTP did not accept feedback email for delivery');
+        }
     }
     catch (error) {
-        console.error('Email failed but feedback saved successfully:', error.message);
+        console.error('Feedback email send failed:', error.message);
+        throw new Error(`Failed to send feedback email: ${error.message}`);
     }
 };
 exports.sendFeedbackEmail = sendFeedbackEmail;

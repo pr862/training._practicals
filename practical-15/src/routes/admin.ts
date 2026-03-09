@@ -1,7 +1,7 @@
-import { Router } from 'express';
+import { Router, Response } from 'express';
 import { User } from '../models/Index';
 import { Category, Product } from '../models/Index';
-import { auth } from '../middleware/auth';
+import { auth, AuthRequest } from '../middleware/auth';
 import { adminOnly } from '../middleware/admin';
 import { asyncHandler } from '../middleware/asyncHandler';
 import { validate, userIdValidation } from '../middleware/validation';
@@ -15,6 +15,7 @@ router.use(adminOnly);
 
 router.get('/users', asyncHandler(async (req, res) => {
   const users = await User.findAll({
+    where: { role: 'user' },
     attributes: ['id', 'name', 'email', 'role', 'createdAt']
   });
   res.json(users);
@@ -48,12 +49,15 @@ router.delete('/users/:id',
   })
 );
 
-router.get('/analytics', asyncHandler(async (req, res) => {
+router.get('/analytics', asyncHandler(async (req: AuthRequest, res: Response) => {
+  const adminId = req.user!.id;
+  
+  const productCount = await Product.count({ where: { adminId } });
+  const categoryCount = await Category.count({ where: { adminId } });
+  
   const totalUsers = await User.count();
   const adminCount = await User.count({ where: { role: 'admin' } });
   const userCount = await User.count({ where: { role: 'user' } });
-  const productCount = await Product.count();
-  const categoryCount = await Category.count();
 
   res.json({
     totalUsers,
@@ -62,6 +66,25 @@ router.get('/analytics', asyncHandler(async (req, res) => {
     productCount,
     categoryCount
   });
+}));
+
+router.get('/products', asyncHandler(async (req: AuthRequest, res: Response) => {
+  const adminId = req.user!.id;
+  
+  const products = await Product.findAll({
+    where: { adminId },
+    order: [['createdAt', 'DESC']]
+  });
+  res.json(products);
+}));
+
+router.get('/categories', asyncHandler(async (req: AuthRequest, res: Response) => {
+  const adminId = req.user!.id;
+  
+  const categories = await Category.findAll({
+    where: { adminId }
+  });
+  res.json(categories);
 }));
 
 export default router;

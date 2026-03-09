@@ -18,6 +18,10 @@ Category_1.Category.hasMany(Category_1.Category, { as: 'subcategories', foreignK
 Category_1.Category.belongsTo(Category_1.Category, { as: 'parent', foreignKey: 'parent_id', });
 Category_1.Category.hasMany(Product_1.Product, { foreignKey: 'categoryId' });
 Product_1.Product.belongsTo(Category_1.Category, { foreignKey: 'categoryId' });
+User_1.User.hasMany(Product_1.Product, { foreignKey: 'adminId', as: 'products' });
+Product_1.Product.belongsTo(User_1.User, { foreignKey: 'adminId', as: 'admin' });
+User_1.User.hasMany(Category_1.Category, { foreignKey: 'adminId', as: 'categories' });
+Category_1.Category.belongsTo(User_1.User, { foreignKey: 'adminId', as: 'admin' });
 User_1.User.hasMany(UserFavorite_1.UserFavorite, { foreignKey: 'userId' });
 UserFavorite_1.UserFavorite.belongsTo(User_1.User, { foreignKey: 'userId' });
 Product_1.Product.hasMany(UserFavorite_1.UserFavorite, { foreignKey: 'productId' });

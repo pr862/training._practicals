@@ -6,11 +6,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = require("sequelize");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-const sequelize = new sequelize_1.Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
-    host: process.env.DB_HOST,
-    dialect: 'postgres',
-    port: parseInt(process.env.DB_PORT, 10),
-});
+const databaseUrl = process.env.DATABASE_URL;
+const sequelize = databaseUrl
+    ? new sequelize_1.Sequelize(databaseUrl, {
+        dialect: 'postgres',
+        dialectOptions: {
+            ssl: {
+                require: true,
+                rejectUnauthorized: false,
+            },
+        },
+    })
+    : new sequelize_1.Sequelize(process.env.DB_NAME, process.env.DB_USER, process.env.DB_PASSWORD, {
+        host: process.env.DB_HOST,
+        dialect: 'postgres',
+        port: parseInt(process.env.DB_PORT, 10),
+        dialectOptions: {
+            ssl: {
+                require: true,
+                rejectUnauthorized: false,
+            },
+        },
+    });
 sequelize.authenticate()
     .then(() => console.log('Database connected successfully'))
     .catch((err) => console.error('Unable to connect to DB:', err));

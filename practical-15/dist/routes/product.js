@@ -14,8 +14,11 @@ const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
 const router = (0, express_1.Router)();
 router.get('/', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
-    const { categoryId, search, minPrice, maxPrice, sortBy, sortOrder } = req.query;
+    const { categoryId, search, minPrice, maxPrice, sortBy, sortOrder, adminId } = req.query;
     const where = {};
+    if (adminId) {
+        where.adminId = parseInt(adminId);
+    }
     if (categoryId) {
         where.categoryId = parseInt(categoryId);
     }
@@ -73,6 +76,9 @@ router.get('/:id/image', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     }
     if (!product.image) {
         return res.status(404).json({ message: 'Image not found' });
+    }
+    if (product.image.startsWith('http://') || product.image.startsWith('https://')) {
+        return res.redirect(product.image);
     }
     const imagePath = path_1.default.join(__dirname, '../../', product.image);
     if (!fs_1.default.existsSync(imagePath)) {
@@ -151,22 +157,30 @@ router.get('/search', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     });
 }));
 router.post('/', auth_1.auth, admin_1.adminOnly, upload_1.uploadProductImage, (0, asyncHandler_1.asyncHandler)(async (req, res) => {
+    const adminId = req.user.id;
     const productData = {
         ...req.body,
         price: parseFloat(req.body.price),
         stock: parseInt(req.body.stock),
         categoryId: parseInt(req.body.categoryId),
+        adminId: adminId,
     };
     if (req.file) {
-        productData.image = `/uploads/${req.file.filename}`;
+        productData.image = req.file.path;
     }
     const product = await Index_1.Product.create(productData);
     res.status(201).json(product);
 }));
 router.put('/:id', auth_1.auth, admin_1.adminOnly, upload_1.uploadProductImage, (0, asyncHandler_1.asyncHandler)(async (req, res) => {
-    const product = await Index_1.Product.findByPk(req.params.id);
+    const adminId = req.user.id;
+    const product = await Index_1.Product.findOne({
+        where: {
+            id: req.params.id,
+            adminId: adminId
+        }
+    });
     if (!product) {
-        return res.status(404).json({ message: 'Product not found' });
+        return res.status(404).json({ message: 'Product not found or you do not have permission to edit it' });
     }
     const updateData = {
         ...req.body,
@@ -175,15 +189,29 @@ router.put('/:id', auth_1.auth, admin_1.adminOnly, upload_1.uploadProductImage, 
         categoryId: parseInt(req.body.categoryId),
     };
     if (req.file) {
-        updateData.image = `/uploads/${req.file.filename}`;
+        updateData.image = req.file.path;
     }
     await product.update(updateData);
     res.json(product);
 }));
 router.delete('/:id', auth_1.auth, admin_1.adminOnly, (0, validation_1.validate)(validation_1.productIdValidation), (0, asyncHandler_1.asyncHandler)(async (req, res) => {
-    const product = await Index_1.Product.findByPk(req.params.id);
+    const adminId = req.user.id;
+    const product = await Index_1.Product.findOne({
+        where: {
+            id: req.params.id,
+            adminId: adminId
+        }
+    });
     if (!product) {
-        return res.status(404).json({ message: 'Product not found' });
+        return res.status(404).json({ message: 'Product not found or you do not have permission to delete it' });
+    }
+    if (product.image) {
+        if (product.image.startsWith('/uploads/')) {
+            const imagePath = path_1.default.join(__dirname, '../../', product.image);
+            if (fs_1.default.existsSync(imagePath)) {
+                fs_1.default.unlinkSync(imagePath);
+            }
+        }
     }
     await product.destroy();
     res.json({ message: 'Product deleted successfully' });

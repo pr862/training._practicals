@@ -13,7 +13,11 @@ dotenv_1.default.config();
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
-app.use('/uploads', express_1.default.static(path_1.default.join(__dirname, '../uploads')));
+app.use('/uploads', express_1.default.static(path_1.default.join(__dirname, '../uploads'), {
+    maxAge: 0,
+    etag: true,
+    lastModified: true
+}));
 const auth_1 = __importDefault(require("./routes/auth"));
 const admin_1 = __importDefault(require("./routes/admin"));
 const category_1 = __importDefault(require("./routes/category"));

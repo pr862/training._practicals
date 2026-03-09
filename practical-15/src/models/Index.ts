@@ -10,6 +10,12 @@ Category.belongsTo(Category, {as: 'parent',foreignKey: 'parent_id',});
 Category.hasMany(Product, { foreignKey: 'categoryId' });
 Product.belongsTo(Category, { foreignKey: 'categoryId' });
 
+User.hasMany(Product, { foreignKey: 'adminId', as: 'products' });
+Product.belongsTo(User, { foreignKey: 'adminId', as: 'admin' });
+
+User.hasMany(Category, { foreignKey: 'adminId', as: 'categories' });
+Category.belongsTo(User, { foreignKey: 'adminId', as: 'admin' });
+
 User.hasMany(UserFavorite, { foreignKey: 'userId' });
 UserFavorite.belongsTo(User, { foreignKey: 'userId' });
 

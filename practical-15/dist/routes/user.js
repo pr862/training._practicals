@@ -2,10 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const Index_1 = require("../models/Index");
+const auth_1 = require("../middleware/auth");
 const asyncHandler_1 = require("../middleware/asyncHandler");
 const validation_1 = require("../middleware/validation");
 const feedbackEmail_1 = require("../utils/feedbackEmail");
 const router = (0, express_1.Router)();
+router.use(auth_1.auth);
 router.get('/favorites', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const userId = req.user.id;
     const favorites = await Index_1.UserFavorite.findAll({
@@ -69,16 +71,18 @@ router.post('/feedback', (0, validation_1.validate)(validation_1.feedbackValidat
     if (!user) {
         return res.status(404).json({ message: 'User not found' });
     }
-    await (0, feedbackEmail_1.sendFeedbackEmail)({
+    (0, feedbackEmail_1.sendFeedbackEmail)({
         userId: user.id,
         userName: user.name,
         userEmail: user.email,
         subject,
         message
+    }).catch((error) => {
+        console.error('Background feedback email send failed:', error?.message || error);
     });
-    res.status(200).json({
+    res.status(202).json({
         success: true,
-        message: 'Feedback sent successfully. Thank you for your input!'
+        message: 'Feedback submitted successfully. Thank you for your input!'
     });
 }));
 router.get('/profile', (0, asyncHandler_1.asyncHandler)(async (req, res) => {

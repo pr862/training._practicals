@@ -1,17 +1,25 @@
 import nodemailer from 'nodemailer';
 import { User } from '../models/Index';
 
+const smtpUser = process.env.SMTP_USER?.trim();
+const smtpPass = process.env.SMTP_PASS?.trim();
+
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
   port: Number(process.env.SMTP_PORT),
   secure: process.env.SMTP_SECURE === 'true',
+  connectionTimeout: 30000,
+  greetingTimeout: 30000,
+  socketTimeout: 30000,
   auth: {
-    user: process.env.SMTP_USER,
-    pass: process.env.SMTP_PASS,
+    user: smtpUser,
+    pass: smtpPass,
   },
+  logger: true,
+  debug: true,
 });
 
-const fromEmail = process.env.SMTP_FROM ;
+const fromEmail = process.env.SMTP_FROM || process.env.SMTP_USER;
 
 interface FeedbackData {
   userId: number;

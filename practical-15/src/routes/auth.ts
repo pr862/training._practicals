@@ -31,11 +31,9 @@ router.post('/signup',
 
     const token = generateToken(user.id, user.role);
 
-    if (userRole === 'user') {
-      sendWelcomeEmail(user.email, user.name).catch(err => 
-        console.error('Failed to send welcome email:', err)
-      );
-    }
+    sendWelcomeEmail(user.email, user.name).catch(err => 
+      console.error('Failed to send welcome email:', err)
+    );
 
     res.status(201).json({
       token,

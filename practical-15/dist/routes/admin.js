@@ -12,6 +12,7 @@ router.use(auth_1.auth);
 router.use(admin_1.adminOnly);
 router.get('/users', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
     const users = await Index_1.User.findAll({
+        where: { role: 'user' },
         attributes: ['id', 'name', 'email', 'role', 'createdAt']
     });
     res.json(users);
@@ -37,11 +38,12 @@ router.delete('/users/:id', (0, validation_1.validate)(validation_1.userIdValida
     res.json({ message: 'User deleted successfully' });
 }));
 router.get('/analytics', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
+    const adminId = req.user.id;
+    const productCount = await Index_2.Product.count({ where: { adminId } });
+    const categoryCount = await Index_2.Category.count({ where: { adminId } });
     const totalUsers = await Index_1.User.count();
     const adminCount = await Index_1.User.count({ where: { role: 'admin' } });
     const userCount = await Index_1.User.count({ where: { role: 'user' } });
-    const productCount = await Index_2.Product.count();
-    const categoryCount = await Index_2.Category.count();
     res.json({
         totalUsers,
         adminCount,
@@ -49,5 +51,20 @@ router.get('/analytics', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
         productCount,
         categoryCount
     });
+}));
+router.get('/products', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
+    const adminId = req.user.id;
+    const products = await Index_2.Product.findAll({
+        where: { adminId },
+        order: [['createdAt', 'DESC']]
+    });
+    res.json(products);
+}));
+router.get('/categories', (0, asyncHandler_1.asyncHandler)(async (req, res) => {
+    const adminId = req.user.id;
+    const categories = await Index_2.Category.findAll({
+        where: { adminId }
+    });
+    res.json(categories);
 }));
 exports.default = router;

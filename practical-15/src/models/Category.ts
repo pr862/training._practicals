@@ -5,6 +5,7 @@ export class Category extends Model {
   public id!: number;
   public name!: string;
   public parent_id!: number | null;
+  public adminId!: number;
   createdAt: any;
   updatedAt: any;
   
@@ -26,6 +27,11 @@ Category.init(
     },
     
     parent_id: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+    },
+
+    adminId: {
       type: DataTypes.INTEGER,
       allowNull: true,
     },
