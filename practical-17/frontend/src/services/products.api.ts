@@ -3,12 +3,15 @@ import type { Category, Product, ProductQuery, ProductUpsertInput } from '@/type
 
 interface ProductApiResponse {
   id: number | string;
+  productNumber?: number | string;
   name: string;
   price: number | string;
   stock: number | string;
   image?: string;
   categoryId?: number | string;
   category_id?: number | string;
+  adminId?: number | string;
+  admin_id?: number | string | null;
   Category?: Category;
   category?: Category;
   createdAt?: string;
@@ -18,11 +21,13 @@ interface ProductApiResponse {
 
 export const normalizeProduct = (item: ProductApiResponse): Product => ({
   id: Number(item.id),
+  productNumber: Number(item.productNumber ?? 1),
   name: item.name,
   price: Number(item.price ?? 0),
   stock: Number(item.stock ?? 0),
   image: item.image,
   categoryId: Number(item.categoryId ?? item.category_id ?? item.Category?.id ?? item.category?.id ?? 0),
+  admin_id: item.adminId !== undefined ? Number(item.adminId) : (item.admin_id !== undefined ? Number(item.admin_id) : undefined),
   Category: item.Category ?? item.category,
   createdAt: item.createdAt ?? item.created_at,
   updatedAt: item.updatedAt,

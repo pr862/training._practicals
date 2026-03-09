@@ -2,11 +2,13 @@ import type { Category } from './category';
 
 export interface Product {
   id: number;
+  productNumber: number;
   name: string;
   price: number;
   stock: number;
   image?: string;
   categoryId: number;
+  admin_id?: number | null;
   Category?: Category;
   createdAt?: string;
   updatedAt?: string;
