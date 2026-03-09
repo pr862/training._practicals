@@ -5,7 +5,6 @@ import { adminOnly } from '../middleware/admin';
 import { asyncHandler } from '../middleware/asyncHandler';
 import {
   validate,
-  productValidation,
   productIdValidation
 } from '../middleware/validation';
 import { uploadProductImage } from '../middleware/upload';
@@ -190,8 +189,16 @@ router.post('/',
   asyncHandler(async (req: AuthRequest, res: Response) => {
     const adminId = req.user!.id;
     
+    const lastProduct = await Product.findOne({
+      where: { adminId },
+      order: [['productNumber', 'DESC']]
+    });
+    
+    const productNumber = lastProduct ? lastProduct.productNumber + 1 : 1;
+    
     const productData: any = {
       ...req.body,
+      productNumber,
       price: parseFloat(req.body.price),
       stock: parseInt(req.body.stock),
       categoryId: parseInt(req.body.categoryId),

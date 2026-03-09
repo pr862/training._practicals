@@ -4,6 +4,7 @@ import sequelize from '../config/database';
 
 export class Product extends Model {
   public id!: number;
+  public productNumber!: number;
   public name!: string;
   public price!: number;
   public stock!: number;
@@ -18,6 +19,11 @@ Product.init(
       type: DataTypes.INTEGER,
       autoIncrement: true,
       primaryKey: true,
+    },
+
+    productNumber: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
 
     name: {
