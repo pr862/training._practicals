@@ -75,7 +75,7 @@
 
             <div class="flex items-center justify-between">
               <span class="text-lg font-semibold text-gray-900">
-                ${{ product.price.toFixed(2) }}
+                ₹{{ product.price.toFixed(2) }}
               </span>
 
               <span
