@@ -129,10 +129,10 @@ const userInitials = computed(() => {
 });
 
 const handleLogout = () => {
+  if (!confirm('Are you sure you want to logout?')) return;
   authStore.logout();
   router.push('/login');
 };
-
 watch(
   () => route.path,
   () => {
