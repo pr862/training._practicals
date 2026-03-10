@@ -77,7 +77,7 @@
         </div>
         <button
           @click="handleLogout"
-          class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-700 rounded-lg transition-colors"
+          class="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-700 rounded-lg transition-colors cursor-pointer"
         >
           <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
@@ -91,7 +91,7 @@
       <header class="lg:hidden bg-white border-b border-olive-100 px-4 py-3 flex items-center gap-3">
         <button
           @click="showSidebar = true"
-          class="inline-flex items-center justify-center size-9 rounded-lg border border-olive-200 text-olive-900"
+          class="inline-flex items-center justify-center size-9 rounded-lg border border-olive-200 text-olive-900 cursor-pointer"
           aria-label="Open admin menu"
         >
           <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -7,7 +7,7 @@
       </div>
       <button
         @click="openModal()"
-        class="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-4 py-2 bg-olive-500 hover:bg-olive-600 text-white rounded-lg transition-colors"
+        class="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-4 py-2 bg-olive-500 hover:bg-olive-600 text-white rounded-lg transition-colors cursor-pointer"
       >
         <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
@@ -42,7 +42,7 @@
                 <template v-if="isCategoryOwned(category)">
                   <button
                     @click="handleEdit(category)"
-                    class="text-olive-700 mr-4"
+                    class="text-olive-700 mr-4 cursor-pointer"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -52,7 +52,7 @@
                   </button>
                   <button
                     @click="handleDelete(category.id)"
-                    class="text-red-600 hover:text-red-900"
+                    class="text-red-600 hover:text-red-900 cursor-pointer"
                   >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="3 6 5 6 21 6"></polyline>
@@ -103,7 +103,7 @@
                 <template v-if="isCategoryOwned(category)">
                   <button
                     @click="handleEdit(category)"
-                    class="text-olive-700 mr-4"
+                    class="text-olive-700 mr-4 cursor-pointer"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
@@ -113,7 +113,7 @@
                   </button>
                   <button
                     @click="handleDelete(category.id)"
-                    class="text-red-600 hover:text-red-900"
+                    class="text-red-600 hover:text-red-900 cursor-pointer"
                   >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="3 6 5 6 21 6"></polyline>
@@ -169,13 +169,13 @@
             <button
               type="button"
               @click="closeModal"
-              class="flex-1 px-4 py-2 border border-olive-300 text-gray-700 rounded-lg hover:bg-olive-50 transition-colors"
+              class="flex-1 px-4 py-2 border border-olive-300 text-gray-700 rounded-lg hover:bg-olive-50 transition-colors cursor-pointer"
             >
               Cancel
             </button>
             <button
               type="submit"
-              class="flex-1 px-4 py-2 bg-olive-500 text-white rounded-lg hover:bg-olive-600 transition-colors"
+              class="flex-1 px-4 py-2 bg-olive-500 text-white rounded-lg hover:bg-olive-600 transition-colors cursor-pointer"
               :disabled="loading"
             >
               {{ loading ? 'Saving...' : (editingCategory ? 'Update' : 'Create') }}
