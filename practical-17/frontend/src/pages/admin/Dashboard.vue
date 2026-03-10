@@ -5,6 +5,13 @@
       <p class="text-gray-500 mt-1">Welcome back, {{ authStore.user?.name }}!</p>
     </div>
 
+     <div v-if="analyticError" class="bg-red-50 border border-red-200 rounded-lg p-4 text-red-600 mb-4">
+      {{ analyticError }}
+    </div>
+    <div v-if="catError" class="bg-red-50 border border-red-200 rounded-lg p-4 text-red-600 mb-4">
+      {{ catError }}
+     </div>
+
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
       <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
         <div class="flex items-center justify-between">
@@ -88,6 +95,8 @@ import { analyticsAPI, categoryAPI } from '@/services';
 import type { Analytics } from '@/types';
 
 const authStore = useAuthStore();
+const analyticError = ref<string | null>(null);
+const catError = ref<string | null>(null);
 
 const analytics = ref<Analytics>({
   userCount: 0,
@@ -96,19 +105,18 @@ const analytics = ref<Analytics>({
 });
 
 const fetchanalytics = async () => {
+  analyticError.value = null;
   try {
     analytics.value = await analyticsAPI.get();
-    
- 
     const categories = await categoryAPI.getAll();
     analytics.value.categoryCount = categories.length;
-  } catch (error) {
-    console.error('Failed to fetch analytics:', error);
+  } catch (error:any) {
+    analyticError.value = error.response?.data?.message || 'Failed to fetch analytics. Please try again.';
     try {
       const categories = await categoryAPI.getAll();
       analytics.value.categoryCount = categories.length;
-    } catch (catError) {
-      console.error('Failed to fetch categories:', catError);
+    } catch (catError:any) {
+      catError.value = catError.response?.data?.message || 'Failed to fetch category count. Please try again.';
     }
   }
 };

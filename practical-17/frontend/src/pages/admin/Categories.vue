@@ -14,6 +14,10 @@
       </button>
     </div>
 
+    <div v-if="dataError" class="bg-red-50 border border-red-200 rounded-lg p-4 text-red-600 mb-4">
+      {{ dataError }}
+    </div>
+
     <div class="mb-8">
       <h2 class="text-xl font-semibold text-gray-800 mb-4">Parent Categories</h2>
       <div class="bg-white rounded-xl shadow-sm border border-olive-100 overflow-hidden">
@@ -29,6 +33,18 @@
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-200">
+            <tr v-if="loading">
+            <td colspan="5" class="px-6 py-12 text-center">
+              <div class="flex items-center justify-center">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black"></div>
+              </div>
+            </td>
+          </tr>
+            <tr v-else-if="!loading && parentCategories.length === 0">
+              <td colspan="5" class="px-6 py-8 text-center text-gray-500">No parent categories found</td>
+            </tr>
+
+            <template v-else>
             <tr v-for="category in parentCategories" :key="category.id" class="hover:bg-olive-50">
               <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ category.id }}</td>
               <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ category.name }}</td>
@@ -54,9 +70,7 @@
                 <span v-else class="text-gray-400 text-xs">Not editable</span>
               </td>
             </tr>
-            <tr v-if="parentCategories.length === 0">
-              <td colspan="5" class="px-6 py-8 text-center text-gray-500">No parent categories found</td>
-            </tr>
+            </template>
           </tbody>
         </table>
         </div>
@@ -124,7 +138,6 @@
               type="text"
               class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:ring-2 focus:ring-olive-500 focus:border-olive-500 outline-none"
               placeholder="Enter category name"
-              required
             />
             <p v-if="errors.name" class="mt-1 text-sm text-red-600">{{ errors.name }}</p>
           </div>
@@ -179,6 +192,7 @@ const categories = ref<Category[]>([]);
 const showModal = ref(false);
 const editingCategory = ref<Category | null>(null);
 const loading = ref(false);
+const dataError = ref<string | null>(null);
 const errors = ref<Record<string, string>>({});
 
 const formData = ref({
@@ -220,10 +234,15 @@ const handleDelete = (id: number) => {
 };
 
 const fetchCategories = async () => {
+  loading.value = true;
+  errors.value = {};
+  dataError.value = null;
   try {
     categories.value = await categoryAPI.getAll();
-  } catch (error) {
-    console.error('Failed to fetch categories:', error);
+  } catch (error:any) {
+    dataError.value = error.response?.data?.message || 'Failed to fetch categories. Please try again.';
+  } finally {
+    loading.value = false;
   }
 };
 
@@ -291,7 +310,7 @@ const handleSubmit = async () => {
         errors.value[err.field] = err.message;
       });
     } else {
-      console.error('Failed to save category:', error);
+     dataError.value = error.response?.data?.message || 'Failed to save category. Please try again.';
     }
   } finally {
     loading.value = false;
@@ -304,8 +323,8 @@ const deleteCategory = async (id: number) => {
   try {
     await categoryAPI.delete(id);
     await fetchCategories();
-  } catch (error) {
-    console.error('Failed to delete category:', error);
+  } catch (error:any) {
+    alert(error.response?.data?.message || 'Failed to delete category. Please try again.');
   }
 };
 

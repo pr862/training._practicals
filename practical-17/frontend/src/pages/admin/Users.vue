@@ -5,6 +5,10 @@
       <p class="text-gray-500 mt-1">View and manage registered users</p>
     </div>
 
+    <div v-if="userError" class="bg-red-50 border border-red-200 rounded-lg p-4 text-red-600 mb-4">
+      {{ userError }}
+    </div>
+
     <div class="bg-white rounded-xl shadow-sm border border-olive-100 overflow-hidden">
       <div class="overflow-x-auto">
       <table class="w-full min-w-[760px]">
@@ -18,6 +22,17 @@
           </tr>
         </thead>
         <tbody class="divide-y divide-gray-200">
+          <tr v-if="loading">
+            <td colspan="5" class="px-6 py-12 text-center">
+              <div class="flex items-center justify-center">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black"></div>
+              </div>
+            </td>
+          </tr>
+           <tr v-else-if="users.length === 0">
+            <td colspan="6" class="px-6 py-8 text-center text-gray-500">No users found</td>
+          </tr>
+          <template v-else>
           <tr v-for="user in users" :key="user.id" class="hover:bg-olive-50">
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ user.id }}</td>
             <td class="px-6 py-4 whitespace-nowrap">
@@ -41,9 +56,7 @@
               </button>
             </td>
           </tr>
-          <tr v-if="users.length === 0">
-            <td colspan="6" class="px-6 py-8 text-center text-gray-500">No users found</td>
-          </tr>
+          </template>
         </tbody>
       </table>
       </div>
@@ -57,12 +70,17 @@ import { adminUserAPI } from '@/services';
 import type { AdminUser } from '@/types';
 
 const users = ref<AdminUser[]>([]);
-
+const userError = ref<string | null>(null);
+const loading = ref(false);
 const fetchUsers = async () => {
+  loading.value = true;
+  userError.value = null;
   try {
     users.value = await adminUserAPI.getAll();
-  } catch (error) {
-    console.error('Failed to fetch users:', error);
+  } catch (error:any) {
+    userError.value = error.response?.data?.message || 'Failed to fetch users. Please try again.';
+  } finally {
+    loading.value = false;
   }
 };
 
@@ -72,8 +90,8 @@ const deleteUser = async (id: number) => {
   try {
     await adminUserAPI.delete(id);
     await fetchUsers();
-  } catch (error) {
-    console.error('Failed to delete user:', error);
+  } catch (error:any) {
+    userError.value = error.response?.data?.message || 'Failed to delete user. Please try again.';
   }
 };
 

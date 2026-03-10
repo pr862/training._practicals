@@ -14,6 +14,11 @@
       </button>
     </div>
 
+    <div v-if="dataError" class="bg-red-50 border border-red-200 rounded-lg p-4 text-red-600">
+      {{ dataError }}
+    </div>
+
+
     <div class="bg-white rounded-xl shadow-sm border border-olive-100 overflow-hidden">
       <div class="overflow-x-auto">
       <table class="w-full min-w-[980px]">
@@ -30,6 +35,18 @@
           </tr>
         </thead>
 <tbody class="divide-y divide-gray-200">
+             <tr v-if="dataLoading">
+            <td colspan="8" class="px-6 py-12 text-center">
+              <div class="flex items-center justify-center">
+                <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black"></div>
+              </div>
+            </td>
+          </tr>
+           <tr v-else-if="!dataLoading && products.length === 0">
+            <td colspan="8" class="px-6 py-8 text-center text-gray-500">No products found</td>
+          </tr>
+
+          <template v-else>
           <tr v-for="product in productsWithIndex" :key="product.id" class="hover:bg-olive-50">
             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ product.localId }}</td>
             <td class="px-6 py-4 whitespace-nowrap">
@@ -81,9 +98,7 @@
               </button>
             </td>
           </tr>
-          <tr v-if="products.length === 0">
-            <td colspan="7" class="px-6 py-8 text-center text-gray-500">No products found</td>
-          </tr>
+          </template>
         </tbody>
       </table>
       </div>
@@ -102,7 +117,6 @@
               type="text"
               class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:ring-2 focus:ring-olive-500 focus:border-olive-500 outline-none"
               placeholder="Enter product name"
-              required
             />
             <p v-if="errors.name" class="mt-1 text-sm text-red-600">{{ errors.name }}</p>
           </div>
@@ -117,7 +131,6 @@
                 min="0"
                 class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:ring-2 focus:ring-olive-500 focus:border-olive-500 outline-none"
                 placeholder="0.00"
-                required
               />
               <p v-if="errors.price" class="mt-1 text-sm text-red-600">{{ errors.price }}</p>
             </div>
@@ -129,7 +142,6 @@
                 min="0"
                 class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:ring-2 focus:ring-olive-500 focus:border-olive-500 outline-none"
                 placeholder="0"
-                required
               />
               <p v-if="errors.stock" class="mt-1 text-sm text-red-600">{{ errors.stock }}</p>
             </div>
@@ -140,7 +152,6 @@
             <select
               v-model="formData.parentCategoryId"
               class="w-full px-4 py-2 border border-olive-300 rounded-lg focus:ring-2 focus:ring-olive-500 focus:border-olive-500 outline-none"
-              required
             >
               <option value="">Select category</option>
               <option v-for="cat in parentCategories" :key="cat.id" :value="cat.id">
@@ -270,6 +281,8 @@ const subcategories = computed((): Category[] => {
 const showModal = ref(false);
 const editingProduct = ref<Product | null>(null);
 const loading = ref(false);
+const dataLoading = ref(false);
+const dataError = ref<string | null>(null);
 const errors = ref<Record<string, string>>({});
 const selectedImage = ref<string | null>(null);
 const showImageModal = ref(false);
@@ -312,18 +325,23 @@ const handleImageChange = (event: Event) => {
 };
 
 const fetchProducts = async () => {
+  dataLoading.value = true;
+  dataError.value = null;
+  errors.value = {};
   try {
     products.value = await productAPI.getAdminProducts();
-  } catch (error) {
-    console.error('Failed to fetch products:', error);
+  } catch (error:any) {
+    dataError.value = error.response?.data?.message || 'Failed to fetch products. Please try again.';
+  } finally {
+    dataLoading.value = false;
   }
 };
 
 const fetchCategories = async () => {
   try {
     categories.value = await categoryAPI.getAll();
-  } catch (error) {
-    console.error('Failed to fetch categories:', error);
+  } catch (error: any) {
+    error.value = error.response?.data?.message || 'Failed to fetch categories. Please try again.';
   }
 };
 
@@ -428,7 +446,7 @@ const handleSubmit = async () => {
         errors.value[err.field] = err.message;
       });
     } else {
-      console.error('Failed to save product:', error);
+      errors.value = error.response?.data?.message || 'Failed to save product. Please try again.';
     }
   } finally {
     loading.value = false;
@@ -441,8 +459,8 @@ const deleteProduct = async (id: number) => {
   try {
     await productAPI.delete(id);
     await fetchProducts();
-  } catch (error) {
-    console.error('Failed to delete product:', error);
+  } catch (error: any) {
+    alert(error.response?.data?.message || 'Failed to delete product. Please try again.');
   }
 };
 
