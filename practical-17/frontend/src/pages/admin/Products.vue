@@ -9,9 +9,7 @@
         @click="openModal()"
         class="inline-flex items-center justify-center gap-2 w-full sm:w-auto px-4 py-2 bg-olive-500 hover:bg-olive-600 text-white rounded-lg transition-colors cursor-pointer"
       >
-        <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-        </svg>
+        <img src ="/icons/add.svg" alt="Add Icon" class="size-5 text-white"/>
         Add Product
       </button>
     </div>
@@ -73,21 +71,13 @@
                 @click="openModal(product)"
                 class="text-olive-700 mr-4 cursor-pointer"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
-                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
-                </svg>
+                 <img src ="/icons/edit.svg" alt="Edit Icon" class="size-4.5"/>
               </button>
               <button
                 @click="deleteProduct(product.id)"
                 class="text-red-600 hover:text-red-900 cursor-pointer"
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <polyline points="3 6 5 6 21 6"></polyline>
-                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
-                  <line x1="10" y1="11" x2="10" y2="17"></line>
-                  <line x1="14" y1="11" x2="14" y2="17"></line>
-                </svg>
+                <img src ="/icons/delete.svg" alt="Delete Icon" class="size-4.5"/>
               </button>
             </td>
           </tr>

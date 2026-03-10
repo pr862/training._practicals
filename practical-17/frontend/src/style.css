@@ -23,3 +23,18 @@
     overflow: hidden;
   }
 }
+
+.icon-users {
+  mask-image: url("/icons/users.svg");
+  -webkit-mask-image: url("/icons/users.svg");
+}
+
+.icon-products {
+  mask-image: url("/icons/products.svg");
+  -webkit-mask-image: url("/icons/products.svg");
+}
+
+.icon-categories {
+  mask-image: url("/icons/categories.svg");
+  -webkit-mask-image: url("/icons/categories.svg");
+}
