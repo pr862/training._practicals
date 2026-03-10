@@ -31,7 +31,6 @@
               :class="{ 'border-red-500': errors.email }"
               maxlength="100"
               autocomplete="email"
-              required
             />
             <p v-if="errors.email" class="mt-1 text-sm text-red-500">{{ errors.email }}</p>
           </div>
@@ -49,7 +48,6 @@
               minlength="6"
               maxlength="128"
               autocomplete="current-password"
-              required
             />
             <p v-if="errors.password" class="mt-1 text-sm text-red-500">{{ errors.password }}</p>
           </div>
