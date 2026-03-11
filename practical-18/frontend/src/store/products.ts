@@ -81,7 +81,6 @@ export const useProductsStore = defineStore('products', {
       try {
         this.categories = await categoryAPI.getAll();
       } catch (error) {
-        console.error('Failed to fetch categories:', error);
         this.error = 'Failed to load categories';
       }
     },
@@ -93,7 +92,6 @@ export const useProductsStore = defineStore('products', {
       try {
         this.products = await productAPI.getAll(params);
       } catch (error) {
-        console.error('Failed to fetch products:', error);
         this.error = 'Failed to load products';
       } finally {
         this.loading = false;

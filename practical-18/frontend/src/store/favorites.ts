@@ -31,7 +31,6 @@ export const useFavoritesStore = defineStore('favorites', {
         this.favorites = await userAPI.getFavorites();
         this.favoriteIds = new Set(this.favorites.map((p) => p.id));
       } catch (error: any) {
-        console.error('Failed to fetch favorites:', error);
         this.error = error.response?.data?.message || 'Failed to load favorites';
       } finally {
         this.loading = false;
@@ -48,7 +47,6 @@ export const useFavoritesStore = defineStore('favorites', {
         await this.fetchFavorites();
         return true;
       } catch (error: any) {
-        console.error('Failed to add favorite:', error);
         this.error = error.response?.data?.message || 'Failed to add favorite';
         return false;
       } finally {
@@ -66,7 +64,6 @@ export const useFavoritesStore = defineStore('favorites', {
         this.favorites = this.favorites.filter((p) => p.id !== productId);
         return true;
       } catch (error: any) {
-        console.error('Failed to remove favorite:', error);
         this.error = error.response?.data?.message || 'Failed to remove favorite';
         return false;
       } finally {
@@ -89,7 +86,6 @@ export const useFavoritesStore = defineStore('favorites', {
         }
         return isFavorited;
       } catch (error) {
-        console.error('Failed to check favorite:', error);
         return false;
       }
     },
