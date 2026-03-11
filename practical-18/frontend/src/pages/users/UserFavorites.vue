@@ -58,7 +58,7 @@
 
             <button
               @click.stop="removeFavorite(product.id)"
-              class="absolute top-3 right-3 p-2 rounded-full bg-white shadow-md hover:shadow-lg transition-all text-pink-500 hover:text-pink-600"
+              class="absolute top-3 right-3 p-2 rounded-full bg-white shadow-md hover:shadow-lg transition-all text-pink-500 hover:text-pink-600 cursor-pointer"
               title="Remove from favorites"
             >
               <svg class="size-5" fill="currentColor" stroke="currentColor" viewBox="0 0 24 24">
@@ -97,7 +97,7 @@
     >
       <button
         @click="closeImageModal"
-        class="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors text-2xl font-bold"
+        class="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors text-2xl font-bold cursor-pointer"
       >
         ✕
       </button>

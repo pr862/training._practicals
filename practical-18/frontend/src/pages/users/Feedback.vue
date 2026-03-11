@@ -47,7 +47,7 @@
         <button
           type="submit"
           :disabled="loading"
-          class="w-full py-3 px-6 bg-olive-800 text-white font-medium rounded-lg hover:bg-olive-900 focus:ring-4 focus:ring-olive-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          class="w-full py-3 px-6 bg-olive-800 text-white font-medium rounded-lg hover:bg-olive-900 focus:ring-4 focus:ring-olive-300 disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer"
         >
           <span v-if="loading">Sending...</span>
           <span v-else>Send reviews</span>

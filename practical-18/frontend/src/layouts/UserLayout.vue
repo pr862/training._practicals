@@ -29,7 +29,7 @@
               <button
                 v-if="searchQuery"
                 @click="clearSearch"
-                class="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-olive-50 transition-colors"
+                class="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-olive-50 transition-colors cursor-pointer "
               >
                 <svg class="size-5 text-olive-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -74,7 +74,7 @@
               </span>
               <button
                 @click="handleLogout"
-                class="inline-flex items-center justify-center min-w-[4.5rem] sm:min-w-24 px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium bg-olive-500 rounded-lg text-olive-50 hover:text-olive-300 transition-colors"
+                class="inline-flex items-center justify-center min-w-[4.5rem] sm:min-w-24 px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium bg-olive-500 rounded-lg text-olive-50 hover:text-olive-300 transition-colors cursor-pointer"
               >
                 Logout
               </button>

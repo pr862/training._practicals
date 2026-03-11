@@ -26,13 +26,13 @@
             <button
               v-if="hasActiveFilters"
               @click="clearFilters"
-              class="text-xs sm:text-sm text-red-600 hover:text-red-700"
+              class="text-xs sm:text-sm text-red-600 hover:text-red-700 cursor-pointer"
             >
               Clear all
             </button>
             <button
               @click="showMobileFilters = false"
-              class="lg:hidden inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium rounded-md border border-gray-300 text-gray-600"
+              class="lg:hidden inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium rounded-md border border-gray-300 text-gray-600 cursor-pointer"
             >
               Close
             </button>
@@ -101,7 +101,7 @@
           </div>
           <button
             @click="applyFilters"
-            class="w-full mt-3 px-4 py-2.5 bg-olive-800 text-white text-sm font-medium rounded-lg hover:bg-olive-900 transition-colors"
+            class="w-full mt-3 px-4 py-2.5 bg-olive-800 text-white text-sm font-medium rounded-lg hover:bg-olive-900 transition-colors cursor-pointer"
           >
             Apply Filters
           </button>
@@ -142,7 +142,7 @@
               <button
                 v-if="authStore.isAuthenticated"
                 @click.stop="toggleFavorite(product.id)"
-                class="absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 sm:p-2 rounded-full bg-white shadow-md"
+                class="absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 sm:p-2 rounded-full bg-white shadow-md cursor-pointer"
                 :class="favoritesStore.isFavorite(product.id) ? 'text-pink-500' : 'text-gray-400'"
               >
                 <svg 
@@ -159,7 +159,7 @@
               <button
                 v-else
                 @click.stop="redirectToLogin"
-                class="absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 sm:p-2 rounded-full bg-white shadow-md text-gray-400"
+                class="absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 sm:p-2 rounded-full bg-white shadow-md text-gray-400 cursor-pointer"
               >
                 <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -194,7 +194,7 @@
 
     <div 
       v-if="showImageModal && selectedImages.length > 0" 
-      class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4"
+      class="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50 p-4 cursor-pointer"
       @click.self="closeImageModal"
     >
       <button
