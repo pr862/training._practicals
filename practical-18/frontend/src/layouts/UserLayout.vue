@@ -134,6 +134,7 @@ const clearSearch = () => {
 };
 
 const handleLogout = () => {
+  if (!confirm('Are you sure you want to logout?')) return;
   authStore.logout();
   favoritesStore.clearFavorites();
   router.push('/');
