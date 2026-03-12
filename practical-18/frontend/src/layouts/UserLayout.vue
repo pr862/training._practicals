@@ -18,22 +18,17 @@
                 class="w-full px-5 py-2.5 pl-11 text-olive-50 border-1 border-olive-50 rounded-xl focus:ring-2 focus:ring-olive-50 focus:border-olive-50 outline-none transition-all placeholder:text-olive-50"
                 @keyup.enter="handleSearch"
               />
-              <svg 
-                class="absolute left-3.5 top-1/2 -translate-y-1/2 size-5 text-olive-50"
-                fill="none" 
-                stroke="currentColor" 
-                viewBox="0 0 24 24"
-              >
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
+              <img
+                class="absolute left-3.5 top-1/2 -translate-y-1/2 size-5"
+                src="/icons/search.svg"
+                alt="Search icon"
+              />
               <button
                 v-if="searchQuery"
                 @click="clearSearch"
                 class="absolute right-3 top-1/2 -translate-y-1/2 p-1 rounded-full hover:bg-olive-50 transition-colors cursor-pointer "
               >
-                <svg class="size-5 text-olive-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                </svg>
+                <img src="/icons/close.svg" alt="close icon" class="size-5">
               </button>
             </div>
 
