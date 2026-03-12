@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { userAPI } from '@/services';
+import { userAPI } from '@/services/users';
 import type { Product } from '@/types';
 
 interface FavoritesState {

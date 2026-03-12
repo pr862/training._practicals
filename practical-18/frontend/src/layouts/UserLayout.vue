@@ -107,7 +107,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useAuthStore, useFavoritesStore, useProductsStore } from '@/store';
+import { useAuthStore } from '@/store/auth';
+import { useProductsStore } from '@/store/products';
+import { useFavoritesStore } from '@/store/favorites';
 
 const router = useRouter();
 const authStore = useAuthStore();

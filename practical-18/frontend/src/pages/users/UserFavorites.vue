@@ -116,7 +116,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { useFavoritesStore } from '@/store'
+import { useFavoritesStore } from '@/store/favorites'
 
 const favoritesStore = useFavoritesStore()
 

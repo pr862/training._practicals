@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
-import { categoryAPI, productAPI } from '@/services';
+import { categoryAPI } from '@/services/categories';
+import { productAPI } from '@/services/products';
 import type { Category, Product, ProductQuery } from '@/types';
 
 interface ProductsState {

@@ -59,7 +59,7 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue';
-import { userAPI } from '@/services';
+import { userAPI } from '@/services/users';
 
 const loading = ref(false);
 const error = ref('');

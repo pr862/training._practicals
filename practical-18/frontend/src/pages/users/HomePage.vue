@@ -218,7 +218,10 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useProductsStore, useAuthStore, useFavoritesStore } from '@/store'
+import { useProductsStore } from '@/store/products'
+import { useAuthStore} from '@/store/auth'
+import { useFavoritesStore } from '@/store/favorites'
+
 import type { Category, Product } from '@/types'
 
 const router = useRouter()

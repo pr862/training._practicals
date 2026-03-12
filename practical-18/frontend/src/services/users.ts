@@ -1,5 +1,5 @@
 import { apiClient } from '@/services/http';
-import { normalizeProduct } from '@/services/products.api';
+import { normalizeProduct } from '@/services/products';
 import type { FavoriteStatus, FeedbackInput, Product } from '@/types';
 
 export const userAPI = {

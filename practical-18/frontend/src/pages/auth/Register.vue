@@ -120,7 +120,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useAuthStore } from '@/store';
+import { useAuthStore } from '@/store/auth';
 import { normalizeEmail, normalizeName, validateRegisterForm } from '@/utils/validators';
 
 const router = useRouter()
