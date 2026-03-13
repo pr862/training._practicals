@@ -2,9 +2,9 @@ import { apiClient } from '@/services/http';
 import type { Category } from '@/types';
 
 interface CategoryApiResponse {
-  id: number | string;
+  id: number;
   name: string;
-  parent_id: number | string | null;
+  parent_id: number | null;
   createdAt?: string;
   updatedAt?: string;
 }

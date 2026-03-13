@@ -2,13 +2,13 @@ import { apiClient } from '@/services/http';
 import type { Category, Product, ProductQuery } from '@/types';
 
 interface ProductApiResponse {
-  id: number | string;
+  id: number;
   name: string;
-  price: number | string;
-  stock: number | string;
+  price: number;
+  stock: number;
   image?: string;
-  categoryId?: number | string;
-  category_id?: number | string;
+  categoryId?: number;
+  category_id?: number;
   Category?: Category;
   category?: Category;
   createdAt?: string;
