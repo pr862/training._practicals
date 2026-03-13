@@ -88,7 +88,7 @@
     >
       <button
         @click="closeImageModal"
-        class="absolute top-4 right-4 p-1 hover:bg-gray-800 rounded"
+        class="absolute top-4 right-4 p-1 hover:bg-gray-800 rounded cursor-pointer"
       >
         <img src="/icons/close.svg" alt="Close" class="size-5 text-white" />
       </button>

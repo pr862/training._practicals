@@ -192,7 +192,7 @@
     >
       <button
         @click="closeImageModal"
-        class="absolute top-4 right-4 p-1"
+        class="absolute top-4 right-4 p-1 cursor-pointer"
       >
         <img src="/icons/close.svg" alt="Close" class="size-5 text-white" />
       </button>
