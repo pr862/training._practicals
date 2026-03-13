@@ -14,10 +14,7 @@
     </div>
 
     <div v-else-if="favoritesStore.favorites.length === 0" class="text-center py-20">
-      <svg class="mx-auto h-16 w-16 text-olive-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-      </svg>
+      <img src="/icons/heart.svg" class="mx-auto h-16 w-16 text-olive-300" alt="No favorites" />
       <h3 class="mt-4 text-lg font-medium text-olive-900">No favorites yet</h3>
       <p class="mt-2 text-sm text-olive-500">Start browsing and add products to your favorites!</p>
       <router-link
@@ -50,10 +47,7 @@
             />
 
             <div v-else class="w-full h-full flex items-center justify-center">
-              <svg class="size-16 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
+              <img src="/icons/image-placeholder.svg" class ="size-16" alt="image icon">
             </div>
 
             <button
@@ -61,10 +55,7 @@
               class="absolute top-3 right-3 p-2 rounded-full bg-white shadow-md hover:shadow-lg transition-all text-pink-500 hover:text-pink-600 cursor-pointer"
               title="Remove from favorites"
             >
-              <svg class="size-5" fill="currentColor" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
+              <img src="/icons/heart-filled.svg" class="size-5" alt="Remove from favorites" />
             </button>
           </div>
 
@@ -97,9 +88,9 @@
     >
       <button
         @click="closeImageModal"
-        class="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors text-2xl font-bold cursor-pointer"
+        class="absolute top-4 right-4 p-1 hover:bg-gray-800 rounded"
       >
-        ✕
+        <img src="/icons/close.svg" alt="Close" class="size-5 text-white" />
       </button>
       <div class="flex gap-4 overflow-x-auto max-w-full max-h-full">
         <img

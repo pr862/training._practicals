@@ -145,15 +145,11 @@
                 class="absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 sm:p-2 rounded-full bg-white shadow-md cursor-pointer"
                 :class="favoritesStore.isFavorite(product.id) ? 'text-pink-500' : 'text-gray-400'"
               >
-                <svg 
-                  class="size-5" 
-                  :fill="favoritesStore.isFavorite(product.id) ? 'currentColor' : 'none'"
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                >
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                </svg>
+                <img 
+                  :src="`/icons/${favoritesStore.isFavorite(product.id) ? 'heart-filled.svg' : 'heart.svg'}`" 
+                  class="size-5"
+                  :alt="favoritesStore.isFavorite(product.id) ? 'Remove favorite' : 'Add to favorites'"
+                />
               </button>
 
               <button
@@ -161,10 +157,7 @@
                 @click.stop="redirectToLogin"
                 class="absolute top-2 right-2 sm:top-3 sm:right-3 p-1.5 sm:p-2 rounded-full bg-white shadow-md text-gray-400 cursor-pointer"
               >
-                <svg class="size-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                </svg>
+                <img src="/icons/heart.svg" class="size-5" alt="Login to favorite" />
               </button>
             </div>
 
@@ -199,9 +192,9 @@
     >
       <button
         @click="closeImageModal"
-        class="absolute top-4 right-4 text-white text-2xl font-bold"
+        class="absolute top-4 right-4 p-1"
       >
-        ✕
+        <img src="/icons/close.svg" alt="Close" class="size-5 text-white" />
       </button>
       <div class="flex gap-4 overflow-x-auto max-w-full max-h-full">
         <img
