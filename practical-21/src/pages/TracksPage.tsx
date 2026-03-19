@@ -7,12 +7,11 @@ import { useDispatch } from 'react-redux';
 import { fetchTracks } from '../store/trackSlice'; 
 
 const TracksPage: React.FC = () => {
-  const { tracks, loading, error, refetch } = useTracks();
+  const { tracks, loading } = useTracks();
   const [search, setSearch] = useState('');
   const dispatch = useDispatch();
 
   const handleSearch = () => {
-    refetch();
   };
 
   return (
@@ -27,11 +26,9 @@ const TracksPage: React.FC = () => {
         <Button onClick={handleSearch}>Search</Button>
         <Button onClick={() => dispatch(fetchTracks() as any)}>Refresh</Button>
       </div>
-      {error && <div className="text-red-500 p-4 bg-red-50 rounded">{error}</div>}
       <TrackList tracks={tracks} loading={loading} />
     </div>
   );
 };
 
 export default TracksPage;
-

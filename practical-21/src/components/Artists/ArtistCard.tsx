@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import type { Artist } from '../../types/api';
 
 interface ArtistCardProps {
@@ -6,8 +7,13 @@ interface ArtistCardProps {
 }
 
 const ArtistCard: React.FC<ArtistCardProps> = ({ artist }) => {
+  const navigate = useNavigate();
+
   return (
-    <div className="group cursor-pointer text-center p-6 rounded-2xl hover:bg-gray-50 transition-all duration-300 hover:shadow-xl border hover:border-purple-200">
+    <div 
+      onClick={() => navigate(`/app/artists/${artist.id}`)}
+      className="group cursor-pointer text-center p-6 rounded-2xl hover:bg-gray-50 transition-all duration-300 hover:shadow-xl border hover:border-purple-200"
+    >
       <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden shadow-xl group-hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-indigo-400 to-purple-600 p-2">
         <img 
           src={artist.image} 

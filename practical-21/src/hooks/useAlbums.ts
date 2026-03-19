@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { albumsAPI } from '../services/api';
+import { getImageUrl } from '../utils/imageHelper';
 import type { Album } from '../types/api';
 
 export const useAlbums = () => {
@@ -7,25 +8,92 @@ export const useAlbums = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    const fetchAlbums = async () => {
-      try {
-        setLoading(true);
-        const response = await albumsAPI.getAll();
-        if (response.data.success) {
-          setAlbums(response.data.data || []);
-        } else {
-          setError('Failed to fetch albums');
-        }
-      } catch (err) {
-        setError('Failed to fetch albums');
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchAlbums = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError('');
 
-    fetchAlbums();
+      const response = await albumsAPI.getAll();
+
+      const apiData = response.data;
+
+      if (apiData?.success && Array.isArray(apiData.data)) {
+        const mappedAlbums = apiData.data.map((a: any, index: number) => {
+
+          return {
+            id: a.id,
+            title: a.title || a.name || 'Unknown Album',
+            image: getImageUrl((a.image || a.image_url)?.replace('/images/', '/') || undefined),
+            year:
+              a.year ||
+              (a.published_at
+                ? new Date(a.published_at).getFullYear()
+                : undefined),
+
+            artistId: a.artistId || a.artist_id,
+
+            artistName:
+              a.artist?.name ||       
+              a.artist_name ||        
+              a.artistName ||         
+              'Unknown Artist',    
+
+            tracks: a.tracks || [],
+          };
+        });
+
+        setAlbums(mappedAlbums);
+      }
+
+      else if (Array.isArray(apiData)) {
+        const mappedAlbums = apiData.map((a: any, index: number) => {
+
+          return {
+            id: a.id,
+            title: a.title || a.name || 'Unknown Album',
+            image: getImageUrl((a.image || a.image_url)?.replace('/images/', '/') || undefined),
+
+            year:
+              a.year ||
+              (a.published_at
+                ? new Date(a.published_at).getFullYear()
+                : undefined),
+
+            artistId: a.artistId || a.artist_id,
+
+            artistName:
+              a.artist?.name ||
+              a.artist_name ||
+              a.artistName ||
+              'Unknown Artist',
+
+            tracks: a.tracks || [],
+          };
+        });
+
+        setAlbums(mappedAlbums);
+      }
+
+      else {
+        setError(apiData?.message || 'Failed to fetch albums');
+      }
+
+    } catch (err) {
+      console.error("❌ ALBUM FETCH ERROR:", err);
+      setError('Failed to fetch albums');
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  return { albums, loading, error, refetch: () => {/* impl */} };
+  useEffect(() => {
+    fetchAlbums();
+  }, [fetchAlbums]);
+
+  return {
+    albums,
+    loading,
+    error,
+    refetch: fetchAlbums,
+  };
 };

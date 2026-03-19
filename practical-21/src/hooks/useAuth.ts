@@ -5,7 +5,7 @@ import { loginThunk, registerThunk, logoutThunk, clearError } from '../store/aut
 
 export const useAuth = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { isLoading, error } = useSelector((state: RootState) => state.auth);
+  const { isLoading, error, isAuthenticated } = useSelector((state: RootState) => state.auth);
 
 const login = useCallback(async (email: string, password: string) => {
     await dispatch(loginThunk({ email, password }));
@@ -29,6 +29,7 @@ const login = useCallback(async (email: string, password: string) => {
     logout, 
     loading: isLoading, 
     error: error ?? undefined,
+    isAuthenticated,
     clearAuthError 
   };
 };

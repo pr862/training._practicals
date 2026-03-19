@@ -74,7 +74,7 @@ const favouriteSlice = createSlice({
         state.favourites.push(action.payload);
       })
       .addCase(removeFavourite.fulfilled, (state, action) => {
-        state.favourites = state.favourites.filter(f => f.id !== action.payload);
+state.favourites = state.favourites.filter(f => f.id !== Number(action.payload));
       });
   },
 });

@@ -54,10 +54,14 @@ const playerSlice = createSlice({
         state.currentTrack = state.playlist[state.currentIndex];
       }
     },
+    playTrack: (state, action: PayloadAction<Track>) => {
+      state.currentTrack = action.payload;
+      state.isPlaying = true;
+    },
   },
 });
 
 export const { 
-  setCurrentTrack, play, pause, setProgress, setPlaylist, nextTrack, previousTrack 
+  setCurrentTrack, play, pause, setProgress, setPlaylist, nextTrack, previousTrack, playTrack 
 } = playerSlice.actions;
 export default playerSlice.reducer;

@@ -5,7 +5,10 @@ import { logoutThunk } from '../../store/authSlice';
 import Input from '../UI/Input';
 import Button from '../UI/Button';
 import homeIcon from '../../assets/home.svg';
+import searchIcon from '../../assets/search.svg';
+import browserIcon from '../../assets/browser.svg';
 import type { AppDispatch, RootState } from '../../store/store';
+
 
 const Navbar: React.FC = () => {
   const [profileOpen, setProfileOpen] = useState(false);
@@ -25,20 +28,22 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="h-16 backdrop-blur-2xl bg-gradient-to-r from-gray-900/95 via-gray-800/90 to-gray-900/95 border-b border-teal-900/30 shadow-[0_8px_32px_rgba(0,0,0,0.6)] z-50 flex items-center px-4 lg:px-6 transition-all duration-500">
-      <div className="w-full max-w-7xl mx-auto flex items-center justify-between">
+    <nav className="h-20 fixed top-0 left-0 right-0 2xl:h-20 bg-[#000000] backdrop-blur-xl border-b border-teal-500/30 shadow-[0_8px_32px_rgba(0,0,0,0.6)] z-50 flex items-center px-4 lg:px-6 transition-all duration-500">
+
+      <div className="w-full max-w-full mx-auto flex items-center justify-between">
         
         <NavLink
-          to="/app"
-          className="text-2xl lg:text-2xl font-black bg-gradient-to-r from-teal-400 via-teal-500 to-emerald-500 bg-clip-text text-transparent hover:scale-110 active:scale-95 transition-all duration-300 select-none"
+          to="/"
+          className="text-2xl font-black bg-gradient-to-r from-teal-400 via-teal-500 to-emerald-500 bg-clip-text text-transparent hover:scale-110 active:scale-95 transition-all duration-300 select-none"
         >
           MusicStream
         </NavLink>
 
+
         <div className="flex-1 max-w-lg mx-4 lg:mx-8 hidden md:flex items-center gap-3">
           <button
-            onClick={() => navigate('/app')}
-            className="flex-shrink-0 p-2 rounded-full bg-gradient-to-r from-gray-900/95 via-gray-800/90 to-gray-900/95 border border-teal-500/30 hover:border-teal-400/50 shadow-xl hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center"
+            onClick={() => navigate('/')}
+            className="flex-shrink-0 p-2 rounded-full bg-transpernet border border-teal-500/50 hover:border-teal-400/50 shadow-xl hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center"
             title="Go to Home"
           >
             <img 
@@ -48,24 +53,33 @@ const Navbar: React.FC = () => {
             />
           </button>
 
+
           <div className="relative w-full">
             <Input
               placeholder="Search for songs, artists, albums..."
-              className="w-full pl-14 pr-16 py-4 text-lg backdrop-blur-xl !bg-transparent border border-teal-800/40 hover:border-teal-700/60 focus:border-teal-500/80 text-white placeholder-gray-400 focus:ring-2 focus:ring-teal-500/20 rounded-3xl transition-all duration-300"
+              className="w-full pl-14 pr-16 py-4 text-lg backdrop-blur-xl !bg-transparent border border-teal-500/50 hover:border-teal-700/60 focus:border-teal-500/80 text-white placeholder-gray-400 focus:ring-2 focus:ring-teal-500/20 rounded-3xl transition-all duration-300"
             />
 
             <img 
-              src="/src/assets/search.svg" 
+              src={searchIcon} 
               alt="Search" 
-              className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 opacity-70 hover:opacity-100 transition-opacity cursor-pointer"
+              className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 opacity-70 hover:opacity-100 transition-opacity cursor-pointer"
             />
             <img 
-              src="/src/assets/browser.svg" 
-              alt="Browser" 
+              src={browserIcon} 
+              alt="Browse" 
               className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 opacity-70 hover:opacity-100 transition-opacity cursor-pointer"
             />
           </div>
         </div>
+
+        {/* Mobile menu button */}
+        <button className="md:hidden p-2 rounded-full hover:bg-gray-800 transition-colors">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+
 
         <div className="flex items-center space-x-2">
           <div className="relative">

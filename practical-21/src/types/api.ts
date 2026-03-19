@@ -1,55 +1,71 @@
 export interface User {
-  id: string;
+  id: number;
   name: string;
   email: string;
   role: 'user' | 'admin';
 }
 
 export interface Track {
-  id: string;
+  id: number;
   title: string;
-  artist: Artist;
-  album?: Album;
-  duration: number;
   image: string;
   audioUrl: string;
-  plays: number;
+
+  artistId?: number;
+  artistName: string;
+
+  albumId?: number;
+  albumTitle?: string;
+
+  duration?: number;
+  plays?: number;
 }
 
 export interface Artist {
-  id: string;
+  id: number;
   name: string;
   image: string;
   description?: string;
+  totalTracks?: number;
 }
 
 export interface Album {
-  id: string;
+  id: number;
   title: string;
-  artist: Artist;
+  artistId: number;
+  artistName: string;
   image: string;
-  year: number;
-  tracks: Track[];
+  year?: number;
+
+  tracks?: Track[];        // ✅ already correct
 }
 
 export interface Playlist {
-  id: string;
+  id: number;
   title: string;
-  userId: string;
+
+  userId: number;
+
   image: string;
   tracks: Track[];
+
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export interface FavouriteTrack {
-  id: string;
-  userId: string;
-  trackId: string;
+  id: number;
+
+  userId: number;
+  trackId: number;
+
   track: Track;
+
   createdAt: string;
 }
 
 export interface ApiResponse<T> {
   success: boolean;
-  data?: T;
+  data: T;
   message?: string;
 }

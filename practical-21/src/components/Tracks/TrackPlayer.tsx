@@ -32,7 +32,7 @@ const TrackPlayer: React.FC<TrackPlayerProps> = ({ track, tracks = [] }) => {
         <img src={track.image} alt={track.title} className="w-20 h-20 rounded-xl shadow-lg" />
         <div className="flex-1 min-w-0">
           <h3 className="font-bold line-clamp-1">{track.title}</h3>
-          <p className="text-sm text-gray-600">{track.artist.name}</p>
+<p className="text-sm text-gray-600">{track.artistName}</p>
         </div>
         <Button 
           onClick={handlePlay} 

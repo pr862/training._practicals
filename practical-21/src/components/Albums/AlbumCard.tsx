@@ -13,8 +13,8 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ album }) => {
       </div>
       <div className="flex-1">
         <h3 className="font-bold text-lg mb-1 line-clamp-1">{album.title}</h3>
-        <p className="text-gray-600 mb-2">{album.artist.name}</p>
-        <p className="text-sm text-gray-500">{album.year} • {album.tracks.length} songs</p>
+        <p className="text-gray-600 mb-2">{album.artistName}</p>
+        <p className="text-sm text-gray-500">{album.year} songs</p>
       </div>
     </div>
   );
