@@ -8,6 +8,7 @@ import RegisterPage from '../pages/RegisterPage';
 import PlaylistsPage from '../pages/PlaylistsPage';
 import FavouritesPage from '../pages/FavouritesPage';
 import ArtistPage from '../pages/ArtistDetailsPage';
+import SearchPage from '../pages/SearchPage';
 import Hero from '../components/Home/Hero';
 import FeaturedTracks from '../components/Home/FeaturedTracks';
 import FeaturedArtists from '../components/Home/FeaturedArtists';
@@ -73,6 +74,7 @@ export const router = createBrowserRouter([
           { path: 'albums', element: <AlbumsPage /> },
           { path: 'playlists', element: <PlaylistsPage /> },
           { path: 'favourites', element: <FavouritesPage /> },
+          { path: 'search', element: <SearchPage /> },
         ],
       },
     ],

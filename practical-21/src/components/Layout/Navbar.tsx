@@ -12,6 +12,7 @@ import type { AppDispatch, RootState } from '../../store/store';
 
 const Navbar: React.FC = () => {
   const [profileOpen, setProfileOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
@@ -56,19 +57,38 @@ const Navbar: React.FC = () => {
 
           <div className="relative w-full">
             <Input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search for songs, artists, albums..."
               className="w-full pl-14 pr-16 py-4 text-lg backdrop-blur-xl !bg-transparent border border-teal-500/50 hover:border-teal-700/60 focus:border-teal-500/80 text-white placeholder-gray-400 focus:ring-2 focus:ring-teal-500/20 rounded-3xl transition-all duration-300"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && searchQuery.trim()) {
+                  console.log('Enter pressed in search, navigating to search with query:', searchQuery);
+                  navigate(`/app/search?q=${encodeURIComponent(searchQuery)}`);
+                }
+              }}
             />
 
             <img 
               src={searchIcon} 
               alt="Search" 
               className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 opacity-70 hover:opacity-100 transition-opacity cursor-pointer"
+              onClick={() => {
+                console.log('Navbar search clicked, query:', searchQuery);
+                if (searchQuery.trim()) {
+                  console.log('Navigating to search with query:', searchQuery);
+                  navigate(`/app/search?q=${encodeURIComponent(searchQuery)}`);
+                }
+              }}
             />
             <img 
               src={browserIcon} 
               alt="Browse" 
               className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 opacity-70 hover:opacity-100 transition-opacity cursor-pointer"
+              onClick={() => {
+                console.log('Navbar browse clicked, navigating to tracks');
+                navigate('/app/tracks');
+              }}
             />
           </div>
         </div>

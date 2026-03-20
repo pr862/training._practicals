@@ -10,7 +10,10 @@ export const truncateText = (text: string, maxLength: number = 50): string => {
   return text.length > maxLength ? `${text.slice(0, maxLength)}...` : text;
 };
 
-export const getImageUrl = (path: string): string => {
+export const getImageUrl = (path: string | undefined): string => {
+  if (!path) {
+    return 'https://via.placeholder.com/300x300/667eea/ffffff?text=No+Image';
+  }
   return path.startsWith('http') ? path : `http://localhost:5000/${path}`;
 };
 
@@ -30,11 +33,25 @@ export const usePlayTrack = (audioRef: React.RefObject<HTMLAudioElement>, isAuth
   };
 };
 
-export const playTrack = (track: Track, audioRef: { current: HTMLAudioElement }, isAuthenticated: boolean): void => {
+export const playTrack = async (track: Track, audioRef: { current: HTMLAudioElement }, isAuthenticated: boolean): Promise<void> => {
   if (!isAuthenticated) {
     return;
   }
-  audioRef.current.load();
-  audioRef.current.src = getImageUrl(track.audioUrl);
-  audioRef.current.play();
+  
+  try {
+    // Set the source first
+    audioRef.current.src = getImageUrl(track.audioUrl);
+    
+    // Wait for metadata to load before playing
+    await new Promise<void>((resolve, reject) => {
+      audioRef.current.onloadedmetadata = () => resolve();
+      audioRef.current.onerror = () => reject(new Error('Failed to load audio'));
+    });
+    
+    // Now play the audio
+    await audioRef.current.play();
+    console.log('Audio playback started successfully for track:', track.title);
+  } catch (error) {
+    console.error('Error playing track:', error);
+  }
 };

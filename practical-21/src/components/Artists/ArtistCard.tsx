@@ -9,6 +9,12 @@ interface ArtistCardProps {
 const ArtistCard: React.FC<ArtistCardProps> = ({ artist }) => {
   const navigate = useNavigate();
 
+  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    const target = e.target as HTMLImageElement;
+    target.src = 'https://via.placeholder.com/300x300/667eea/ffffff?text=' + encodeURIComponent(artist.name.charAt(0).toUpperCase());
+    target.alt = 'Artist image not available';
+  };
+
   return (
     <div 
       onClick={() => navigate(`/app/artists/${artist.id}`)}
@@ -16,8 +22,9 @@ const ArtistCard: React.FC<ArtistCardProps> = ({ artist }) => {
     >
       <div className="w-32 h-32 mx-auto mb-4 rounded-full overflow-hidden shadow-xl group-hover:shadow-2xl transition-all duration-300 bg-gradient-to-br from-indigo-400 to-purple-600 p-2">
         <img 
-          src={artist.image} 
+          src={artist.image || 'https://via.placeholder.com/300x300/667eea/ffffff?text=' + encodeURIComponent(artist.name.charAt(0).toUpperCase())}
           alt={artist.name} 
+          onError={handleImageError}
           className="w-full h-full object-cover rounded-full group-hover:scale-110 transition-transform duration-300" 
         />
       </div>

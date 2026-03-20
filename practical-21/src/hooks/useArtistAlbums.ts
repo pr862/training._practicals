@@ -1,0 +1,71 @@
+import { useState, useEffect, useCallback } from 'react';
+import { albumsAPI } from '../services/api';
+import { getImageUrl } from '../utils/imageHelper';
+import type { Album, ApiResponse } from '../types/api';
+
+export const useArtistAlbums = (artistId: string) => {
+  const [albums, setAlbums] = useState<Album[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string>('');
+
+  const fetchAlbums = useCallback(async () => {
+    if (!artistId) return;
+
+    try {
+      setLoading(true);
+      setError('');
+
+      const response = await albumsAPI.getAll();
+      const apiData = response.data;
+      
+      if (apiData?.success && Array.isArray(apiData.data)) {
+        // Filter albums by artistId
+        const artistAlbums = apiData.data.filter((album: any) => 
+          album.artistId === parseInt(artistId) || album.artist_id === parseInt(artistId)
+        );
+        
+        // Map and format albums
+        const mappedAlbums = artistAlbums.map((album: any) => ({
+          id: album.id,
+          title: album.title,
+          artistId: album.artistId || album.artist_id,
+          artistName: album.artistName || album.artist_name,
+          image: getImageUrl(album.image || album.image_url),
+          year: album.year || album.release_year,
+          tracks: album.tracks || []
+        }));
+        
+        setAlbums(mappedAlbums);
+      } else if (Array.isArray(apiData)) {
+        // Handle case where response is directly an array
+        const artistAlbums = apiData.filter((album: any) => 
+          album.artistId === parseInt(artistId) || album.artist_id === parseInt(artistId)
+        );
+        
+        const mappedAlbums = artistAlbums.map((album: any) => ({
+          id: album.id,
+          title: album.title,
+          artistId: album.artistId || album.artist_id,
+          artistName: album.artistName || album.artist_name,
+          image: getImageUrl(album.image || album.image_url),
+          year: album.year || album.release_year,
+          tracks: album.tracks || []
+        }));
+        
+        setAlbums(mappedAlbums);
+      } else {
+        setError(apiData?.message || 'Failed to fetch albums');
+      }
+    } catch (err) {
+      setError('Something went wrong while fetching albums');
+    } finally {
+      setLoading(false);
+    }
+  }, [artistId]);
+
+  useEffect(() => {
+    fetchAlbums();
+  }, [fetchAlbums]);
+
+  return { albums, loading, error, refetch: fetchAlbums };
+};

@@ -27,6 +27,7 @@ export interface Artist {
   image: string;
   description?: string;
   totalTracks?: number;
+  tracks?: Track[];  
 }
 
 export interface Album {
