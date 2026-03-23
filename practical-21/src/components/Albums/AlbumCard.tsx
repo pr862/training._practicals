@@ -1,75 +1,57 @@
-import React from 'react';
-import playIcon from '../../assets/play.svg';
-import type { Album } from '../../types/api';
+import React from "react";
+import { useNavigate } from "react-router-dom";
+import type { Album } from "../../types/api";
+import playIcon from "../../assets/play.svg";
 
 interface AlbumCardProps {
   album: Album;
-  onClick?: () => void;
-  onPlay?: () => void;
 }
 
-const AlbumCard: React.FC<AlbumCardProps> = ({ album, onClick, onPlay }) => {
+const AlbumCard: React.FC<AlbumCardProps> = ({ album }) => {
+  const navigate = useNavigate();
+  const titleInitial = album?.title?.charAt(0)?.toUpperCase() ?? 'A';
 
-  const image =
-    album.image ||
-    (album as any).image_url ||
-    'https://via.placeholder.com/300';
-
-  const title =
-    album.title ||
-    (album as any).name ||
-    'Unknown Album';
-
-  const artist =
-    album.artistName ||
-    (album as any).artist_name ||
-    (album as any).artist?.name ||
-    'Unknown Artist';
-
-  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    (e.target as HTMLImageElement).src =
-      'https://via.placeholder.com/300';
+  const handleImageError = (
+    e: React.SyntheticEvent<HTMLImageElement, Event>
+  ) => {
+    const target = e.target as HTMLImageElement;
+    target.src =
+      "https://via.placeholder.com/300x300/1db954/ffffff?text=" +
+      encodeURIComponent(titleInitial);
   };
+
+  const fallbackSrc =
+    "https://via.placeholder.com/300x300/1db954/ffffff?text=" +
+    encodeURIComponent(titleInitial);
 
   return (
     <div
-      onClick={onClick}
-      className="group w-52 p-3 rounded-xl flex-shrink-0 cursor-pointer 
-      transition-all duration-300 hover:bg-neutral-700/60 hover:scale-[1.03]"
-    >
-
+      onClick={() => navigate(`/app/albums/${album.id}`)}
+      className="group w-52 p-3 rounded-xl flex-shrink-0 cursor-pointer text-center transition-all duration-300 hover:bg-neutral-700/60 hover:scale-[1.03]">
       <div className="relative">
         <img
-          src={image}
-          alt={title}
+          src={album.image || fallbackSrc}
+          alt={album.title || 'Album'}
           onError={handleImageError}
-          className="w-full h-44 object-cover rounded-lg shadow-lg"
+          className="w-44 h-44 rounded-xl object-cover shadow-md"
         />
 
         <button
           onClick={(e) => {
-            e.stopPropagation();
-            onPlay?.();
+            e.stopPropagation(); // prevent parent click
           }}
           className="absolute bottom-3 right-3 w-12 h-12 
-          bg-gradient-to-r from-teal-400 via-teal-500 to-emerald-500 
-          rounded-full flex items-center justify-center shadow-lg 
-          opacity-0 group-hover:opacity-100 translate-y-3 
-          group-hover:translate-y-0 transition-all duration-300"
+            bg-gradient-to-r from-teal-400 via-teal-500 to-emerald-500 
+            rounded-full flex items-center justify-center shadow-lg 
+            opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 
+            transition-all duration-300 hover:scale-105"
         >
-          <img src={playIcon} alt="play" />
+          <img src={playIcon} alt="play" className="w-4 h-4" />
         </button>
       </div>
 
-      <div className="mt-3">
-        <p className="font-semibold text-sm truncate">
-          {title}
-        </p>
-        <p className="text-xs text-gray-400 truncate">
-          {artist}
-        </p>
-      </div>
-
+      <p className="mt-3 text-sm font-semibold text-white truncate">{album.title}</p>
+      <p className="text-xs text-gray-400 truncate">{album.artistName}</p>
     </div>
   );
 };

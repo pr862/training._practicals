@@ -1,17 +1,20 @@
-import React from 'react';
-import { useAlbums } from '../hooks/useAlbums';
-import AlbumList from '../components/Albums/AlbumList';
+import AlbumList from "../components/Albums/AlbumList";
+import { useAlbums } from "../hooks/useAlbums"; // ✅ make sure this hook exists
 
-const AlbumsPage: React.FC = () => {
-  const { albums, loading, error } = useAlbums();
+const AlbumsPage = () => {
+  const { albums, loading } = useAlbums();
 
   return (
-    <div className="p-6 space-y-6">
-      {error && <div className="text-red-500 p-4 bg-red-50 rounded">{error}</div>}
-      <AlbumList albums={albums} loading={loading} />
+    <div className="bg-black min-h-screen text-white p-6">
+      <h1 className="text-3xl font-bold mb-8">All Albums</h1>
+      <AlbumList
+        albums={albums}
+        loading={loading}
+        variant="slider" 
+        title="Top Albums"
+      />
     </div>
   );
 };
 
 export default AlbumsPage;
-

@@ -12,8 +12,6 @@ export interface Track {
   audioUrl: string;
 
   artistId?: number;
-  artistName: string;
-
   albumId?: number;
   albumTitle?: string;
 
@@ -38,7 +36,7 @@ export interface Album {
   image: string;
   year?: number;
 
-  tracks?: Track[];        // ✅ already correct
+  tracks?: Track[];     
 }
 
 export interface Playlist {

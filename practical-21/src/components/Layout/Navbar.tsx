@@ -1,159 +1,183 @@
-import React, { useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { logoutThunk } from '../../store/authSlice';
-import Input from '../UI/Input';
-import Button from '../UI/Button';
-import homeIcon from '../../assets/home.svg';
-import searchIcon from '../../assets/search.svg';
-import browserIcon from '../../assets/browser.svg';
-import type { AppDispatch, RootState } from '../../store/store';
+import React, { useState, useCallback } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  Search,
+  Menu,
+  X,
+  Bell,
+  User,
+  Heart,
+  Music2,
+  LogOut,
+} from "lucide-react";
 
+import { logoutThunk } from "../../store/authSlice";
+import type { AppDispatch, RootState } from "../../store/store";
 
 const Navbar: React.FC = () => {
-  const [profileOpen, setProfileOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const dispatch = useDispatch<AppDispatch>();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+
   const navigate = useNavigate();
-  const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const dispatch = useDispatch<AppDispatch>();
 
-  const handleLogout = () => {
+  const { user, isAuthenticated } = useSelector(
+    (state: RootState) => state.auth
+  );
+
+  const navLinks = [
+    { path: "/", label: "Home" },
+    { path: "/app/tracks", label: "Tracks" },
+    { path: "/app/artists", label: "Artists" },
+    { path: "/app/albums", label: "Albums" },
+    { path: "/app/playlists", label: "Playlists" },
+  ];
+
+  const handleLogout = useCallback(() => {
     dispatch(logoutThunk());
-    setProfileOpen(false);
-  };
+  }, [dispatch]);
 
-  const toggleProfile = () => setProfileOpen(!profileOpen);
-
-  const getInitials = (name: string) => {
-    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      navigate(`/app/search?q=${encodeURIComponent(searchQuery)}`);
+    }
   };
 
   return (
-    <nav className="h-20 fixed top-0 left-0 right-0 2xl:h-20 bg-[#000000] backdrop-blur-xl border-b border-teal-500/30 shadow-[0_8px_32px_rgba(0,0,0,0.6)] z-50 flex items-center px-4 lg:px-6 transition-all duration-500">
-
-      <div className="w-full max-w-full mx-auto flex items-center justify-between">
-        
-        <NavLink
-          to="/"
-          className="text-2xl font-black bg-gradient-to-r from-teal-400 via-teal-500 to-emerald-500 bg-clip-text text-transparent hover:scale-110 active:scale-95 transition-all duration-300 select-none"
-        >
-          MusicStream
-        </NavLink>
-
-
-        <div className="flex-1 max-w-lg mx-4 lg:mx-8 hidden md:flex items-center gap-3">
-          <button
-            onClick={() => navigate('/')}
-            className="flex-shrink-0 p-2 rounded-full bg-transpernet border border-teal-500/50 hover:border-teal-400/50 shadow-xl hover:scale-110 active:scale-95 transition-all duration-300 flex items-center justify-center"
-            title="Go to Home"
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-xl border-b border-gray-800 shadow-lg shadow-teal-500/20">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="flex items-center justify-between h-16">
+          
+          {/* Logo */}
+          <div
+            onClick={() => navigate("/")}
+            className="flex items-center gap-2 cursor-pointer hover:scale-105 transition-all duration-300 group"
           >
-            <img 
-              src={homeIcon} 
-              alt="Home" 
-              className="w-5 h-5 md:w-6 md:h-6 opacity-90 hover:opacity-100 transition-all"
-            />
-          </button>
-
-
-          <div className="relative w-full">
-            <Input
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search for songs, artists, albums..."
-              className="w-full pl-14 pr-16 py-4 text-lg backdrop-blur-xl !bg-transparent border border-teal-500/50 hover:border-teal-700/60 focus:border-teal-500/80 text-white placeholder-gray-400 focus:ring-2 focus:ring-teal-500/20 rounded-3xl transition-all duration-300"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && searchQuery.trim()) {
-                  console.log('Enter pressed in search, navigating to search with query:', searchQuery);
-                  navigate(`/app/search?q=${encodeURIComponent(searchQuery)}`);
-                }
-              }}
-            />
-
-            <img 
-              src={searchIcon} 
-              alt="Search" 
-              className="absolute left-4 top-1/2 -translate-y-1/2 w-6 h-6 opacity-70 hover:opacity-100 transition-opacity cursor-pointer"
-              onClick={() => {
-                console.log('Navbar search clicked, query:', searchQuery);
-                if (searchQuery.trim()) {
-                  console.log('Navigating to search with query:', searchQuery);
-                  navigate(`/app/search?q=${encodeURIComponent(searchQuery)}`);
-                }
-              }}
-            />
-            <img 
-              src={browserIcon} 
-              alt="Browse" 
-              className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 opacity-70 hover:opacity-100 transition-opacity cursor-pointer"
-              onClick={() => {
-                console.log('Navbar browse clicked, navigating to tracks');
-                navigate('/app/tracks');
-              }}
-            />
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-400 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 ring-2 ring-transparent group-hover:ring-teal-400/50">
+              <Music2 className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-xl font-bold text-white">MusicStream</span>
           </div>
-        </div>
 
-        {/* Mobile menu button */}
-        <button className="md:hidden p-2 rounded-full hover:bg-gray-800 transition-colors">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-        </button>
+          <div className="hidden md:flex items-center gap-6">
+            {navLinks.map((link) => (
+              <NavLink
+                key={link.path}
+                to={link.path}
+                className="text-gray-400 hover:text-white transition-all duration-200"
+              >
+                {link.label}
+              </NavLink>
+            ))}
+          </div>
 
+          <div className="hidden md:flex items-center gap-3">
+            
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && handleSearch()}
+                placeholder="Search songs..."
+                className="pl-10 pr-4 py-2 w-56 bg-gray-900/50 text-white rounded-lg outline-none focus:ring-2 focus:ring-teal-500/50 backdrop-blur-sm transition-all duration-200"
+              />
+            </div>
 
-        <div className="flex items-center space-x-2">
-          <div className="relative">
             {isAuthenticated ? (
               <>
                 <button
-                  onClick={toggleProfile}
-                  className="w-14 h-14 rounded-full bg-gradient-to-br from-teal-500 via-teal-600 to-emerald-600 text-white font-black text-xl flex items-center justify-center shadow-2xl hover:shadow-emerald-400/40 hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 ring-4 ring-teal-500/20 hover:ring-emerald-400/40"
+                  onClick={() => navigate("/app/favourites")}
+                  className="text-gray-400 hover:text-pink-400 transition-all duration-200 p-1 rounded-full hover:bg-gray-800"
                 >
-                  {user?.name ? getInitials(user.name) : '👤'}
+                  <Heart className="w-5 h-5" />
                 </button>
 
-                {profileOpen && (
-                  <div className="absolute right-0 top-full mt-3 w-72 backdrop-blur-3xl bg-gradient-to-b from-gray-900/98 to-gray-800/90 border border-teal-800/50 rounded-3xl shadow-2xl p-6 max-h-80 overflow-auto">
-                    <div className="text-teal-300 text-lg font-bold mb-4 pb-3 border-b border-teal-800/40">
-                      Welcome back! 👋
-                    </div>
-                    <div className="text-sm text-teal-200 mb-4">
-                      Hi, <span className="font-semibold text-teal-100">{user?.name || 'User'}</span>
-                    </div>
-                    <button
-                      onClick={handleLogout}
-                      className="w-full flex items-center space-x-4 py-4 px-6 rounded-2xl text-teal-200 hover:bg-gradient-to-r hover:from-teal-600/30 hover:to-emerald-600/30 hover:text-white font-semibold transition-all duration-300 group"
-                    >
-                      <svg className="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-                      </svg>
-                      <span className="group-hover:translate-x-1 transition-transform">Sign Out</span>
-                    </button>
+                <button className="text-gray-400 hover:text-teal-400 transition-all duration-200 p-1 rounded-full hover:bg-gray-800">
+                  <Bell className="w-5 h-5" />
+                </button>
+
+                <div className="relative group">
+                  <div className="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center text-white cursor-pointer hover:scale-105 transition-all duration-200 shadow-md hover:shadow-teal-500/25">
+                    {user?.name?.charAt(0).toUpperCase() || "U"}
                   </div>
-                )}
+                </div>
               </>
             ) : (
-              <div className="space-x-4 gap-2">
-                <Button
-                  onClick={() => navigate('/login')}
-                  variant="outline"
-                  size="md"
-                  className="min-w-[90px]"
-                >
-                  Login
-                </Button>
-                <Button
-                  onClick={() => navigate('/register')}
-                  variant="primary"
-                  size="md"
-                  className="min-w-[90px]"
-                >
-                  Sign Up
-                </Button>
-              </div>
+              <button
+                onClick={() => navigate("/login")}
+                className="bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 px-6 py-2 rounded-xl text-white font-medium shadow-lg hover:shadow-xl transition-all duration-300 flex items-center gap-2"
+              >
+                <User className="w-4 h-4" />
+                Sign In
+              </button>
             )}
           </div>
+
+          {/* Mobile Buttons */}
+          <div className="flex md:hidden items-center gap-2">
+            <button onClick={() => setIsSearchOpen(!isSearchOpen)} className="p-1 rounded-full hover:bg-gray-800 transition-colors">
+              <Search className="w-5 h-5 text-gray-400" />
+            </button>
+
+            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="p-1 rounded-full hover:bg-gray-800 transition-colors">
+              {isMenuOpen ? (
+                <X className="w-5 h-5 text-gray-400" />
+              ) : (
+                <Menu className="w-5 h-5 text-gray-400" />
+              )}
+            </button>
+          </div>
         </div>
+
+        {/* Mobile Search */}
+        {isSearchOpen && (
+          <div className="md:hidden pb-3">
+            <input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search..."
+              className="w-full px-4 py-2 bg-gray-900/50 text-white rounded-xl ring-1 ring-gray-700 focus:ring-teal-500 backdrop-blur-sm transition-all"
+            />
+          </div>
+        )}
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden pb-4 space-y-2 bg-gray-900/50 backdrop-blur-md rounded-b-2xl pt-4">
+            {navLinks.map((link) => (
+              <div
+                key={link.path}
+                onClick={() => {
+                  navigate(link.path);
+                  setIsMenuOpen(false);
+                }}
+                className="px-4 py-3 text-gray-300 hover:text-white hover:bg-gray-800 rounded-xl cursor-pointer transition-all duration-200 flex items-center gap-3"
+              >
+                {link.label}
+              </div>
+            ))}
+
+            {isAuthenticated ? (
+              <button
+                onClick={handleLogout}
+                className="w-full text-left px-4 py-3 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-xl transition-all duration-200"
+              >
+                <LogOut className="w-4 h-4 inline mr-2" />
+                Logout
+              </button>
+            ) : (
+              <button
+                onClick={() => navigate("/login")}
+                className="w-full px-4 py-3 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white rounded-xl font-medium shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                Sign In
+              </button>
+            )}
+          </div>
+        )}
       </div>
     </nav>
   );

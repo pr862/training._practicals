@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import Input from '../UI/Input';
 import Button from '../UI/Button';
@@ -7,7 +8,15 @@ import Button from '../UI/Button';
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login, loading, error } = useAuth();
+  const { login, loading, error, isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  // Redirect to the protected area once the user is authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/app', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

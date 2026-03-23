@@ -26,12 +26,6 @@ export const useTracks = () => {
               t.track_name ||
               'Unknown Title',
 
-            artistName:
-              t.artist?.name ||
-              t.artist_name ||
-              t.artistName ||
-              t["artist.name"] ||
-              'Unknown Artist',
 
             image: getImageUrl(t.image || t.image_url),
 
@@ -60,11 +54,6 @@ export const useTracks = () => {
             id: t.id,
 
             title:t.name ||'Unknown Title',
-
-            artistName:
-              t.artist?.name ||
-              t.artist_name ||
-              t.artistName || 'Unknown Artist',
 
             image: getImageUrl(t.image || t.image_url),
 

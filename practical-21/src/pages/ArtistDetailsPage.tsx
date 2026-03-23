@@ -121,13 +121,18 @@ const ArtistPage: React.FC = () => {
 
       <div className="w-full bg-neutral-900 px-4 md:px-10 pb-20">
         
-        <div className="mb-12">
-          <TrackList tracks={tracks} loading={tracksLoading} />
+        <div className="mb-12 pt-5  ">
+          <TrackList 
+            tracks={tracks} 
+            loading={tracksLoading} 
+            variant="grid"
+            title={`${artist?.name}'s Tracks`}
+          />
         </div>
 
         <div>
           <AlbumList albums={albums} loading={albumsLoading} />
-        </div>
+        </div> 
       </div>
     </div>
   );

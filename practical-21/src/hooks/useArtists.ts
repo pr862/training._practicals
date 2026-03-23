@@ -67,8 +67,23 @@ export const useArtistTracks = (artistId: string) => {
         data: ApiResponse<Track[]>;
       };
 
-      if (response.data.success) {
-        setTracks(response.data.data || []);
+      if (response.data.success && Array.isArray(response.data.data)) {
+        const mappedTracks = response.data.data.map((track: any) => {
+          
+          return {
+            id: track.id || track.track_id || track._id,
+            title: track.title || track.name || track.track_title || track.song_name || 'Unknown Track',
+            image: getImageUrl(track.image || track.image_url || track.cover || track.thumbnail),
+            audioUrl: track.audio_url || track.audio || track.file_url || track.stream_url,
+            artistId: track.artist_id || track.artistId || (track.artist && track.artist.id) || track.artist,
+            artistName: track.artist_name || track.artistName || (track.artist && track.artist.name) || track.artist || track.singer || 'Unknown Artist',
+            albumId: track.album_id || track.albumId || (track.album && track.album.id) || track.album,
+            albumTitle: track.album_title || track.albumTitle || (track.album && track.album.name) || (track.album && track.album.title) || track.album,
+            duration: track.duration || track.length || track.runtime,
+            plays: track.plays || track.play_count || track.playCount || 0
+          };
+        });
+        setTracks(mappedTracks);
       } else {
         setError(response.data.message || 'Failed to fetch tracks');
       }

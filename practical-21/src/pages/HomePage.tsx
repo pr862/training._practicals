@@ -4,177 +4,65 @@ import { useTracks } from '../hooks/useTracks';
 import { useArtists } from '../hooks/useArtists';
 import { useAlbums } from '../hooks/useAlbums';
 import { useNavigate } from 'react-router-dom';
-import playIcon from '../assets/play.svg';
+import Button from '../components/UI/Button';
+import { Play, Shuffle } from 'lucide-react';
+import ArtistList from '../components/Artists/ArtistList';
+import AlbumList from '../components/Albums/AlbumList';
+import TrackList from '../components/Tracks/TrackList';
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
-
   const { tracks = [], loading: tracksLoading } = useTracks();
   const { artists = [], loading: artistsLoading } = useArtists();
   const { albums = [], loading: albumsLoading } = useAlbums();
 
-  const renderSkeleton = (count: number, type: 'square' | 'circle') => (
-    <div className="flex gap-6">
-      {Array.from({ length: count }).map((_, i) => (
-        <div
-          key={i}
-          className={`${
-            type === 'circle'
-              ? 'w-36 h-36 rounded-full'
-              : 'w-40 h-40 rounded-xl'
-          } bg-gradient-to-r from-gray-900 via-gray-900 to-gray-900 animate-pulse flex-shrink-0`}
-        />
-      ))}
-    </div>
-  );
-
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-black text-white overflow-hidden">
       <Navbar />
-      <main className="pt-24 px-6 md:px-10 pb-20 space-y-14">
+      <section className="relative overflow-hidden rounded-3xl mx-4 sm:mx-6 lg:mx-8 mt-24 ">
+        <div className="absolute inset-0">
+          <img
+            src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?w=1600&h=700&fit=crop"
+            alt="Hero"
+            className="w-full h-[70vh] object-cover scale-105 hover:scale-110 transition-transform duration-1000"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black via-black/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+        </div>
 
-        <section>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl md:text-3xl font-bold">Trending songs</h2>
-            <span className="text-sm text-gray-400 hover:text-white cursor-pointer">
-              Show all
-            </span>
+        <div className="relative px-6 sm:px-10 lg:px-14 py-20">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold max-w-2xl">
+            Feel the Beat, Live the Moment
+          </h1>
+
+          <p className="mt-4 text-lg text-gray-300 max-w-xl">
+            Discover trending tracks and your next favorite artist.
+          </p>
+
+          <div className="flex gap-4 mt-10">
+            <Button className="flex items-center gap-2 px-6">
+              <Play className="w-5 h-5" /> Play Now
+            </Button>
+
+            <Button variant="outline" className="flex items-center gap-2 px-6">
+              <Shuffle className="w-5 h-5" /> Shuffle
+            </Button>
           </div>
+        </div>
+      </section>
 
-          {tracksLoading ? (
-            renderSkeleton(8, 'square')
-          ) : (
-            <div className="flex gap-6 pb-2">
-              {tracks.map((track) => (
-                <div
-                  key={track.id}
-                  className="group w-52 p-3 rounded-xl flex-shrink-0 cursor-pointer 
-                  transition-all duration-300 hover:bg-neutral-700/60 hover:scale-[1.03]"
-                >
-                  <div className="relative">
-                    <img
-                      src={track.image}
-                      alt={track.title}
-                      className="w-full h-44 object-cover rounded-lg shadow-lg"
-                    />
+      <main className="pt-14 px-6 md:px-10 pb-20 space-y-14">
+        <TrackList
+          tracks={tracks}
+          loading={tracksLoading}
+          variant="slider"
+          title="Trending Tracks"
+          onShowAll={() => navigate("/tracks")} 
+        />
 
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate('/login');
-                      }}
-                      className="absolute bottom-3 right-3 w-12 h-12  bg-gradient-to-r from-teal-400 via-teal-500 to-emerald-500 rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 translate-y-3 group-hover:translate-y-0 transition-all duration-300"
-                    >
-                      <img src={playIcon} alt="play" />
-                    </button>
-                  </div>
+        <ArtistList artists={artists} loading={artistsLoading} variant="slider" />
 
-                  <div className="mt-3">
-                    <p className="font-semibold text-sm truncate">
-                      {track.title || 'Unknown'}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-
-        <section>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl md:text-3xl font-bold">Popular artists</h2>
-            <span className="text-sm text-gray-400 hover:text-white cursor-pointer">
-              Show all
-            </span>
-          </div>
-
-          {artistsLoading ? (
-            renderSkeleton(8, 'circle')
-          ) : (
-            <div className="flex gap-2 pb-2">
-              {artists.map((artist) => (
-                <div
-                  key={artist.id}
-                  onClick={() => navigate(`/app/artists/${artist.id}`)}
-                  className="group w-52 p-3 rounded-xl flex-shrink-0 cursor-pointer text-center
-                  transition-all duration-300 hover:bg-neutral-700/60 hover:scale-[1.03]"
-                >
-                  <div className="relative flex justify-center">
-                    <img
-                      src={artist.image}
-                      alt={artist.name}
-                      className="w-40 h-40 rounded-full object-cover shadow-lg"
-                    />
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate('/login');
-                      }}
-                      className="absolute bottom-3 right-3 w-12 h-12  bg-gradient-to-r from-teal-400 via-teal-500 to-emerald-500 rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 translate-y-3 group-hover:translate-y-0 transition-all duration-300">
-                      <img src={playIcon} alt="play" />
-                    </button>
-                  </div>
-
-                  <p className="mt-4 text-base font-semibold truncate">
-                    {artist.name}
-                  </p>
-                  <p className="text-sm text-gray-400">Artist</p>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-
-        <section>
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl md:text-3xl font-bold">New albums</h2>
-            <span className="text-sm text-gray-400 hover:text-white cursor-pointer">
-              Show all
-            </span>
-          </div>
-
-          {albumsLoading ? (
-            renderSkeleton(6, 'square')
-          ) : (
-            <div className="flex gap-6 pb-2">
-              {albums.map((album) => (
-                <div
-                  key={album.id}
-                  className="group w-52 p-3 rounded-xl flex-shrink-0 cursor-pointer 
-                  transition-all duration-300 hover:bg-neutral-700/60 hover:scale-[1.03]"
-                >
-                  <div className="relative">
-                    <img
-                      src={album.image}
-                      alt={album.title}
-                      className="w-full h-44 object-cover rounded-lg shadow-lg"
-                    />
-
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        navigate('/login');
-                      }}
-                      className="absolute bottom-3 right-3 w-12 h-12  bg-gradient-to-r from-teal-400 via-teal-500 to-emerald-500 rounded-full flex items-center justify-center shadow-lg opacity-0 group-hover:opacity-100 translate-y-3 group-hover:translate-y-0 transition-all duration-300"
-                    >
-                      <img src={playIcon} alt="play" />
-                    </button>
-                  </div>
-
-                  <div className="mt-3">
-                    <p className="font-semibold text-sm truncate">
-                      {album.title}
-                    </p>
-                    <p className="text-xs text-gray-400 truncate">
-                      {album.artistName}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-        </section>
-
+        <AlbumList albums={albums} loading={albumsLoading} variant="slider" title="New Albums" />
       </main>
     </div>
   );
