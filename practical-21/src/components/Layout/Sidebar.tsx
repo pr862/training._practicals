@@ -7,15 +7,15 @@ const Sidebar: React.FC = () => {
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
 
   const navItems = [
-    { to: '/home', label: 'Home' },
-    { to: '/tracks', label: 'Tracks' },
-    { to: '/artists', label: 'Artists' },
-    { to: '/albums', label: 'Albums' },
-    { to: '/playlists', label: 'Playlists' },
+    { to: '/app', label: 'Home' },
+    { to: '/app/tracks', label: 'Tracks' },
+    { to: '/app/artists', label: 'Artists' },
+    { to: '/app/albums', label: 'Albums' },
+    { to: '/app/playlists', label: 'Playlists' },
   ];
 
   if (isAuthenticated) {
-    navItems.push({ to: '/favourites', label: 'Favourites' });
+    navItems.push({ to: '/app/favourites', label: 'Favourites' });
   }
 
   return (

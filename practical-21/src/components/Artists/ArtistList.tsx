@@ -8,12 +8,14 @@ interface Props {
   artists: Artist[];
   loading: boolean;
   variant?: "slider" | "grid";
+  title?: string; 
+
 }
 
 const ArtistList: React.FC<Props> = ({
   artists,
   loading,
-  variant = "grid", // ✅ SAFE DEFAULT (important fix)
+  variant = "grid",
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -39,7 +41,6 @@ const ArtistList: React.FC<Props> = ({
   return (
     <div className="w-full">
       
-      {/* ✅ ONLY SHOW IN HOME */}
       {variant === "slider" && (
         <div className="flex justify-between mb-6 px-4 md:px-0">
           <h2 className="text-2xl font-bold">Popular artists</h2>
@@ -71,7 +72,6 @@ const ArtistList: React.FC<Props> = ({
             <ChevronLeft />
           </button>
 
-          {/* Right Arrow */}
           <button
             onClick={() => scroll("right")}
             className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-black/60 p-2 rounded-full hover:bg-black"

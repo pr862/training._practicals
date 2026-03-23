@@ -11,6 +11,7 @@ const ArtistsPage = () => {
         artists={artists}
         loading={loading}
         variant="grid"
+        title="All Artists"
       />
     </div>
   );

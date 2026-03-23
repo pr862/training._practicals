@@ -12,6 +12,7 @@ export interface Track {
   audioUrl: string;
 
   artistId?: number;
+  artistName: string;
   albumId?: number;
   albumTitle?: string;
 

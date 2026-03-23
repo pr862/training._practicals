@@ -29,7 +29,6 @@ const ArtistCard: React.FC<ArtistCardProps> = ({ artist }) => {
       className="group w-52 p-3 rounded-xl flex-shrink-0 cursor-pointer text-center
         transition-all duration-300 hover:bg-neutral-700/60 hover:scale-[1.03]"
     >
-      {/* Image */}
       <div
         className="relative flex justify-center"
         onClick={() => artist?.id && navigate(`/app/artists/${artist.id}`)}
@@ -43,7 +42,7 @@ const ArtistCard: React.FC<ArtistCardProps> = ({ artist }) => {
 
         <button
           onClick={(e) => {
-            e.stopPropagation(); // prevent parent click
+            e.stopPropagation(); 
           }}
           className="absolute bottom-3 right-3 w-12 h-12 
             bg-gradient-to-r from-teal-400 via-teal-500 to-emerald-500 

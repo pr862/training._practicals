@@ -12,31 +12,39 @@ import SearchPage from '../pages/SearchPage';
 import ArtistsPage from '../pages/ArtistsPage';
 import TracksPage from '../pages/TracksPage';
 import AlbumsPage from '../pages/AlbumsPage';
+import TrackDetailsPage from '../pages/TrackDetailsPage';
+import AlbumDetailsPage from '../pages/AlbumDetailsPage';
+import NotFoundPage from '../pages/NotFoundPage';
+import RouteErrorPage from '../pages/RouteErrorPage';
 import Hero from '../components/Home/Hero';
 import FeaturedTracks from '../components/Home/FeaturedTracks';
 import FeaturedArtists from '../components/Home/FeaturedArtists';
 import FeaturedAlbums from '../components/Home/FeaturedAlbums';
 
-// Router
 export const router = createBrowserRouter([
   {
     path: '/',
     element: <HomePage />,
+    errorElement: <RouteErrorPage />,
   },
   {
     path: '/login',
     element: <LoginPage />,
+    errorElement: <RouteErrorPage />,
   },
   {
     path: '/register',
     element: <RegisterPage />,
+    errorElement: <RouteErrorPage />,
   },
   {
     path: '/app',
     element: <ProtectedRoute />,
+    errorElement: <RouteErrorPage />,
     children: [
       {
         element: <MainLayout />,
+        errorElement: <RouteErrorPage />,
         children: [
           {
             index: true,
@@ -51,15 +59,18 @@ export const router = createBrowserRouter([
           },
           
           { path: 'tracks', element: <TracksPage /> },
+          { path: 'tracks/:id', element: <TrackDetailsPage /> },
           { path: 'artists', element: <ArtistsPage /> },
           { path: 'artists/:id', element: <ArtistPage /> },
           { path: 'albums', element: <AlbumsPage /> },
+          { path: 'albums/:id', element: <AlbumDetailsPage /> },
           { path: 'playlists', element: <PlaylistsPage /> },
           { path: 'favourites', element: <FavouritesPage /> },
           { path: 'search', element: <SearchPage /> },
+          { path: '*', element: <NotFoundPage /> },
         ],
       },
     ],
   },
+  { path: '*', element: <NotFoundPage /> },
 ]);
-

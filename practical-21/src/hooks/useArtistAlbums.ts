@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { albumsAPI } from '../services/api';
 import { getImageUrl } from '../utils/imageHelper';
-import type { Album, ApiResponse } from '../types/api';
+import type { Album } from '../types/api';
 
 export const useArtistAlbums = (artistId: string) => {
   const [albums, setAlbums] = useState<Album[]>([]);
@@ -19,17 +19,15 @@ export const useArtistAlbums = (artistId: string) => {
       const apiData = response.data;
       
       if (apiData?.success && Array.isArray(apiData.data)) {
-        // Filter albums by artistId
         const artistAlbums = apiData.data.filter((album: any) => 
           album.artistId === parseInt(artistId) || album.artist_id === parseInt(artistId)
         );
         
-        // Map and format albums
         const mappedAlbums = artistAlbums.map((album: any) => ({
           id: album.id,
-          title: album.title,
+          title: album.title || album.name || 'Unknown Album',
           artistId: album.artistId || album.artist_id,
-          artistName: album.artistName || album.artist_name,
+          artistName: album.artistName || album.artist_name || album.artist?.name || 'Unknown Artist',
           image: getImageUrl(album.image || album.image_url),
           year: album.year || album.release_year,
           tracks: album.tracks || []
@@ -37,16 +35,15 @@ export const useArtistAlbums = (artistId: string) => {
         
         setAlbums(mappedAlbums);
       } else if (Array.isArray(apiData)) {
-        // Handle case where response is directly an array
         const artistAlbums = apiData.filter((album: any) => 
           album.artistId === parseInt(artistId) || album.artist_id === parseInt(artistId)
         );
         
         const mappedAlbums = artistAlbums.map((album: any) => ({
           id: album.id,
-          title: album.title,
+          title: album.title || album.name || 'Unknown Album',
           artistId: album.artistId || album.artist_id,
-          artistName: album.artistName || album.artist_name,
+          artistName: album.artistName || album.artist_name || album.artist?.name || 'Unknown Artist',
           image: getImageUrl(album.image || album.image_url),
           year: album.year || album.release_year,
           tracks: album.tracks || []

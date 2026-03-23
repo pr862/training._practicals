@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import type { User } from '../types/api';
 import { loginUser, registerUser } from '../services/authService';
-import { setToken, removeToken } from '../utils/auth';
+import { getToken, setToken, removeToken } from '../utils/auth';
 
 interface AuthState {
   user: User | null;
@@ -13,8 +13,8 @@ interface AuthState {
 
 const initialState: AuthState = {
   user: null,
-  token: null,
-  isAuthenticated: false,
+  token: getToken(),
+  isAuthenticated: !!getToken(),
   isLoading: false,
   error: null,
 };
@@ -96,4 +96,3 @@ const authSlice = createSlice({
 
 export const { clearError } = authSlice.actions;
 export default authSlice.reducer;
-

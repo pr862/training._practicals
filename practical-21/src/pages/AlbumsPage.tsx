@@ -1,5 +1,5 @@
 import AlbumList from "../components/Albums/AlbumList";
-import { useAlbums } from "../hooks/useAlbums"; // ✅ make sure this hook exists
+import { useAlbums } from "../hooks/useAlbums"; 
 
 const AlbumsPage = () => {
   const { albums, loading } = useAlbums();
@@ -10,7 +10,7 @@ const AlbumsPage = () => {
       <AlbumList
         albums={albums}
         loading={loading}
-        variant="slider" 
+        variant="grid" 
         title="Top Albums"
       />
     </div>

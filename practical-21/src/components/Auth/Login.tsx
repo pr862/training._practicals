@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import Input from '../UI/Input';
 import Button from '../UI/Button';
@@ -8,15 +8,24 @@ import Button from '../UI/Button';
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login, loading, error, isAuthenticated } = useAuth();
+  const { login, loading, error, isAuthenticated, clearAuthError } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
-  // Redirect to the protected area once the user is authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      navigate('/app', { replace: true });
+      const from = (location.state as any)?.from as { pathname?: string; search?: string } | undefined;
+      const fromPath =
+        typeof from?.pathname === 'string'
+          ? `${from.pathname}${from.search ?? ''}`
+          : undefined;
+      navigate(fromPath ?? '/app', { replace: true });
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, location.state, navigate]);
+
+  useEffect(() => {
+    clearAuthError();
+  }, [clearAuthError]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +38,10 @@ const Login: React.FC = () => {
           label="Email"
           type="email"
           value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (error) clearAuthError();
+          }}
           autoComplete="email"
           placeholder="name@company.com"
           required
@@ -39,7 +51,10 @@ const Login: React.FC = () => {
           label="Password"
           type="password"
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          onChange={(e) => {
+            setPassword(e.target.value);
+            if (error) clearAuthError();
+          }}
           autoComplete="current-password"
           placeholder="••••••••"
           required
@@ -58,7 +73,7 @@ const Login: React.FC = () => {
         </Button>
         <div className="flex items-center justify-between text-xs text-slate-600">
           <span>New here?</span>
-          <a href="/register" className="ml-1 font-medium text-teal-900 hover:text-teal-800 hover:underline">Create an account</a>
+          <Link to="/register" className="ml-1 font-medium text-teal-900 hover:text-teal-800 hover:underline">Create an account</Link>
         </div>
       </form>
   );

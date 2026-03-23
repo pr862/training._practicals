@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import Input from '../UI/Input';
 import Button from '../UI/Button';
@@ -11,14 +12,35 @@ const Register: React.FC = () => {
     confirmPassword: '',
   });
 
-  const { register, loading, error } = useAuth();
+  const [localError, setLocalError] = useState<string | null>(null);
+  const { register, loading, error, isAuthenticated, clearAuthError } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    clearAuthError();
+    setLocalError(null);
+  }, [clearAuthError]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/app', { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLocalError(null);
+
+    if (formData.password !== formData.confirmPassword) {
+      setLocalError('Passwords do not match.');
+      return;
+    }
     await register(formData.username, formData.email, formData.password);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (error) clearAuthError();
+    if (localError) setLocalError(null);
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -71,6 +93,11 @@ const Register: React.FC = () => {
           required
         />
 
+        {localError ? (
+          <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
+            {localError}
+          </div>
+        ) : null}
         {error ? (
           <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
             {error}
@@ -83,11 +110,10 @@ const Register: React.FC = () => {
           disabled={loading}
         >
           {loading ? 'Creating…' : 'Create account'}
-          <a href ="/home"></a>
         </Button>
         <div className="flex items-center justify-between text-xs text-slate-600">
           <span>Already have access?</span>
-          <a href="/login" className="font-medium text-teal-900 hover:text-teal-800 hover:underline">Sign in</a>
+          <Link to="/login" className="font-medium text-teal-900 hover:text-teal-800 hover:underline">Sign in</Link>
         </div>
       </form>
   );

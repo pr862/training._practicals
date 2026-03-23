@@ -18,7 +18,7 @@ export const useAlbums = () => {
       const apiData = response.data;
 
       if (apiData?.success && Array.isArray(apiData.data)) {
-        const mappedAlbums = apiData.data.map((a: any, index: number) => {
+        const mappedAlbums = apiData.data.map((a: any) => {
 
           return {
             id: a.id,
@@ -46,7 +46,7 @@ export const useAlbums = () => {
       }
 
       else if (Array.isArray(apiData)) {
-        const mappedAlbums = apiData.map((a: any, index: number) => {
+        const mappedAlbums = apiData.map((a: any) => {
 
           return {
             id: a.id,

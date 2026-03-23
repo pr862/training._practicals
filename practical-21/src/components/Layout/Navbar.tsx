@@ -37,7 +37,8 @@ const Navbar: React.FC = () => {
 
   const handleLogout = useCallback(() => {
     dispatch(logoutThunk());
-  }, [dispatch]);
+    navigate("/", { replace: true });
+  }, [dispatch, navigate]);
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
@@ -47,10 +48,9 @@ const Navbar: React.FC = () => {
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-xl border-b border-gray-800 shadow-lg shadow-teal-500/20">
-      <div className="max-w-7xl mx-auto px-4">
+      <div className="w-full mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           
-          {/* Logo */}
           <div
             onClick={() => navigate("/")}
             className="flex items-center gap-2 cursor-pointer hover:scale-105 transition-all duration-300 group"

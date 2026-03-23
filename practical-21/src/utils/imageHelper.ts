@@ -7,6 +7,9 @@ export const getImageUrl = (imagePath?: string, fallback: string = 'https://via.
   if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
     return imagePath;
   }
+  if (imagePath.startsWith('uploads/')) {
+    return BACKEND_URL + '/' + imagePath;
+  }
   if (imagePath.startsWith('/')) {
     return BACKEND_URL + imagePath;
   }

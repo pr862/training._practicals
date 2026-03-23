@@ -12,7 +12,6 @@ const SearchPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   
-  // Extract search query from URL params
   const searchParams = new URLSearchParams(location.search);
   const initialQuery = searchParams.get('q') || '';
   
@@ -24,7 +23,6 @@ const SearchPage: React.FC = () => {
   const { albums, loading: albumsLoading } = useAlbums();
 
   useEffect(() => {
-    // Update URL when query changes
     if (query) {
       console.log('Query changed, updating URL:', query);
       navigate(`/app/search?q=${encodeURIComponent(query)}`, { replace: true });
@@ -32,7 +30,6 @@ const SearchPage: React.FC = () => {
   }, [query, navigate]);
 
   useEffect(() => {
-    // Initialize query from URL on mount
     const urlQuery = searchParams.get('q');
     console.log('SearchPage mounted, URL query:', urlQuery, 'Current query:', query);
     if (urlQuery && urlQuery !== query) {
@@ -42,9 +39,8 @@ const SearchPage: React.FC = () => {
   }, [location.search]);
 
   const filteredTracks = tracks.filter(track => 
-    track.title.toLowerCase().includes(query.toLowerCase()) ||
-    track.artistName.toLowerCase().includes(query.toLowerCase())
-  );
+    track.title.toLowerCase().includes(query.toLowerCase()) 
+    );
 
   const filteredArtists = artists.filter(artist => 
     artist.name.toLowerCase().includes(query.toLowerCase())
@@ -63,10 +59,8 @@ const SearchPage: React.FC = () => {
         <div className="max-w-4xl mx-auto mb-8">
         </div>
 
-        {/* Results */}
         {query && (
           <div className="max-w-7xl mx-auto">
-            {/* Tabs */}
             <div className="flex gap-8 mb-8 border-b border-gray-800">
               <button
                 onClick={() => setActiveTab('tracks')}

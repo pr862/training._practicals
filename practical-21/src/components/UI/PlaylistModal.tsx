@@ -121,7 +121,6 @@ const PlaylistModal: React.FC<PlaylistModalProps> = ({ isOpen, onClose }) => {
                 <img src={track.image} alt={track.title} className="w-10 h-10 rounded object-cover" />
                 <div className="flex-1 min-w-0">
                   <p className="font-medium text-white truncate">{track.title}</p>
-                  <p className="text-sm text-gray-400 truncate">{track.artistName}</p>
                 </div>
                 <span className="text-xs text-gray-400">{track.duration || '0:00'}</span>
               </div>

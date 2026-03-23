@@ -42,13 +42,12 @@ const TrackList: React.FC<Props> = ({
 
   return (
     <div className="w-full">
-      {/* Title & Show All */}
       {(variant === "slider" || variant === "grid") && title && (
         <div className="flex justify-between items-center mb-6 px-4 md:px-0">
           <h2 className="text-2xl font-bold">{title}</h2>
           {variant === "slider" && (
             <span
-              onClick={() => navigate("/app/tracks")}
+              onClick={() => (onShowAll ? onShowAll() : navigate("/app/tracks"))}
               className="text-sm text-gray-400 hover:text-white cursor-pointer"
             >
               Show all
@@ -60,14 +59,12 @@ const TrackList: React.FC<Props> = ({
       {loading ? (
         renderSkeleton()
       ) : variant === "grid" ? (
-        /* Grid variant: Spotify-style horizontal rows */
         <div className="pt-4 flex flex-col w-full gap-1">
           {tracks.map((track, i) => (
-            <TrackCard key={track.id} track={track} index={i} layout="list" />
+            <TrackCard key={track.id} track={track} index={i} layout="list" queue={tracks} />
           ))}
         </div>
       ) : (
-        /* Slider variant: home page square cards */
         <div className="relative px-4 md:px-0">
           <button
             onClick={() => scroll("left")}
@@ -85,10 +82,10 @@ const TrackList: React.FC<Props> = ({
 
           <div
             ref={scrollRef}
-            className="flex gap-4 overflow-x-auto scroll-smooth pb-4"
+            className="flex gap-4 overflow-hidden scroll-smooth pb-4"
           >
-            {tracks.map((track) => (
-              <TrackCard key={track.id} track={track} layout="home" />
+            {tracks.map((track, i) => (
+              <TrackCard key={track.id} track={track} layout="home" index={i} queue={tracks} />
             ))}
           </div>
         </div>

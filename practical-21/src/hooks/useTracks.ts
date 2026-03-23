@@ -17,7 +17,7 @@ export const useTracks = () => {
       const apiData = response.data;
 
       if (apiData?.success && Array.isArray(apiData.data)) {
-        const mappedTracks = apiData.data.map((t: any, index: number) => {
+        const mappedTracks = apiData.data.map((t: any) => {
           return {
             id: t.id,
             title:
@@ -29,15 +29,31 @@ export const useTracks = () => {
 
             image: getImageUrl(t.image || t.image_url),
 
-            audioUrl: t.audioUrl || t.audio_url || '',
+            audioUrl:
+              t.audioUrl ||
+              t.audio_url ||
+              t.audio ||
+              t.track_url ||
+              t.trackUrl ||
+              t.file_url ||
+              t.stream_url ||
+              '',
 
             artistId: t.artistId || t.artist_id,
+            artistName:
+              t.artistName ||
+              t.artist_name ||
+              t.artist?.name ||
+              t.artist?.title ||
+              'Unknown Artist',
 
             albumId: t.albumId || t.album_id,
             albumTitle:
               t.album?.title ||
               t.album_title ||
-              t.albumTitle,
+              t.albumTitle ||
+              t.album?.name ||
+              'Unknown Album',
 
             duration: t.duration,
             plays: t.plays,
@@ -57,11 +73,31 @@ export const useTracks = () => {
 
             image: getImageUrl(t.image || t.image_url),
 
-            audioUrl: t.audioUrl || t.audio_url || '',
+            audioUrl:
+              t.audioUrl ||
+              t.audio_url ||
+              t.audio ||
+              t.track_url ||
+              t.trackUrl ||
+              t.file_url ||
+              t.stream_url ||
+              '',
 
             artistId: t.artistId || t.artist_id,
+            artistName:
+              t.artistName ||
+              t.artist_name ||
+              t.artist?.name ||
+              t.artist?.title ||
+              'Unknown Artist',
 
             albumId: t.albumId || t.album_id,
+            albumTitle:
+              t.album?.title ||
+              t.album_title ||
+              t.albumTitle ||
+              t.album?.name ||
+              'Unknown Album',
 
 
             duration: t.duration,

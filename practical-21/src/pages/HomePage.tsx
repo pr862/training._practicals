@@ -57,7 +57,7 @@ const HomePage: React.FC = () => {
           loading={tracksLoading}
           variant="slider"
           title="Trending Tracks"
-          onShowAll={() => navigate("/tracks")} 
+          onShowAll={() => navigate("/app/tracks")}
         />
 
         <ArtistList artists={artists} loading={artistsLoading} variant="slider" />

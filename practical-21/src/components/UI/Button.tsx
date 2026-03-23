@@ -4,8 +4,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'danger' | 'outline' | 'accent';
   size?: 'sm' | 'md' | 'lg';
   children: ReactNode;
-  icon?: ReactNode; // optional icon
-  iconPosition?: 'left' | 'right'; // position of the icon
+  icon?: ReactNode; 
+  iconPosition?: 'left' | 'right'; 
 }
 
 const Button: React.FC<ButtonProps> = ({

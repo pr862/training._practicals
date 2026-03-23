@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import type { Album } from "../../types/api"; // ✅ make sure your Album type exists
-import AlbumCard from "./AlbumCard"; // ✅ similar to ArtistCard
+import type { Album } from "../../types/api";
+import AlbumCard from "./AlbumCard"; 
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Props {
@@ -63,7 +63,6 @@ const AlbumList: React.FC<Props> = ({
           ))}
         </div>
       ) : (
-        /* ✅ SLIDER */
         <div className="relative px-4 md:px-0">
           <button
             onClick={() => scroll("left")}

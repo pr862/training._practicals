@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { favouriteService } from '../services/favouriteService';
-import type { FavouriteTrack, ApiResponse } from '../types/api';
+import type { FavouriteTrack } from '../types/api';
 
 interface FavouriteState {
   favourites: FavouriteTrack[];
@@ -21,11 +21,12 @@ export const fetchFavourites = createAsyncThunk<
 >(
   'favourites/fetchFavourites',
   async () => {
-    const response = await favouriteService.getAll() as ApiResponse<FavouriteTrack[]>;
-    if (response.success) {
-      return response.data || [];
+    const response = await favouriteService.getAll();
+    const apiData = response.data;
+    if (apiData.success) {
+      return apiData.data || [];
     }
-    throw new Error(response.message || 'Failed to fetch favourites');
+    throw new Error(apiData.message || 'Failed to fetch favourites');
   }
 );
 
@@ -36,9 +37,10 @@ export const addFavourite = createAsyncThunk<
 >(
   'favourites/addFavourite',
   async (trackId) => {
-    const response = await favouriteService.add(trackId) as ApiResponse<FavouriteTrack>;
-    if (response.success) {
-      return response.data as FavouriteTrack;
+    const response = await favouriteService.add(trackId);
+    const apiData = response.data;
+    if (apiData.success) {
+      return apiData.data as FavouriteTrack;
     }
     throw new Error('Failed to add favourite');
   }
@@ -80,4 +82,3 @@ state.favourites = state.favourites.filter(f => f.id !== Number(action.payload))
 });
 
 export default favouriteSlice.reducer;
-

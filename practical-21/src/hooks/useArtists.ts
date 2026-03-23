@@ -74,7 +74,13 @@ export const useArtistTracks = (artistId: string) => {
             id: track.id || track.track_id || track._id,
             title: track.title || track.name || track.track_title || track.song_name || 'Unknown Track',
             image: getImageUrl(track.image || track.image_url || track.cover || track.thumbnail),
-            audioUrl: track.audio_url || track.audio || track.file_url || track.stream_url,
+            audioUrl:
+              track.audio_url ||
+              track.audio ||
+              track.track_url ||
+              track.trackUrl ||
+              track.file_url ||
+              track.stream_url,
             artistId: track.artist_id || track.artistId || (track.artist && track.artist.id) || track.artist,
             artistName: track.artist_name || track.artistName || (track.artist && track.artist.name) || track.artist || track.singer || 'Unknown Artist',
             albumId: track.album_id || track.albumId || (track.album && track.album.id) || track.album,

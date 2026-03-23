@@ -39,10 +39,10 @@ export const albumsAPI = {
 };
 
 export const playlistsAPI = {
-  getAll: () => api.get<ApiResponse<any[]>>('user/playlists'),
+  getAll: () => api.get<ApiResponse<any[]>>('/user/playlists'),
 };
 
 export const favouritesAPI = {
-  getAll: () => api.get<ApiResponse<any[]>>('user/favourites'),
-  add: (trackId: string) => api.post('user/favourites', {trackId}),
+  getAll: () => api.get<ApiResponse<any[]>>('/user/favourites'),
+  add: (trackId: string) => api.post('/user/favourites', { trackId }),
 };

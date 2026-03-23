@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { play, setPlaylist } from '../../store/playerSlice';
+import { playTrack, setQueue } from '../../store/playerSlice';
 import type { RootState } from '../../store/store';
 import type { Track } from '../../types/api';
 import Button from '../UI/Button';
@@ -19,10 +19,8 @@ const TrackPlayer: React.FC<TrackPlayerProps> = ({ track, tracks = [] }) => {
 
   const handlePlay = async () => {
     setLoading(true);
-    if (tracks.length > 0) {
-      dispatch(setPlaylist(tracks));
-    }
-    dispatch(play());
+    dispatch(setQueue({ tracks: tracks.length > 0 ? tracks : [track], startTrackId: track.id }));
+    dispatch(playTrack(track));
     setLoading(false);
   };
 
@@ -32,7 +30,7 @@ const TrackPlayer: React.FC<TrackPlayerProps> = ({ track, tracks = [] }) => {
         <img src={track.image} alt={track.title} className="w-20 h-20 rounded-xl shadow-lg" />
         <div className="flex-1 min-w-0">
           <h3 className="font-bold line-clamp-1">{track.title}</h3>
-<p className="text-sm text-gray-600">{track.artistName}</p>
+          <p className="text-sm text-gray-600">{track.artistName ?? 'Unknown Artist'}</p>
         </div>
         <Button 
           onClick={handlePlay} 
