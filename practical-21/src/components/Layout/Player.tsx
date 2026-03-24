@@ -229,7 +229,6 @@ const Player: React.FC = () => {
             </button>
           </div>
 
-          {/* Controls */}
           <div className="flex flex-col flex-1 items-center gap-2 min-w-0">
             <div className="flex items-center gap-2">
               <button
@@ -277,7 +276,6 @@ const Player: React.FC = () => {
               </button>
             </div>
 
-            {/* Progress */}
             <div className="w-full max-w-xl flex items-center gap-2">
               <span className="text-[11px] text-gray-400 w-10 text-right tabular-nums">{currentDuration}</span>
               <div
@@ -303,7 +301,6 @@ const Player: React.FC = () => {
             ) : null}
           </div>
 
-          {/* Right controls */}
           <div className="hidden md:flex items-center gap-3">
             <div className="flex items-center gap-2 w-40">
               <Volume2 className="w-4 h-4 text-gray-300" />

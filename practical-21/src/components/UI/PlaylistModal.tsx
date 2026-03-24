@@ -21,17 +21,21 @@ const PlaylistModal: React.FC<PlaylistModalProps> = ({ isOpen, onClose }) => {
   const [title, setTitle] = useState('');
   const [selectedTracks, setSelectedTracks] = useState<Track[]>([]);
   const [isCreating, setIsCreating] = useState(false);
+  const [formError, setFormError] = useState<string>('');
 
   const handleCreatePlaylist = async () => {
-    console.log('Creating playlist with title:', title, 'tracks:', selectedTracks.length);
-    if (!title.trim() || !user) {
-      console.log('Cannot create playlist: missing title or user');
+    setFormError('');
+    if (!title.trim()) {
+      setFormError('Playlist title is required.');
+      return;
+    }
+    if (!user) {
+      setFormError('Please login again.');
       return;
     }
 
     setIsCreating(true);
     try {
-      console.log('Calling playlist service create with:', { title, userId: user.id, tracksCount: selectedTracks.length });
       const response = await playlistService.create({
         title,
         userId: user.id,
@@ -39,25 +43,22 @@ const PlaylistModal: React.FC<PlaylistModalProps> = ({ isOpen, onClose }) => {
         tracks: selectedTracks
       });
 
-      console.log('Playlist creation response:', response);
       if (response.success) {
-        console.log('Playlist created successfully');
         setTitle('');
         setSelectedTracks([]);
-        refetch();
+        await refetch();
         onClose();
       } else {
-        console.error('Playlist creation failed:', response);
+        setFormError(response.message || 'Failed to create playlist.');
       }
     } catch (error) {
-      console.error('Failed to create playlist:', error);
+      setFormError('Failed to create playlist.');
     } finally {
       setIsCreating(false);
     }
   };
 
   const handleTrackToggle = (track: Track) => {
-    console.log('Toggling track selection:', track.title);
     setSelectedTracks(prev => 
       prev.find(t => t.id === track.id)
         ? prev.filter(t => t.id !== track.id)
@@ -76,8 +77,6 @@ const PlaylistModal: React.FC<PlaylistModalProps> = ({ isOpen, onClose }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Create New Playlist">
       <div className="bg-gray-900 rounded-2xl p-6 w-full max-w-2xl max-h-[80vh] overflow-y-auto">
-        
-        {/* Playlist Title */}
         <div className="mb-6">
           <Input
             value={title}
@@ -85,9 +84,11 @@ const PlaylistModal: React.FC<PlaylistModalProps> = ({ isOpen, onClose }) => {
             placeholder="Enter playlist title"
             className="w-full bg-gray-800 border-gray-700 text-white placeholder-gray-400"
           />
+          {formError ? (
+            <div className="mt-2 text-sm text-rose-300">{formError}</div>
+          ) : null}
         </div>
 
-        {/* Track Selection */}
         <div className="mb-6">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-lg font-semibold text-white">Add Tracks ({tracks.length})</h3>
@@ -128,7 +129,6 @@ const PlaylistModal: React.FC<PlaylistModalProps> = ({ isOpen, onClose }) => {
           </div>
         </div>
 
-        {/* Actions */}
         <div className="flex justify-between">
           <Button onClick={onClose} variant="outline">
             Cancel
@@ -142,7 +142,6 @@ const PlaylistModal: React.FC<PlaylistModalProps> = ({ isOpen, onClose }) => {
           </Button>
         </div>
 
-        {/* Selected Tracks Count */}
         {selectedTracks.length > 0 && (
           <div className="mt-4 text-sm text-gray-400 text-center">
             {selectedTracks.length} track{selectedTracks.length !== 1 ? 's' : ''} selected

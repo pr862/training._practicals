@@ -16,6 +16,7 @@ const ArtistList: React.FC<Props> = ({
   artists,
   loading,
   variant = "grid",
+  title = "Popular Artists",
 }) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
@@ -40,24 +41,24 @@ const ArtistList: React.FC<Props> = ({
 
   return (
     <div className="w-full">
-      
-      {variant === "slider" && (
-        <div className="flex justify-between mb-6 px-4 md:px-0">
-          <h2 className="text-2xl font-bold">Popular artists</h2>
-
-          <span
-            onClick={() => navigate("/app/artists")}
-            className="text-sm text-gray-400 hover:text-white cursor-pointer"
-          >
-            Show all
-          </span>
+      {title ? (
+        <div className="flex justify-between items-center mb-6 px-4 md:px-0">
+          <h2 className="text-2xl font-bold">{title}</h2>
+          {variant === "slider" ? (
+            <span
+              onClick={() => navigate("/app/artists")}
+              className="text-sm text-gray-400 hover:text-white cursor-pointer"
+            >
+              Show all
+            </span>
+          ) : null}
         </div>
-      )}
+      ) : null}
 
       {loading ? (
         renderSkeleton()
       ) : variant === "grid" ? (
-        <div className="pt-20  grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 px-5">
+        <div className="pt-4 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4 px-4 md:px-0">
           {artists.map((artist) => (
             <ArtistCard key={artist.id} artist={artist} />
           ))}

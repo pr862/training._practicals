@@ -9,11 +9,10 @@ export const loginUser = async (credentials: { email: string; password: string }
   return { user: response.data.user, token: response.data.token };
 };
 
-export const registerUser = async (userData: { username: string; email: string; password: string }): Promise<{ token: string }> => {
+export const registerUser = async (userData: { username: string; email: string; password: string }): Promise<{ token: string; user: User }> => {
   const response = await api.post('/auth/user/register', { name: userData.username, email: userData.email, password: userData.password });
-  if (!response.data.token) {
+  if (!response.data.token || !response.data.user) {
     throw new Error(response.data.message || 'Registration failed');
   }
-  return { token: response.data.token };
+  return { token: response.data.token, user: response.data.user };
 };
-

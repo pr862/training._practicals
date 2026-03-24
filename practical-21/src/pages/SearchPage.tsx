@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { useTracks } from '../hooks/useTracks';
 import { useArtists } from '../hooks/useArtists';
 import { useAlbums } from '../hooks/useAlbums';
@@ -10,55 +10,42 @@ import Loading from '../components/UI/Loading';
 
 const SearchPage: React.FC = () => {
   const location = useLocation();
-  const navigate = useNavigate();
-  
-  const searchParams = new URLSearchParams(location.search);
-  const initialQuery = searchParams.get('q') || '';
-  
-  const [query, setQuery] = useState(initialQuery);
   const [activeTab, setActiveTab] = useState<'tracks' | 'artists' | 'albums'>('tracks');
 
   const { tracks, loading: tracksLoading } = useTracks();
   const { artists, loading: artistsLoading } = useArtists();
   const { albums, loading: albumsLoading } = useAlbums();
 
-  useEffect(() => {
-    if (query) {
-      console.log('Query changed, updating URL:', query);
-      navigate(`/app/search?q=${encodeURIComponent(query)}`, { replace: true });
-    }
-  }, [query, navigate]);
-
-  useEffect(() => {
-    const urlQuery = searchParams.get('q');
-    console.log('SearchPage mounted, URL query:', urlQuery, 'Current query:', query);
-    if (urlQuery && urlQuery !== query) {
-      console.log('Setting query from URL:', urlQuery);
-      setQuery(urlQuery);
-    }
+  const query = useMemo(() => {
+    const searchParams = new URLSearchParams(location.search);
+    return (searchParams.get('q') || '').trim();
   }, [location.search]);
 
-  const filteredTracks = tracks.filter(track => 
-    track.title.toLowerCase().includes(query.toLowerCase()) 
+  const filteredTracks = useMemo(() => {
+    if (!query) return [];
+    const q = query.toLowerCase();
+    return tracks.filter((track) => (track.title || '').toLowerCase().includes(q));
+  }, [query, tracks]);
+
+  const filteredArtists = useMemo(() => {
+    if (!query) return [];
+    const q = query.toLowerCase();
+    return artists.filter((artist) => (artist.name || '').toLowerCase().includes(q));
+  }, [query, artists]);
+
+  const filteredAlbums = useMemo(() => {
+    if (!query) return [];
+    const q = query.toLowerCase();
+    return albums.filter(
+      (album) =>
+        (album.title || '').toLowerCase().includes(q) ||
+        (album.artistName || '').toLowerCase().includes(q)
     );
-
-  const filteredArtists = artists.filter(artist => 
-    artist.name.toLowerCase().includes(query.toLowerCase())
-  );
-
-  const filteredAlbums = albums.filter(album => 
-    album.title.toLowerCase().includes(query.toLowerCase()) ||
-    album.artistName.toLowerCase().includes(query.toLowerCase())
-  );
-
-  console.log('Search results - Tracks:', filteredTracks.length, 'Artists:', filteredArtists.length, 'Albums:', filteredAlbums.length);
+  }, [query, albums]);
 
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="pt-24 px-6 pb-20">
-        <div className="max-w-4xl mx-auto mb-8">
-        </div>
-
         {query && (
           <div className="max-w-7xl mx-auto">
             <div className="flex gap-8 mb-8 border-b border-gray-800">
@@ -94,7 +81,6 @@ const SearchPage: React.FC = () => {
               </button>
             </div>
 
-            {/* Content */}
             {activeTab === 'tracks' && (
               <div>
                 <h3 className="text-2xl font-bold mb-6">Tracks</h3>
@@ -114,7 +100,7 @@ const SearchPage: React.FC = () => {
               <div>
                 <h3 className="text-2xl font-bold mb-6">Artists</h3>
                 {artistsLoading ? (
-                  <Loading />
+                  <Loading label="Loading artists..." />
                 ) : filteredArtists.length > 0 ? (
                   <ArtistList artists={filteredArtists} loading={false} />
                 ) : (
@@ -129,7 +115,7 @@ const SearchPage: React.FC = () => {
               <div>
                 <h3 className="text-2xl font-bold mb-6">Albums</h3>
                 {albumsLoading ? (
-                  <Loading />
+                  <Loading label="Loading albums..." />
                 ) : filteredAlbums.length > 0 ? (
                   <AlbumList albums={filteredAlbums} loading={false} />
                 ) : (
@@ -142,7 +128,6 @@ const SearchPage: React.FC = () => {
           </div>
         )}
 
-        {/* Empty state */}
         {!query && (
           <div className="max-w-4xl mx-auto text-center py-20">
             <h2 className="text-4xl font-bold mb-4">Search Music</h2>

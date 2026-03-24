@@ -44,6 +44,7 @@ export const useTracks = () => {
               t.artistName ||
               t.artist_name ||
               t.artist?.name ||
+              t.album?.artist?.name ||
               t.artist?.title ||
               'Unknown Artist',
 
@@ -63,16 +64,11 @@ export const useTracks = () => {
 
       }
       else if (Array.isArray(apiData)) {
-        console.log("USING DIRECT ARRAY");
-        const mappedTracks = apiData.map((t: any, index: number) => {
-          console.log(`TRACK [${index}]:`, t);
+        const mappedTracks = apiData.map((t: any) => {
           return {
             id: t.id,
-
-            title:t.name ||'Unknown Title',
-
+            title: t.name || 'Unknown Title',
             image: getImageUrl(t.image || t.image_url),
-
             audioUrl:
               t.audioUrl ||
               t.audio_url ||
@@ -88,6 +84,7 @@ export const useTracks = () => {
               t.artistName ||
               t.artist_name ||
               t.artist?.name ||
+              t.album?.artist?.name ||
               t.artist?.title ||
               'Unknown Artist',
 

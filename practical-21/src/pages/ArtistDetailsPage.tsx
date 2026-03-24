@@ -7,6 +7,7 @@ import { getImageUrl } from '../utils/imageHelper';
 import TrackList from '../components/Tracks/TrackList';
 import AlbumList from '../components/Albums/AlbumList';
 import type { Artist } from '../types/api';
+import Loading from '../components/UI/Loading';
 
 const ArtistPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -62,8 +63,8 @@ const ArtistPage: React.FC = () => {
 
   if (artistLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-black">
-        <div className="animate-spin h-16 w-16 border-4 border-purple-500 border-t-transparent rounded-full"></div>
+      <div className="min-h-screen bg-black">
+        <Loading fullScreen label="Loading artist..." />
       </div>
     );
   }

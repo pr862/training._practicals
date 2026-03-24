@@ -1,26 +1,27 @@
-import React, { useState, useCallback } from "react";
-import { NavLink, useNavigate } from "react-router-dom";
+import React, { useEffect, useState, useCallback } from "react";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Search,
   Menu,
   X,
-  Bell,
   User,
   Heart,
   Music2,
   LogOut,
 } from "lucide-react";
 
-import { logoutThunk } from "../../store/authSlice";
+import { logout } from "../../store/authSlice";
 import type { AppDispatch, RootState } from "../../store/store";
 
 const Navbar: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch<AppDispatch>();
 
   const { user, isAuthenticated } = useSelector(
@@ -36,15 +37,47 @@ const Navbar: React.FC = () => {
   ];
 
   const handleLogout = useCallback(() => {
-    dispatch(logoutThunk());
+    dispatch(logout());
     navigate("/", { replace: true });
+    setIsMenuOpen(false);
+    setIsSearchOpen(false);
+    setIsProfileOpen(false);
+    setSearchQuery("");
   }, [dispatch, navigate]);
 
   const handleSearch = () => {
-    if (searchQuery.trim()) {
-      navigate(`/app/search?q=${encodeURIComponent(searchQuery)}`);
+    const q = searchQuery.trim();
+    if (!q) {
+      if (location.pathname === "/") {
+        navigate("/", { replace: true });
+      }
+      setIsSearchOpen(false);
+      setIsMenuOpen(false);
+      return;
     }
+
+    if (location.pathname === "/") {
+      navigate({ pathname: "/", search: `?q=${encodeURIComponent(q)}` }, { replace: true });
+      setIsSearchOpen(false);
+      setIsMenuOpen(false);
+      return;
+    }
+
+    navigate(`/app/search?q=${encodeURIComponent(q)}`);
+    setIsSearchOpen(false);
+    setIsMenuOpen(false);
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const q = params.get("q") || "";
+    if (location.pathname === "/" || location.pathname === "/app/search") {
+      setSearchQuery(q);
+    }
+    if (location.pathname !== "/app/search") {
+      setIsProfileOpen(false);
+    }
+  }, [location.pathname, location.search]);
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur-xl border-b border-gray-800 shadow-lg shadow-teal-500/20">
@@ -76,7 +109,7 @@ const Navbar: React.FC = () => {
           <div className="hidden md:flex items-center gap-3">
             
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-100" />
               <input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -95,14 +128,32 @@ const Navbar: React.FC = () => {
                   <Heart className="w-5 h-5" />
                 </button>
 
-                <button className="text-gray-400 hover:text-teal-400 transition-all duration-200 p-1 rounded-full hover:bg-gray-800">
-                  <Bell className="w-5 h-5" />
-                </button>
-
                 <div className="relative group">
-                  <div className="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center text-white cursor-pointer hover:scale-105 transition-all duration-200 shadow-md hover:shadow-teal-500/25">
+                  <button
+                    type="button"
+                    onClick={() => setIsProfileOpen((v) => !v)}
+                    className="w-8 h-8 rounded-full bg-teal-500 flex items-center justify-center text-white cursor-pointer hover:scale-105 transition-all duration-200 shadow-md hover:shadow-teal-500/25"
+                    aria-label="User menu"
+                    title="User menu"
+                  >
                     {user?.name?.charAt(0).toUpperCase() || "U"}
-                  </div>
+                  </button>
+
+                  {isProfileOpen ? (
+                    <div
+                      className="absolute right-0 mt-2 w-44 rounded-xl border border-white/10 bg-gray-950 shadow-2xl overflow-hidden"
+                      onClick={(e) => e.stopPropagation()}
+                    >
+                      <button
+                        type="button"
+                        onClick={handleLogout}
+                        className="w-full px-4 py-3 text-left text-red-300 hover:bg-white/5 flex items-center gap-2"
+                      >
+                        <LogOut className="w-4 h-4" />
+                        Logout
+                      </button>
+                    </div>
+                  ) : null}
                 </div>
               </>
             ) : (
@@ -116,7 +167,6 @@ const Navbar: React.FC = () => {
             )}
           </div>
 
-          {/* Mobile Buttons */}
           <div className="flex md:hidden items-center gap-2">
             <button onClick={() => setIsSearchOpen(!isSearchOpen)} className="p-1 rounded-full hover:bg-gray-800 transition-colors">
               <Search className="w-5 h-5 text-gray-400" />
@@ -132,19 +182,18 @@ const Navbar: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobile Search */}
         {isSearchOpen && (
           <div className="md:hidden pb-3">
             <input
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleSearch()}
               placeholder="Search..."
               className="w-full px-4 py-2 bg-gray-900/50 text-white rounded-xl ring-1 ring-gray-700 focus:ring-teal-500 backdrop-blur-sm transition-all"
             />
           </div>
         )}
 
-        {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden pb-4 space-y-2 bg-gray-900/50 backdrop-blur-md rounded-b-2xl pt-4">
             {navLinks.map((link) => (

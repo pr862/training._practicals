@@ -4,6 +4,7 @@ import { useAlbums } from '../hooks/useAlbums';
 import { useTracks } from '../hooks/useTracks';
 import TrackList from '../components/Tracks/TrackList';
 import NotFoundPage from './NotFoundPage';
+import Loading from '../components/UI/Loading';
 
 const AlbumDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -26,8 +27,8 @@ const AlbumDetailsPage: React.FC = () => {
 
   if (albumsLoading) {
     return (
-      <div className="min-h-[60vh] flex items-center justify-center bg-black">
-        <div className="animate-spin h-16 w-16 border-4 border-purple-500 border-t-transparent rounded-full" />
+      <div className="min-h-screen bg-black">
+        <Loading fullScreen label="Loading album..." />
       </div>
     );
   }

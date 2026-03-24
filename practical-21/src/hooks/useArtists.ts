@@ -82,7 +82,14 @@ export const useArtistTracks = (artistId: string) => {
               track.file_url ||
               track.stream_url,
             artistId: track.artist_id || track.artistId || (track.artist && track.artist.id) || track.artist,
-            artistName: track.artist_name || track.artistName || (track.artist && track.artist.name) || track.artist || track.singer || 'Unknown Artist',
+            artistName:
+              track.artist_name ||
+              track.artistName ||
+              (track.artist && track.artist.name) ||
+              (track.album && track.album.artist && track.album.artist.name) ||
+              track.artist ||
+              track.singer ||
+              'Unknown Artist',
             albumId: track.album_id || track.albumId || (track.album && track.album.id) || track.album,
             albumTitle: track.album_title || track.albumTitle || (track.album && track.album.name) || (track.album && track.album.title) || track.album,
             duration: track.duration || track.length || track.runtime,

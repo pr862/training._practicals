@@ -4,8 +4,8 @@ import type { Track } from '../types/api';
 interface PlayerState {
   currentTrack: Track | null;
   isPlaying: boolean;
-  progress: number; // 0-100
-  volume: number; // 0-100
+  progress: number;
+  volume: number;
   playlist: Track[];
   currentIndex: number;
   isShuffle: boolean;
@@ -119,8 +119,14 @@ const playerSlice = createSlice({
     setVolume: (state, action: PayloadAction<number>) => {
       state.volume = action.payload;
     },
+    setShuffle: (state, action: PayloadAction<boolean>) => {
+      state.isShuffle = action.payload;
+    },
     toggleShuffle: (state) => {
       state.isShuffle = !state.isShuffle;
+    },
+    setRepeat: (state, action: PayloadAction<boolean>) => {
+      state.isRepeat = action.payload;
     },
     toggleRepeat: (state) => {
       state.isRepeat = !state.isRepeat;
@@ -139,7 +145,9 @@ export const {
   previousTrack,
   playTrack,
   setVolume,
+  setShuffle,
   toggleShuffle,
+  setRepeat,
   toggleRepeat,
 } = playerSlice.actions;
 export default playerSlice.reducer;

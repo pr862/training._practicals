@@ -1,6 +1,53 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { favouriteService } from '../services/favouriteService';
 import type { FavouriteTrack } from '../types/api';
+import { getImageUrl } from '../utils/imageHelper';
+import type { Track } from '../types/api';
+
+const mapTrack = (t: any): Track => {
+  const title = t?.title || t?.name || t?.track_name || 'Unknown Title';
+  return {
+    id: t?.id,
+    title,
+    image: getImageUrl(t?.image || t?.image_url),
+    audioUrl:
+      t?.audioUrl ||
+      t?.audio_url ||
+      t?.audio ||
+      t?.track_url ||
+      t?.trackUrl ||
+      t?.file_url ||
+      t?.stream_url ||
+      '',
+    artistId: t?.artistId || t?.artist_id || t?.album?.artist?.id,
+    artistName:
+      t?.artistName ||
+      t?.artist_name ||
+      t?.artist?.name ||
+      t?.album?.artist?.name ||
+      'Unknown Artist',
+    albumId: t?.albumId || t?.album_id || t?.album?.id,
+    albumTitle:
+      t?.album?.title ||
+      t?.album_title ||
+      t?.albumTitle ||
+      t?.album?.name ||
+      'Unknown Album',
+    duration: t?.duration,
+    plays: t?.plays,
+  };
+};
+
+const mapFavourite = (fav: any): FavouriteTrack => {
+  const track = fav?.track ? mapTrack(fav.track) : undefined;
+  return {
+    id: fav?.id,
+    userId: fav?.userId || fav?.user_id || 0,
+    trackId: fav?.trackId || fav?.track_id || track?.id,
+    track: track as any,
+    createdAt: fav?.createdAt || fav?.created_at || new Date().toISOString(),
+  };
+};
 
 export const useFavourites = (options?: { enabled?: boolean }) => {
   const enabled = options?.enabled ?? true;
@@ -22,7 +69,7 @@ export const useFavourites = (options?: { enabled?: boolean }) => {
 
       const response = await favouriteService.getAll();
       if (response.data.success) {
-        setFavourites(response.data.data || []);
+        setFavourites((response.data.data || []).map(mapFavourite));
       } else {
         setError(response.data.message || 'Failed to fetch favourites');
       }
@@ -60,7 +107,7 @@ export const useFavourites = (options?: { enabled?: boolean }) => {
         } else {
           const res = await favouriteService.add(trackId);
           if (res.data.success) {
-            const created = res.data.data;
+            const created = mapFavourite(res.data.data);
             // Backend may return the favourite record with or without embedded track
             setFavourites((prev) => [created, ...prev]);
           }

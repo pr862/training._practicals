@@ -39,6 +39,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ album }) => {
         <button
           onClick={(e) => {
             e.stopPropagation(); 
+            navigate(`/app/albums/${album.id}`);
           }}
           className="absolute bottom-3 right-3 w-12 h-12 
             bg-gradient-to-r from-teal-400 via-teal-500 to-emerald-500 

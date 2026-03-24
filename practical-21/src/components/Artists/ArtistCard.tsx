@@ -43,6 +43,7 @@ const ArtistCard: React.FC<ArtistCardProps> = ({ artist }) => {
         <button
           onClick={(e) => {
             e.stopPropagation(); 
+            if (artist?.id) navigate(`/app/artists/${artist.id}`);
           }}
           className="absolute bottom-3 right-3 w-12 h-12 
             bg-gradient-to-r from-teal-400 via-teal-500 to-emerald-500 

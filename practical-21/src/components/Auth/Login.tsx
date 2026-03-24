@@ -19,7 +19,7 @@ const Login: React.FC = () => {
         typeof from?.pathname === 'string'
           ? `${from.pathname}${from.search ?? ''}`
           : undefined;
-      navigate(fromPath ?? '/app', { replace: true });
+      navigate(fromPath ?? '/', { replace: true });
     }
   }, [isAuthenticated, location.state, navigate]);
 
