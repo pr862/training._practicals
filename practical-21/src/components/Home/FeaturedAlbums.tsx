@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAlbums } from '../../hooks/useAlbums';
 import Loading from '../UI/Loading';
+import AlbumCard from '../Albums/AlbumCard';
 
 const FeaturedAlbums: React.FC = () => {
   const { albums, loading } = useAlbums();
@@ -11,30 +12,26 @@ const FeaturedAlbums: React.FC = () => {
 
   if (featured.length === 0) {
     return (
-      <section className="py-20 bg-gray-50">
+      <section className="py-14">
         <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-4xl font-bold text-gray-900 text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-10">
             New Releases
           </h2>
-          <p className="text-center text-gray-500 text-lg">No albums available</p>
+          <p className="text-center text-white/70 text-lg">No albums available</p>
         </div>
       </section>
     );
   }
 
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-14">
       <div className="max-w-7xl mx-auto px-4">
-        <h2 className="text-4xl font-bold text-gray-900 text-center mb-16">
+        <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-10">
           New Releases
         </h2>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-6">
+        <div className="flex flex-wrap justify-center gap-4">
           {featured.map((album) => (
-            <div key={album.id} className="group cursor-pointer bg-white rounded-2xl p-6 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border hover:border-blue-200">
-              <img src={album.image} alt={album.title} className="w-full h-48 object-cover rounded-xl mb-4 group-hover:scale-105 transition-transform duration-300" />
-              <h3 className="font-bold text-lg mb-1 line-clamp-1">{album.title}</h3>
-              <p className="text-gray-600">{album.artistName} • {album.year || 'N/A'}</p>
-            </div>
+            <AlbumCard key={album.id} album={album} />
           ))}
         </div>
       </div>

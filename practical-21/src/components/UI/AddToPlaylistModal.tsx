@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Modal from './Modal';
 import Button from './Button';
 import Loading from './Loading';
-import { useLibrary } from '../../contexts/LibraryContext';
+import { useLibrary } from '../../contexts/Library';
 
 type Props = {
   isOpen: boolean;

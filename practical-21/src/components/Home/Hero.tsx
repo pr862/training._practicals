@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Play, Shuffle } from 'lucide-react';
 import Button from '../UI/Button';
-import { playTrack, setQueue } from '../../store/playerSlice';
+import { playTrack, setQueue, setShuffle } from '../../store/playerSlice';
 import type { RootState } from '../../store/store';
 
 const Hero: React.FC = () => {
@@ -30,8 +30,10 @@ const Hero: React.FC = () => {
     if (playable.length === 0) return;
 
     const startIndex = mode === 'shuffle' ? Math.floor(Math.random() * playable.length) : 0;
+    dispatch(setShuffle(mode === 'shuffle'));
     dispatch(setQueue({ tracks: playable, startIndex }));
     dispatch(playTrack(playable[startIndex]));
+    navigate(`/app/tracks/${playable[startIndex].id}`);
   };
 
   return (

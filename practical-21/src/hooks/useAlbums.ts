@@ -78,8 +78,7 @@ export const useAlbums = () => {
         setError(apiData?.message || 'Failed to fetch albums');
       }
 
-    } catch (err) {
-      console.error("❌ ALBUM FETCH ERROR:", err);
+    } catch {
       setError('Failed to fetch albums');
     } finally {
       setLoading(false);

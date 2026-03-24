@@ -109,13 +109,13 @@ const Navbar: React.FC = () => {
           <div className="hidden md:flex items-center gap-3">
             
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-100" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
               <input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                 placeholder="Search songs..."
-                className="pl-10 pr-4 py-2 w-56 bg-gray-900/50 text-white rounded-lg outline-none focus:ring-2 focus:ring-teal-500/50 backdrop-blur-sm transition-all duration-200"
+                className="pl-10 pr-4 py-2 w-56 bg-gray-900/50 text-white rounded-lg border border-gray-600 outline-none focus:ring-2 focus:ring-teal-500 transition-all duration-200"
               />
             </div>
 

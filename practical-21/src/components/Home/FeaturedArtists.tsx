@@ -11,9 +11,9 @@ const FeaturedArtists: React.FC = () => {
   const featured = artists.slice(0, 6);
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-14">
       <div className="max-w-7xl mx-auto px-4">
-        <h2 className="text-4xl font-bold text-gray-900 text-center mb-16">
+        <h2 className="text-3xl md:text-4xl font-bold text-white text-center mb-10">
           Popular Artists
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">

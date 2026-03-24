@@ -5,8 +5,10 @@ import { Heart, ListPlus, Pause as PauseIcon, Play as PlayIcon } from "lucide-re
 import type { Track } from "../../types/api";
 import { pause, play, playTrack, setQueue } from "../../store/playerSlice";
 import type { RootState } from "../../store/store";
-import { useLibrary } from "../../contexts/LibraryContext";
+import { useLibrary } from "../../contexts/Library";
 import AddToPlaylistModal from "../UI/AddToPlaylistModal";
+import playIcon from "../../assets/play.svg";
+
 
 interface TrackCardProps {
   track: Track;
@@ -91,12 +93,6 @@ const TrackCard: React.FC<TrackCardProps> = ({ track, index, layout = "home", qu
             <div className={`absolute inset-0 ${isActive ? "bg-black/25" : "bg-black/0"}`} />
             <div className="absolute inset-0 flex items-center justify-center">
               {isActive && isPlayerPlaying ? (
-                <div className="flex items-end gap-[2px] h-4">
-                  <span className="w-[3px] rounded-sm bg-emerald-300 animate-pulse" style={{ height: 6 }} />
-                  <span className="w-[3px] rounded-sm bg-emerald-300 animate-pulse" style={{ height: 12, animationDelay: "120ms" }} />
-                  <span className="w-[3px] rounded-sm bg-emerald-300 animate-pulse" style={{ height: 8, animationDelay: "240ms" }} />
-                </div>
-              ) : isActive ? (
                 <PauseIcon className="w-5 h-5 text-white" />
               ) : (
                 <PlayIcon className="w-5 h-5 text-white" />
@@ -177,60 +173,19 @@ const TrackCard: React.FC<TrackCardProps> = ({ track, index, layout = "home", qu
             }`}
           />
 
-          <div className="absolute bottom-3 left-3 flex items-center gap-2 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
-            <button
-              type="button"
-              disabled={favouritesLoading}
-              onClick={(e) => {
-                e.stopPropagation();
-                if (!isAuthenticated) {
-                  navigate("/login", { state: { from: location } });
-                  return;
-                }
-                void toggleFavouriteByTrackId(track.id);
-              }}
-              className={`w-10 h-10 rounded-full border shadow-lg inline-flex items-center justify-center transition-colors ${
-                isFavourited
-                  ? "border-pink-500/40 bg-pink-500/10 text-pink-300 hover:bg-pink-500/15"
-                  : "border-white/10 bg-black/40 text-white hover:bg-black/55"
-              } ${favouritesLoading ? "opacity-60 cursor-not-allowed" : ""}`}
-              title={isFavourited ? "Remove from favourites" : "Add to favourites"}
-              aria-label={isFavourited ? "Remove from favourites" : "Add to favourites"}
-            >
-              <Heart className="w-4 h-4" fill={isFavourited ? "currentColor" : "none"} />
-            </button>
-
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (!isAuthenticated) {
-                  navigate("/login", { state: { from: location } });
-                  return;
-                }
-                setIsAddOpen(true);
-              }}
-              className="w-10 h-10 rounded-full border border-white/10 bg-black/40 text-white hover:bg-black/55 shadow-lg inline-flex items-center justify-center transition-colors"
-              title="Add to playlist"
-              aria-label="Add to playlist"
-            >
-              <ListPlus className="w-4 h-4" />
-            </button>
+          <div className="absolute bottom-3 left-3 flex items-center gap-2 opacity-100 translate-y-0 md:opacity-0 md:translate-y-2 md:group-hover:opacity-100 md:group-hover:translate-y-0 transition-all duration-300">           
           </div>
 
-          <button
-            type="button"
-            onClick={handlePlayToggle}
-            className="absolute bottom-3 right-3 w-12 h-12 bg-gradient-to-r from-teal-400 via-teal-500 to-emerald-500 rounded-full flex items-center justify-center shadow-lg opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300 hover:scale-105"
-            title={isActive && isPlayerPlaying ? "Pause" : "Play"}
-            aria-label={isActive && isPlayerPlaying ? "Pause" : "Play"}
-          >
-            {isActive && isPlayerPlaying ? (
-              <PauseIcon className="w-5 h-5 text-black" />
-            ) : (
-              <PlayIcon className="w-5 h-5 text-black ml-0.5" />
-            )}
-          </button>
+         <button
+          onClick={handlePlayToggle}
+          className="absolute bottom-3 right-3 w-12 h-12 
+            bg-gradient-to-r from-teal-400 via-teal-500 to-emerald-500 
+            rounded-full flex items-center justify-center shadow-lg 
+            opacity-0 translate-y-3 group-hover:opacity-100 group-hover:translate-y-0 
+            transition-all duration-300 hover:scale-105"
+        >
+          <img src={playIcon} alt="play" className="w-4 h-4" />
+        </button>
         </div>
 
         <p className="mt-3 text-sm font-semibold text-white truncate">{track.title}</p>

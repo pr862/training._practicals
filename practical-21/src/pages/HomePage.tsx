@@ -60,6 +60,7 @@ const HomePage: React.FC = () => {
     dispatch(setShuffle(mode === 'shuffle'));
     dispatch(setQueue({ tracks: playable, startIndex }));
     dispatch(playTrack(playable[startIndex]));
+    navigate(`/app/tracks/`);
   };
 
   return (
