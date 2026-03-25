@@ -89,9 +89,14 @@ export const unfavouriteTrack = async (req: AuthRequest, res: Response): Promise
 
 
 
-export const getMyFavourites = async (req: AuthRequest, res: Response): Promise<void> => {
+export const getUserFavourites = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const userId = req.user!.id;
+    const userId = toInt(req.params.userId);
+    
+    if (!userId) {
+      res.status(400).json({ success: false, message: 'Valid userId is required' });
+      return;
+    }
     
     const favourites = await FavouriteTrack.findAll({
       where: { user_id: userId },
@@ -111,6 +116,6 @@ export const getMyFavourites = async (req: AuthRequest, res: Response): Promise<
     
     res.json({ success: true, data: favourites });
   } catch (error) {
-    res.status(500).json({ success: false, message: 'Error fetching favorites', error: (error as Error).message });
+    res.status(500).json({ success: false, message: 'Error fetching user favorites', error: (error as Error).message });
   }
 };

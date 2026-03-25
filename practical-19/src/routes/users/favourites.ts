@@ -6,7 +6,7 @@ const router = Router();
 
 router.post('/:trackId', authenticate, userController.favouriteTrack);
 router.delete('/:trackId', authenticate, userController.unfavouriteTrack);
-router.get('/', authenticate, userController.getMyFavourites);
+router.get('/:userId', authenticate, userController.getUserFavourites);
 
 export default router;
 
