@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { favouriteService } from '../services/favouriteService';
+import { useAuth } from './useAuth';
 import type { FavouriteTrack } from '../types/api';
 import { getImageUrl } from '../utils/imageHelper';
 import type { Track } from '../types/api';
@@ -50,13 +51,14 @@ const mapFavourite = (fav: any): FavouriteTrack => {
 };
 
 export const useFavourites = (options?: { enabled?: boolean }) => {
+  const { user } = useAuth();
   const enabled = options?.enabled ?? true;
   const [favourites, setFavourites] = useState<FavouriteTrack[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   const fetchFavourites = useCallback(async () => {
-    if (!enabled) {
+    if (!enabled || !user?.id) {
       setLoading(false);
       setError('');
       setFavourites([]);
@@ -67,7 +69,7 @@ export const useFavourites = (options?: { enabled?: boolean }) => {
       setLoading(true);
       setError('');
 
-      const response = await favouriteService.getAll();
+      const response = await favouriteService.getAll(user.id);
       if (response.data.success) {
         setFavourites((response.data.data || []).map(mapFavourite));
       } else {
@@ -78,7 +80,7 @@ export const useFavourites = (options?: { enabled?: boolean }) => {
     } finally {
       setLoading(false);
     }
-  }, [enabled]);
+  }, [enabled, user?.id]);
 
   useEffect(() => {
     void fetchFavourites();
@@ -95,28 +97,26 @@ export const useFavourites = (options?: { enabled?: boolean }) => {
 
   const toggleFavouriteByTrackId = useCallback(
     async (trackId: number) => {
-      if (!enabled) return;
+      if (!enabled || !user?.id) return;
 
       const existing = favouriteByTrackId.get(trackId);
       try {
         if (existing) {
-          const res = await favouriteService.remove(existing.id);
+          const res = await favouriteService.removeByTrackId(trackId);
           if (res.data.success) {
-            setFavourites((prev) => prev.filter((f) => f.id !== existing.id));
+            setFavourites((prev) => prev.filter((f) => f.trackId !== trackId));
           }
         } else {
           const res = await favouriteService.add(trackId);
           if (res.data.success) {
             const created = mapFavourite(res.data.data);
-            // Backend may return the favourite record with or without embedded track
             setFavourites((prev) => [created, ...prev]);
           }
         }
       } catch {
-        // Errors are handled globally by axios interceptor; keep local state unchanged.
       }
     },
-    [enabled, favouriteByTrackId]
+    [enabled, user?.id, favouriteByTrackId]
   );
 
   return {

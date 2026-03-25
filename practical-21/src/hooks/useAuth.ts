@@ -6,7 +6,7 @@ import { loginUser, registerUser } from '../services/authService';
 
 export const useAuth = () => {
   const dispatch = useDispatch<AppDispatch>();
-  const { isLoading, error, isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { isLoading, error, isAuthenticated,user } = useSelector((state: RootState) => state.auth);
 
   const login = useCallback(
     async (email: string, password: string) => {
@@ -43,6 +43,7 @@ export const useAuth = () => {
   }, [dispatch]);
 
   return { 
+    user,
     login, 
     register, 
     logout, 
