@@ -11,7 +11,7 @@ export const playlistService = {
     return res.data;
   },
   addTrack: async (id: string, trackId: string): Promise<ApiResponse<Playlist>> => {
-    const res = await api.post<ApiResponse<Playlist>>(`/user/playlists/${id}/tracks${trackId}`);
+    const res = await api.post<ApiResponse<Playlist>>(`/user/playlists/${id}/tracks/${trackId}`);
     return res.data;
   },
   removeTrack: async (id: string, trackId: string): Promise<ApiResponse<Playlist>> => {
