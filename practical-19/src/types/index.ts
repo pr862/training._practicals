@@ -1,5 +1,5 @@
 export interface User {
-  id?: number;
+  id: number;
   email: string;
   password: string;
   name: string;
@@ -9,7 +9,7 @@ export interface User {
 }
 
 export interface Artist {
-  id?: number;
+  id: number;
   name: string;
   image_url?: string;
   createdAt?: Date;
@@ -17,7 +17,7 @@ export interface Artist {
 }
 
 export interface Album {
-  id?: number;
+  id: number;
   name: string;
   description?: string;
   image_url?: string;
@@ -29,7 +29,7 @@ export interface Album {
 }
 
 export interface Track {
-  id?: number;
+  id: number;
   name: string;
   index?: number;
   track_url?: string;
@@ -41,7 +41,7 @@ export interface Track {
 }
 
 export interface Playlist {
-  id?: number;
+  id: number;
   name: string;
   description?: string;
   image_url?: string;
@@ -51,7 +51,7 @@ export interface Playlist {
 }
 
 export interface FavouriteTracks {
-  id?: number;
+  id: number;
   track_id: number;
   user_id: number;
   index?: number;
