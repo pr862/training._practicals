@@ -10,7 +10,7 @@ export const adminRegister = async (req: Request, res: Response): Promise<void> 
     
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
-      res.status(400).json({ message: 'Email already registered' });
+      res.status(409).json({ message: 'Email already registered' });
       return;
     }
     
