@@ -37,7 +37,7 @@ Playlist.init(
     },
     user_id: {
       type: DataTypes.INTEGER,
-      allowNull: true,
+      allowNull: false,
     },
 
   },
