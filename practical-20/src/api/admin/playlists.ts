@@ -34,15 +34,13 @@ export const adminPlaylistsApi = {
     return api.json<{ message: string }>(`/admin/playlists/${id}`, { method: 'DELETE' });
   },
   addTrack(playlistId: number, trackId: number): Promise<{ message: string }> {
-    return api.json<{ message: string }>(`/admin/playlists/${playlistId}/tracks`, {
+    return api.json<{ message: string }>(`/admin/playlists/${playlistId}/tracks/${trackId}`, {
       method: 'POST',
-      body: { track_id: trackId },
     });
   },
   removeTrack(playlistId: number, trackId: number): Promise<{ message: string }> {
-    return api.json<{ message: string }>(`/admin/playlists/${playlistId}/tracks`, {
+    return api.json<{ message: string }>(`/admin/playlists/${playlistId}/tracks/${trackId}`, {
       method: 'DELETE',
-      body: { track_id: trackId },
     });
   },
 };
