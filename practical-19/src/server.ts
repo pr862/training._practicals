@@ -63,6 +63,7 @@ const startServer = async () => {
     app.listen(PORT);
 
   } catch (error) {
+    console.error('Server startup error:', error);
     process.exit(1);
   }
 };
