@@ -7,7 +7,7 @@ class Track extends Model {
   declare index?: number;
   declare track_url?: string;
   declare image_url?: string;
-  declare album_id: number;
+  declare album_id: number | null;
   declare is_published: boolean;
   declare readonly createdAt: Date;
   declare readonly updatedAt: Date;
@@ -38,7 +38,7 @@ Track.init(
     },
     album_id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      allowNull: true,
       references: {
         model: 'albums',
         key: 'id',
