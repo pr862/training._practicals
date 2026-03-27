@@ -4,6 +4,12 @@ import { Artist } from '../../models';
 export const createArtist = async (req: Request, res: Response): Promise<void> => {
   try {
     const { name } = req.body;
+
+    if (!name || name.trim() === '') {
+      res.status(400).json({ message: 'Name is required' });
+      return;
+    }
+
     const image_url = req.file ? req.file.cloudinaryUrl : null;
     const artist = await Artist.create({ name, image_url });
     res.status(201).json(artist);
@@ -39,6 +45,12 @@ export const updateArtist = async (req: Request, res: Response): Promise<void> =
   try {
     const { id } = req.params;
     const { name } = req.body;
+
+    if (!name || name.trim() === '') {
+      res.status(400).json({ message: 'Name is required' });
+      return;
+    }
+
     const image_url = req.file ? req.file.cloudinaryUrl : undefined;
     const artist = await Artist.findByPk(id);
     if (!artist) {

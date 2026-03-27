@@ -6,6 +6,28 @@ import { QueryTypes } from 'sequelize';
 export const createAlbum = async (req: Request, res: Response): Promise<void> => {
   try {
     const { name, description, published_at, is_published, artist_id } = req.body;
+
+    if (!name || name.trim() === '') {
+      res.status(400).json({ message: 'Name is required' });
+      return;
+    }
+    if (!description || description.trim() === '') {
+      res.status(400).json({ message: 'Description is required' });
+      return;
+    }
+    if (!published_at) {
+      res.status(400).json({ message: 'Published at is required' });
+      return;
+    }
+    if (is_published === undefined) {
+      res.status(400).json({ message: 'Is published is required' });
+      return;
+    }
+    if (!artist_id || isNaN(Number(artist_id))) {
+      res.status(400).json({ message: 'Valid artist ID is required' });
+      return;
+    }
+
     const image_url = req.file ? req.file.cloudinaryUrl : null;
     const album = await Album.create({ 
       name, 

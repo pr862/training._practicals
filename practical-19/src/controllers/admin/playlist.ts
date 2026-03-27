@@ -6,6 +6,15 @@ export const createPlaylist = async (req: Request & { file?: any }, res: Respons
   try {
     const { name, description, image_url, is_published } = req.body;
 
+    if (!name || name.trim() === '') {
+      res.status(400).json({ message: 'Name is required' });
+      return;
+    }
+    if (!description || description.trim() === '') {
+      res.status(400).json({ message: 'Description is required' });
+      return;
+    }
+
     const playlist = await Playlist.create({
       name,
       description,

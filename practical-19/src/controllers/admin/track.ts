@@ -4,6 +4,16 @@ import { Track, Album } from '../../models';
 export const createTrack = async (req: any, res: Response): Promise<void> => {
   try {
     const { name, index, album_id, is_published } = req.body;
+
+    if (!name || name.trim() === '') {
+      res.status(400).json({ message: 'Name is required' });
+      return;
+    }
+    if (!album_id || isNaN(Number(album_id))) {
+      res.status(400).json({ message: 'Valid album ID is required' });
+      return;
+    }
+
     const trackData: any = {
       name,
       index: index ? parseInt(index as string) : undefined,
@@ -57,6 +67,16 @@ export const updateTrack = async (req: any, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
     const { name, index, album_id, is_published } = req.body;
+
+    if (!name || name.trim() === '') {
+      res.status(400).json({ message: 'Name is required' });
+      return;
+    }
+    if (!album_id || isNaN(Number(album_id))) {
+      res.status(400).json({ message: 'Valid album ID is required' });
+      return;
+    }
+
     const track = await Track.findByPk(id);
     if (!track) {
       res.status(404).json({ message: 'Track not found' });
