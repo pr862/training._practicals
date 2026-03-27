@@ -2,7 +2,7 @@ import React, { useMemo, useRef, useState, useEffect, useCallback } from 'react'
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { artistService } from '../services/artistService';
 import { useArtistTracks } from '../hooks/useArtists';
-import { useArtistAlbums } from '../hooks/useArtistAlbums';
+import { useArtistAlbums } from '../hooks/useAlbums';
 import { getImageUrl } from '../utils/imageHelper';
 import TrackList from '../components/Tracks/TrackList';
 import AlbumList from '../components/Albums/AlbumList';

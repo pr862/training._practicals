@@ -1,4 +1,4 @@
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://music-web-43mv.onrender.com';
 
 export const getImageUrl = (imagePath?: string, fallback: string = 'https://via.placeholder.com/300x300/4F46E5/FFFFFF?text=No+Image'): string => {
   if (!imagePath) {

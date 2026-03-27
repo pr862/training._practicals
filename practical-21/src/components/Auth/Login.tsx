@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import Input from '../UI/Input';
-import Button from '../UI/Button';
-
+import { Input } from '../UI/Input';
+import { BaseForm, FormField } from '../UI/BaseForm';
+import { useFormValidation, validationRules } from '../../hooks/useFormValidation';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -11,6 +11,11 @@ const Login: React.FC = () => {
   const { login, loading, error, isAuthenticated, clearAuthError } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const { errors, validate, clearError } = useFormValidation({
+    email: validationRules.required('Email is required'),
+    password: validationRules.required('Password is required'),
+  });
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -29,53 +34,71 @@ const Login: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    clearAuthError();
+    
+    const isValid = validate({ email, password });
+    if (!isValid) return;
+    
     await login(email, password);
   };
 
   return (
-<form onSubmit={handleSubmit} className="space-y-5">
+    <BaseForm
+      onSubmit={handleSubmit}
+      isLoading={loading}
+      submitText="Sign In"
+      fullWidthButton={true}
+      cancelText=""
+      onCancel={() => {}}
+    >
+      <FormField>
         <Input
-          label="Email"
+          label="Email Address"
           type="email"
           value={email}
-          onChange={(e) => {
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setEmail(e.target.value);
-            if (error) clearAuthError();
+            clearError('email');
+            clearAuthError();
           }}
           autoComplete="email"
-          placeholder="name@company.com"
-          required
+          placeholder="your.email@company.com"
+          error={errors.email}
         />
-
+      </FormField>
+      
+      <FormField>
         <Input
           label="Password"
           type="password"
           value={password}
-          onChange={(e) => {
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
             setPassword(e.target.value);
-            if (error) clearAuthError();
+            clearError('password');
+            clearAuthError();
           }}
           autoComplete="current-password"
-          placeholder="••••••••"
-          required
+          placeholder="Enter your password"
+          error={errors.password}
         />
-        {error ? (
-          <div className="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-800">
-            {error}
-          </div>
-        ) : null}
-        <Button
-          type="submit"
-          variant="accent"
-          className="h-11 w-full rounded-full"
-          disabled={loading}>
-          {loading ? 'Signing in…' : 'Sign in'}
-        </Button>
-        <div className="flex items-center justify-between text-xs text-slate-600">
-          <span>New here?</span>
-          <Link to="/register" className="ml-1 font-medium text-teal-900 hover:text-teal-800 hover:underline">Create an account</Link>
+      </FormField>
+      
+      {error ? (
+        <div className="rounded-2xl border border-rose-400/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+          {error}
         </div>
-      </form>
+      ) : null}
+      
+      <div className="flex items-center justify-between text-xs text-white/60">
+        <span>New to MusicStream?</span>
+        <Link 
+          className="font-medium text-xs text-teal-300 hover:text-teal-200 hover:underline transition-colors" 
+          to="/register"
+        >
+          Create an Account
+        </Link>
+      </div>
+    </BaseForm>
   );
 };
 

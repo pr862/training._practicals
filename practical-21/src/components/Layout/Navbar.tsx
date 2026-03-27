@@ -88,10 +88,10 @@ const Navbar: React.FC = () => {
             onClick={() => navigate("/")}
             className="flex items-center gap-2 cursor-pointer hover:scale-105 transition-all duration-300 group"
           >
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-400 flex items-center justify-center group-hover:scale-110 transition-transform duration-300 ring-2 ring-transparent group-hover:ring-teal-400/50">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-teal-500 to-emerald-400 flex items-center justify-center">
               <Music2 className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-white">MusicStream</span>
+            <span className="text-xl font-bold text-white">SpiritSound</span>
           </div>
 
           <div className="hidden md:flex items-center gap-6">

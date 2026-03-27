@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import type { Album } from "../../types/api";
 import playIcon from "../../assets/play.svg";
+import Image from "../UI/Image";
 
 interface AlbumCardProps {
   album: Album;
@@ -9,31 +10,18 @@ interface AlbumCardProps {
 
 const AlbumCard: React.FC<AlbumCardProps> = ({ album }) => {
   const navigate = useNavigate();
-  const titleInitial = album?.title?.charAt(0)?.toUpperCase() ?? 'A';
-
-  const handleImageError = (
-    e: React.SyntheticEvent<HTMLImageElement, Event>
-  ) => {
-    const target = e.target as HTMLImageElement;
-    target.src =
-      "https://via.placeholder.com/300x300/1db954/ffffff?text=" +
-      encodeURIComponent(titleInitial);
-  };
-
-  const fallbackSrc =
-    "https://via.placeholder.com/300x300/1db954/ffffff?text=" +
-    encodeURIComponent(titleInitial);
 
   return (
     <div
       onClick={() => navigate(`/app/albums/${album.id}`)}
       className="group w-52 p-3 rounded-xl flex-shrink-0 cursor-pointer text-center transition-all duration-300 hover:bg-neutral-700/60 hover:scale-[1.03]">
       <div className="relative">
-        <img
-          src={album.image || fallbackSrc}
+        <Image
+          src={album.image}
           alt={album.title || 'Album'}
-          onError={handleImageError}
           className="w-44 h-44 rounded-xl object-cover shadow-md"
+          fallbackColor="#1db99a"
+          fallbackText={album.title?.charAt(0)?.toUpperCase() || 'A'}
         />
 
         <button

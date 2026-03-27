@@ -4,7 +4,7 @@ import { usePlaylists } from '../../hooks/usePlaylists';
 import { useTracks } from '../../hooks/useTracks';
 import { playlistService } from '../../services/playlistService';
 import Button from './Button';
-import Input from './Input';
+import { Input } from './Input';
 import Modal from './Modal';
 import type { Track } from '../../types/api';
 import type { RootState } from '../../store/store';
@@ -80,7 +80,7 @@ const PlaylistModal: React.FC<PlaylistModalProps> = ({ isOpen, onClose }) => {
         <div className="mb-6">
           <Input
             value={title}
-            onChange={(e) => setTitle(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
             placeholder="Enter playlist title"
             className="w-full bg-gray-800 border-gray-700 text-white placeholder-gray-400"
           />

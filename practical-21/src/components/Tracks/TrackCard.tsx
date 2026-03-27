@@ -1,13 +1,14 @@
 import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Heart, ListPlus, Pause as PauseIcon, Play as PlayIcon } from "lucide-react";
 import type { Track } from "../../types/api";
-import { pause, play, playTrack, setQueue } from "../../store/playerSlice";
 import type { RootState } from "../../store/store";
 import { useLibrary } from "../../contexts/Library";
 import AddToPlaylistModal from "../UI/AddToPlaylistModal";
 import playIcon from "../../assets/play.svg";
+import { usePlayButton } from "../../hooks/usePlayButton";
+import Image from "../UI/Image";
 
 
 interface TrackCardProps {
@@ -20,47 +21,18 @@ interface TrackCardProps {
 const TrackCard: React.FC<TrackCardProps> = ({ track, index, layout = "home", queue }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const { currentTrack, isPlaying: isPlayerPlaying } = useSelector((state: RootState) => state.player);
   const { favouritesLoading, isFavouriteTrack, toggleFavouriteByTrackId } = useLibrary();
   const [isAddOpen, setIsAddOpen] = useState(false);
-  const titleInitial = track?.title?.charAt(0)?.toUpperCase() ?? "T";
   const isActive = currentTrack?.id === track.id;
   const isFavourited = isFavouriteTrack(track.id);
 
-  const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-    const target = e.target as HTMLImageElement;
-    target.src =
-      "https://via.placeholder.com/300x300/1db954/ffffff?text=" +
-      encodeURIComponent(titleInitial);
-  };
-
-  const fallbackSrc =
-    "https://via.placeholder.com/300x300/1db954/ffffff?text=" +
-    encodeURIComponent(titleInitial);
-
-  const handlePlayToggle = (e: React.MouseEvent) => {
-    e.stopPropagation();
-
-    if (!isAuthenticated) {
-      navigate("/login", { state: { from: location } });
-      return;
-    }
-
-    if (isActive) {
-      dispatch(isPlayerPlaying ? pause() : play());
-      return;
-    }
-
-    if (queue && queue.length > 0) {
-      dispatch(setQueue({ tracks: queue, startTrackId: track.id }));
-    } else {
-      dispatch(setQueue({ tracks: [track], startIndex: 0 }));
-    }
-
-    dispatch(playTrack(track));
-  };
+  const { handlePlayToggle } = usePlayButton({ 
+    tracks: queue, 
+    startTrackId: track.id, 
+    queue 
+  });
 
   if (layout === "list") {
     return (
@@ -84,12 +56,13 @@ const TrackCard: React.FC<TrackCardProps> = ({ track, index, layout = "home", qu
             title={isActive && isPlayerPlaying ? "Pause" : "Play"}
             aria-label={isActive && isPlayerPlaying ? "Pause" : "Play"}
           >
-            <img
-              src={track.image || fallbackSrc}
-              alt={track.title || "Track"}
-              onError={handleImageError}
-              className="w-12 h-12 object-cover"
-            />
+          <Image
+            src={track.image}
+            alt={track.title || "Track"}
+            className="w-12 h-12 object-cover"
+            fallbackColor="#1db954"
+            fallbackText={track.title?.charAt(0)?.toUpperCase() || 'T'}
+          />
             <div className={`absolute inset-0 ${isActive ? "bg-black/25" : "bg-black/0"}`} />
             <div className="absolute inset-0 flex items-center justify-center">
               {isActive && isPlayerPlaying ? (
@@ -164,14 +137,15 @@ const TrackCard: React.FC<TrackCardProps> = ({ track, index, layout = "home", qu
         className="group w-52 p-3 rounded-xl flex-shrink-0 cursor-pointer text-center transition-all duration-300 hover:bg-neutral-700/60 hover:scale-[1.03]"
       >
         <div className="relative">
-          <img
-            src={track.image || fallbackSrc}
-            alt={track.title || "Track"}
-            onError={handleImageError}
-            className={`w-44 h-44 rounded-xl object-cover shadow-md ring-1 ${
-              isActive ? "ring-emerald-400/50" : "ring-white/10"
-            }`}
-          />
+            <Image
+              src={track.image}
+              alt={track.title || "Track"}
+              className={`w-44 h-44 rounded-xl object-cover shadow-md ring-1 ${
+                isActive ? "ring-emerald-400/50" : "ring-white/10"
+              }`}
+              fallbackColor="#1db954"
+              fallbackText={track.title?.charAt(0)?.toUpperCase() || 'T'}
+            />
 
           <div className="absolute bottom-3 left-3 flex items-center gap-2 opacity-100 translate-y-0 md:opacity-0 md:translate-y-2 md:group-hover:opacity-100 md:group-hover:translate-y-0 transition-all duration-300">           
           </div>
