@@ -1,9 +1,21 @@
 import { validationRules } from '../hooks/useFormValidation';
 
+const validatePublishedAt = (value: string) => {
+  if (!value) return 'Publication date is required';
+
+  const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
+  if (!dateRegex.test(value)) return 'Publication date must be in YYYY-MM-DD format';
+
+  const parsed = new Date(value);
+  if (Number.isNaN(parsed.getTime())) return 'Please enter a valid publication date';
+
+  return undefined;
+};
+
 export const albumValidation = {
   name: validationRules.required('Album name is required'),
   artistId: validationRules.required('Please select an artist'),
-  publishedAt: validationRules.required('Publication date is required'),
+  publishedAt: validatePublishedAt,
   description: validationRules.required('Album description is required'),
   image: (file: File | null) => {
     if (!file) return 'Album cover image is required';
@@ -75,7 +87,7 @@ export type ValidationSchema<T> = {
 export const createAlbumValidation = (isEditing: boolean) => ({
   name: validationRules.required('Album name is required'),
   artistId: validationRules.required('Please select an artist'),
-  publishedAt: validationRules.required('Publication date is required'),
+  publishedAt: validatePublishedAt,
   description: validationRules.required('Album description is required'),
   image: (file: File | null) => {
     if (!isEditing && !file) return 'Album cover image is required';
