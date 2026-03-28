@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { Playlist, Track, PlaylistTrack } from "../../models";
 import sequelize from "../../config/database";
 
-export const createPlaylist = async (req: Request & { file?: any }, res: Response): Promise<void> => {
+export const createPlaylist = async (req: Request & { file?: any; user?: any }, res: Response): Promise<void> => {
   try {
     const { name, description, image_url, is_published } = req.body;
 
@@ -15,11 +15,18 @@ export const createPlaylist = async (req: Request & { file?: any }, res: Respons
       return;
     }
 
+    const userId = req.user?.id;
+    if (!userId) {
+      res.status(401).json({ message: 'Unauthorized user' });
+      return;
+    }
+
     const playlist = await Playlist.create({
       name,
       description,
-      image_url: req.file ? req.file.cloudinaryUrl : image_url,
+      image_url: req.files?.image?.[0]?.cloudinaryUrl ?? image_url,
       is_published: is_published === true || is_published === "true",
+      user_id: userId,
     });
 
     res.status(201).json(playlist);
@@ -105,8 +112,8 @@ export const updatePlaylist = async (req: Request & { file?: any }, res: Respons
       ...(is_published !== undefined && { is_published })
     };
 
-    if (req.file) {
-      updateData.image_url = req.file.cloudinaryUrl;
+    if (req.files?.image?.[0]) {
+      updateData.image_url = req.files.image[0].cloudinaryUrl;
     } else if (image_url) {
       updateData.image_url = image_url;
     }

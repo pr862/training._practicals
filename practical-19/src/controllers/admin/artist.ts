@@ -10,7 +10,7 @@ export const createArtist = async (req: Request, res: Response): Promise<void> =
       return;
     }
 
-    const image_url = req.file ? req.file.cloudinaryUrl : null;
+    const image_url = req.files?.image?.[0]?.cloudinaryUrl ?? null;
     const artist = await Artist.create({ name, image_url });
     res.status(201).json(artist);
   } catch (error) {
@@ -51,7 +51,7 @@ export const updateArtist = async (req: Request, res: Response): Promise<void> =
       return;
     }
 
-    const image_url = req.file ? req.file.cloudinaryUrl : undefined;
+    const image_url = req.files?.image?.[0]?.cloudinaryUrl;
     const artist = await Artist.findByPk(id);
     if (!artist) {
       res.status(404).json({ message: 'Artist not found' });

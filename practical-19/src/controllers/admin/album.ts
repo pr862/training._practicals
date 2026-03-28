@@ -28,13 +28,13 @@ export const createAlbum = async (req: Request, res: Response): Promise<void> =>
       return;
     }
 
-    const image_url = req.file ? req.file.cloudinaryUrl : null;
+    const image_url = req.files?.image?.[0]?.cloudinaryUrl ?? null;
     const album = await Album.create({ 
       name, 
       description, 
       image_url, 
       published_at, 
-      is_published: is_published || false, 
+      is_published: is_published === true || is_published === 'true', 
       artist_id 
     });
     res.status(201).json(album);
@@ -77,7 +77,7 @@ export const updateAlbum = async (req: Request, res: Response): Promise<void> =>
   try {
     const { id } = req.params;
     const { name, description, published_at, is_published, artist_id } = req.body;
-    const image_url = req.file ? req.file.cloudinaryUrl : undefined;
+    const image_url = req.files?.image?.[0]?.cloudinaryUrl;
     const album = await Album.findByPk(id);
     if (!album) {
       res.status(404).json({ message: 'Album not found' });
