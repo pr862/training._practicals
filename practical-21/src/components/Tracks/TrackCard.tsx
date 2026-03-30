@@ -31,8 +31,7 @@ const TrackCard: React.FC<TrackCardProps> = ({ track, index, layout = "home", qu
 
   const { handlePlayToggle } = usePlayButton({
     tracks: queue,
-    startTrackId: track.id,
-    queue
+    startTrackId: track.id
   });
 
   if (layout === "list") {
@@ -51,10 +50,12 @@ const TrackCard: React.FC<TrackCardProps> = ({ track, index, layout = "home", qu
 
           <button
             type="button"
-            onClick={handlePlayToggle}
+            onClick={(e) => {
+              e.stopPropagation();
+              handlePlayToggle(e);
+              navigate(`/app/tracks/${track.id}`);
+            }}
             className="relative w-12 h-12 rounded-md overflow-hidden flex-shrink-0 ring-1 ring-white/10 hover:ring-white/20 transition-colors"
-            title={isActive && isPlayerPlaying ? "Pause" : "Play"}
-            aria-label={isActive && isPlayerPlaying ? "Pause" : "Play"}
           >
             <Image
               src={track.image}
@@ -147,11 +148,12 @@ const TrackCard: React.FC<TrackCardProps> = ({ track, index, layout = "home", qu
             fallbackText={track.title?.charAt(0)?.toUpperCase() || 'T'}
           />
 
-          <div className="absolute bottom-3 left-3 flex items-center gap-2 opacity-100 translate-y-0 md:opacity-0 md:translate-y-2 md:group-hover:opacity-100 md:group-hover:translate-y-0 transition-all duration-300">
-          </div>
-
           <button
-            onClick={handlePlayToggle}
+            onClick={(e) => {
+              e.stopPropagation();
+              handlePlayToggle(e);
+              navigate(`/app/tracks/${track.id}`);
+            }}
             className="absolute bottom-3 right-3 w-12 h-12 
             bg-gradient-to-r from-teal-400 via-teal-500 to-emerald-500 
             rounded-full flex items-center justify-center shadow-lg 

@@ -111,7 +111,7 @@ const Navbar: React.FC = () => {
               <Music2 className="w-5 h-5 text-white" />
             </div>
             <span className="text-xl font-bold text-white">
-              SpiritSound
+              MusicStream
             </span>
           </div>
 
