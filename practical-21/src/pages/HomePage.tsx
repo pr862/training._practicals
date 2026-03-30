@@ -9,10 +9,11 @@ import { Play, Shuffle } from 'lucide-react';
 import ArtistList from '../components/Artists/ArtistList';
 import AlbumList from '../components/Albums/AlbumList';
 import TrackList from '../components/Tracks/TrackList';
-import heroImage from '@/assets/home.jpeg';
 import { useDispatch, useSelector } from 'react-redux';
 import { playTrack, setQueue, setShuffle } from '../store/playerSlice';
 import type { RootState } from '../store/store';
+
+const heroImage = new URL('../assets/home.jpeg', import.meta.url).href;
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
