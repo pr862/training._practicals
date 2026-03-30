@@ -9,6 +9,7 @@ import { Play, Shuffle } from 'lucide-react';
 import ArtistList from '../components/Artists/ArtistList';
 import AlbumList from '../components/Albums/AlbumList';
 import TrackList from '../components/Tracks/TrackList';
+import heroImage from '@/assets/home.jpeg';
 import { useDispatch, useSelector } from 'react-redux';
 import { playTrack, setQueue, setShuffle } from '../store/playerSlice';
 import type { RootState } from '../store/store';
@@ -69,7 +70,7 @@ const HomePage: React.FC = () => {
       <section className="relative overflow-hidden rounded-3xl mx-4 sm:mx-6 lg:mx-8 mt-24 ">
         <div className="absolute inset-0">
           <img
-            src="src/assets/home.jpeg"
+            src={heroImage}
             alt="Hero"
             className="w-full h-[70vh] object-cover scale-105 hover:scale-110 transition-transform duration-1000"
           />
