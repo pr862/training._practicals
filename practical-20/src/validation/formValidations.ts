@@ -1,7 +1,7 @@
 import { validationRules } from '../hooks/useFormValidation';
 
 const validatePublishedAt = (value: string) => {
-  if (!value) return 'Publication date is required';
+  if (!value) return undefined;
 
   const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
   if (!dateRegex.test(value)) return 'Publication date must be in YYYY-MM-DD format';
@@ -16,9 +16,7 @@ export const albumValidation = {
   name: validationRules.required('Album name is required'),
   artistId: validationRules.required('Please select an artist'),
   publishedAt: validatePublishedAt,
-  description: validationRules.required('Album description is required'),
   image: (file: File | null) => {
-    if (!file) return 'Album cover image is required';
     if (file && file.size > 5 * 1024 * 1024) return 'Image file size must be less than 5MB';
     return undefined;
   },
@@ -34,7 +32,6 @@ export const trackValidation = {
     return undefined;
   },
   image: (file: File | null) => {
-    if (!file) return 'Track cover image is required';
     if (file && file.size > 5 * 1024 * 1024) return 'Image file size must be less than 5MB';
     return undefined;
   },
@@ -42,9 +39,7 @@ export const trackValidation = {
 
 export const playlistValidation = {
   name: validationRules.required('Playlist name is required'),
-  description: validationRules.required('Playlist description is required'),
   image: (file: File | null) => {
-    if (!file) return 'Playlist cover image is required';
     if (file && file.size > 5 * 1024 * 1024) return 'Image file size must be less than 5MB';
     return undefined;
   },
@@ -53,7 +48,6 @@ export const playlistValidation = {
 export const artistValidation = {
   name: validationRules.required('Artist name is required'),
   image: (file: File | null) => {
-    if (!file) return 'Artist image is required';
     if (file && file.size > 5 * 1024 * 1024) return 'Image file size must be less than 5MB';
     return undefined;
   },
@@ -88,9 +82,7 @@ export const createAlbumValidation = (isEditing: boolean) => ({
   name: validationRules.required('Album name is required'),
   artistId: validationRules.required('Please select an artist'),
   publishedAt: validatePublishedAt,
-  description: validationRules.required('Album description is required'),
   image: (file: File | null) => {
-    if (!isEditing && !file) return 'Album cover image is required';
     if (file && file.size > 5 * 1024 * 1024) return 'Image file size must be less than 5MB';
     return undefined;
   },
@@ -106,7 +98,6 @@ export const createTrackValidation = (isEditing: boolean) => ({
     return undefined;
   },
   image: (file: File | null) => {
-    if (!isEditing && !file) return 'Track cover image is required';
     if (file && file.size > 5 * 1024 * 1024) return 'Image file size must be less than 5MB';
     return undefined;
   },
@@ -114,9 +105,7 @@ export const createTrackValidation = (isEditing: boolean) => ({
 
 export const createPlaylistValidation = (isEditing: boolean) => ({
   name: validationRules.required('Playlist name is required'),
-  description: validationRules.required('Playlist description is required'),
   image: (file: File | null) => {
-    if (!isEditing && !file) return 'Playlist cover image is required';
     if (file && file.size > 5 * 1024 * 1024) return 'Image file size must be less than 5MB';
     return undefined;
   },
@@ -125,7 +114,6 @@ export const createPlaylistValidation = (isEditing: boolean) => ({
 export const createArtistValidation = (isEditing: boolean) => ({
   name: validationRules.required('Artist name is required'),
   image: (file: File | null) => {
-    if (!isEditing && !file) return 'Artist image is required';
     if (file && file.size > 5 * 1024 * 1024) return 'Image file size must be less than 5MB';
     return undefined;
   },

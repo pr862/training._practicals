@@ -44,7 +44,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ album, artists, onSubmit, 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const isValid = validate({ name, artistId, publishedAt, description, image });
+    const isValid = validate({ name, artistId, publishedAt, image });
     if (!isValid) return;
 
     await onSubmit({
@@ -109,7 +109,6 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ album, artists, onSubmit, 
             rows={3}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            error={errors.description}
           />
         </FormField>
 
