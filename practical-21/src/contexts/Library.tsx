@@ -35,7 +35,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
     loading: playlistsLoading,
     error: playlistsError,
     refetch: refetchPlaylists,
-  } = usePlaylists({ enabled: isAuthenticated });
+  } = usePlaylists();
 
   const slimPlaylists = useMemo(
     () => playlists.map((p) => ({ id: p.id, title: p.title })),
@@ -44,7 +44,6 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
 
   const addTrackToPlaylist = useCallback(
     async (playlistId: number, trackId: number, playlistTitle?: string, trackTitle?: string) => {
-      if (!isAuthenticated) return;
       const res = await playlistService.addTrack(String(playlistId), String(trackId));
       await refetchPlaylists();
       emitToast({
@@ -54,7 +53,7 @@ export const LibraryProvider: React.FC<{ children: React.ReactNode }> = ({ child
           : res.message || `Track added to ${playlistTitle || 'playlist'}`,
       });
     },
-    [isAuthenticated, refetchPlaylists]
+    [refetchPlaylists]
   );
 
   const value = useMemo<LibraryContextValue>(

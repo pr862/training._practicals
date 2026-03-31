@@ -107,10 +107,6 @@ const TrackCard: React.FC<TrackCardProps> = ({ track, index, layout = "home", qu
               type="button"
               onClick={(e) => {
                 e.stopPropagation();
-                if (!isAuthenticated) {
-                  navigate("/login", { state: { from: location } });
-                  return;
-                }
                 setIsAddOpen(true);
               }}
               className="inline-flex items-center justify-center w-9 h-9 rounded-full border border-white/10 hover:bg-white/5 transition-colors text-gray-200"

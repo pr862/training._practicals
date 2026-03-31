@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { playTrack, setQueue, setShuffle } from "../store/playerSlice";
 import { trackService } from "../services/track";
@@ -28,19 +28,12 @@ export const usePlayButton = ({
   startTrackId,
 }: UsePlayButtonOptions = {}): UsePlayButtonReturn => {
   const navigate = useNavigate();
-  const location = useLocation();
   const dispatch = useDispatch();
-  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const { currentTrack, isPlaying: isPlayerPlaying } = useSelector((state: RootState) => state.player);
 
   const handlePlay = useCallback(
     async (e: React.MouseEvent) => {
       e.stopPropagation();
-
-      if (!isAuthenticated) {
-        navigate("/login", { state: { from: location } });
-        return;
-      }
 
       if (artist?.id) {
         try {
@@ -61,17 +54,12 @@ export const usePlayButton = ({
         dispatch(playTrack(tracks[0]));
       }
     },
-    [artist, tracks, dispatch, isAuthenticated, location, navigate]
+    [artist, tracks, dispatch, navigate]
   );
 
   const handleShuffle = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-
-      if (!isAuthenticated) {
-        navigate("/login", { state: { from: location } });
-        return;
-      }
 
       if (tracks && tracks.length > 0) {
         const startIndex = Math.floor(Math.random() * tracks.length);
@@ -79,17 +67,12 @@ export const usePlayButton = ({
         dispatch(playTrack(tracks[startIndex]));
       }
     },
-    [tracks, dispatch, isAuthenticated, location, navigate]
+    [tracks, dispatch]
   );
 
   const handlePlayToggle = useCallback(
     (e: React.MouseEvent) => {
       e.stopPropagation();
-
-      if (!isAuthenticated) {
-        navigate("/login", { state: { from: location } });
-        return;
-      }
 
       const isActive = currentTrack?.id === startTrackId;
       
@@ -109,7 +92,7 @@ export const usePlayButton = ({
         dispatch(playTrack(trackToPlay));
       }
     },
-    [queue, startTrackId, tracks, currentTrack, isPlayerPlaying, dispatch, isAuthenticated, location, navigate]
+    [queue, startTrackId, tracks, currentTrack, isPlayerPlaying, dispatch]
   );
 
   return {

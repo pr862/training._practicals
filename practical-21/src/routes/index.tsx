@@ -1,5 +1,4 @@
 import { createBrowserRouter } from 'react-router-dom';
-import ProtectedRoute from '../components/Auth/ProtectedRoute';
 import MainLayout from '../components/Layout/MainLayout';
 
 import HomePage from '../pages/HomePage';
@@ -35,10 +34,6 @@ export const router = createBrowserRouter([
   },
   {
     path: '/app',
-    element: <ProtectedRoute />,
-    errorElement: <RouteErrorPage />,
-    children: [
-      {
         element: <MainLayout />,
         errorElement: <RouteErrorPage />,
         children: [
@@ -57,8 +52,6 @@ export const router = createBrowserRouter([
           { path: 'favourites', element: <FavouritesPage /> },
           { path: 'search', element: <SearchPage /> },
           { path: '*', element: <NotFoundPage /> },
-        ],
-      },
     ],
   },
   { path: '*', element: <NotFoundPage /> },

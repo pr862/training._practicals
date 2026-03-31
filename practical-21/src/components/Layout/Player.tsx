@@ -72,7 +72,7 @@ const Player: React.FC = () => {
     dispatch(setProgress(0));
 
     setAudioError(null);
-    void playTrack(currentTrack, { current: audio }, isAuthenticated, { autoplay: isPlaying }).catch((e) => {
+    void playTrack(currentTrack, { current: audio }, { autoplay: isPlaying }).catch((e) => {
       setAudioError(e instanceof Error ? e.message : 'Failed to play audio');
       dispatch(pause());
     });
@@ -94,10 +94,6 @@ const Player: React.FC = () => {
       dispatch(pause());
       audio?.pause();
     } else {
-      if (!isAuthenticated) {
-        navigate('/login');
-        return;
-      }
       dispatch(play());
       if (audio) safePlay(audio);
     }

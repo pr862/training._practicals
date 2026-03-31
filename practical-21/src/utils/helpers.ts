@@ -14,13 +14,8 @@ export const truncateText = (text: string, maxLength: number = 50): string => {
 export const playTrack = async (
   track: Track,
   audioRef: { current: HTMLAudioElement },
-  isAuthenticated: boolean,
   options?: { autoplay?: boolean }
 ): Promise<void> => {
-  if (!isAuthenticated) {
-    return;
-  }
-
   if (!track.audioUrl) {
     throw new Error('Missing audio URL');
   }

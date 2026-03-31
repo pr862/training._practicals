@@ -10,8 +10,7 @@ import type { Artist } from '../types/api';
 import Loading from '../components/UI/Loading';
 import Button from '../components/UI/Button';
 import { Play, Shuffle,ArrowLeft } from 'lucide-react';
-import { useDispatch, useSelector } from 'react-redux';
-import type { RootState } from '../store/store';
+import { useDispatch } from 'react-redux';
 import { playTrack, setQueue, setShuffle } from '../store/playerSlice';
 
 const ArtistPage: React.FC = () => {
@@ -19,7 +18,6 @@ const ArtistPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const autoplayedRef = useRef(false);
 
   const {
@@ -50,16 +48,11 @@ const ArtistPage: React.FC = () => {
     const playable = (tracks || []).filter((t) => Boolean(t.audioUrl));
     if (playable.length === 0) return;
 
-    if (!isAuthenticated) {
-      navigate('/login', { state: { from: location } });
-      return;
-    }
-
     const startIndex = mode === 'shuffle' ? Math.floor(Math.random() * playable.length) : 0;
     dispatch(setShuffle(mode === 'shuffle'));
     dispatch(setQueue({ tracks: playable, startIndex }));
     dispatch(playTrack(playable[startIndex]));
-  }, [dispatch, isAuthenticated, location, navigate, tracks]);
+  }, [dispatch, tracks]);
 
   useEffect(() => {
     if (!id) return;

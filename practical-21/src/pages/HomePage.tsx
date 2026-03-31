@@ -9,9 +9,8 @@ import { Play, Shuffle } from 'lucide-react';
 import ArtistList from '../components/Artists/ArtistList';
 import AlbumList from '../components/Albums/AlbumList';
 import TrackList from '../components/Tracks/TrackList';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { playTrack, setQueue, setShuffle } from '../store/playerSlice';
-import type { RootState } from '../store/store';
 
 const heroImage = new URL('../assets/home.jpeg', import.meta.url).href;
 
@@ -19,7 +18,6 @@ const HomePage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const { tracks = [], loading: tracksLoading } = useTracks();
   const { artists = [], loading: artistsLoading } = useArtists();
   const { albums = [], loading: albumsLoading } = useAlbums();
@@ -54,10 +52,6 @@ const HomePage: React.FC = () => {
   const startPlayback = (mode: 'play' | 'shuffle') => {
     const playable = tracks.filter((t) => Boolean(t.audioUrl));
     if (playable.length === 0) return;
-    if (!isAuthenticated) {
-      navigate('/login', { state: { from: { pathname: '/' } } });
-      return;
-    }
     const startIndex = mode === 'shuffle' ? Math.floor(Math.random() * playable.length) : 0;
     dispatch(setShuffle(mode === 'shuffle'));
     dispatch(setQueue({ tracks: playable, startIndex }));

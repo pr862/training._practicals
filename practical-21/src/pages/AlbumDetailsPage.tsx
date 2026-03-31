@@ -7,8 +7,7 @@ import NotFoundPage from './NotFoundPage';
 import Loading from '../components/UI/Loading';
 import Button from '../components/UI/Button';
 import { Play, Shuffle,ArrowLeft } from 'lucide-react';
-import { useDispatch, useSelector } from 'react-redux';
-import type { RootState } from '../store/store';
+import { useDispatch } from 'react-redux';
 import { playTrack, setQueue, setShuffle } from '../store/playerSlice';
 
 const AlbumDetailsPage: React.FC = () => {
@@ -16,7 +15,6 @@ const AlbumDetailsPage: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const dispatch = useDispatch();
-  const { isAuthenticated } = useSelector((state: RootState) => state.auth);
   const autoplayedRef = useRef(false);
 
   const { albums, loading: albumsLoading, error: albumsError } = useAlbums();
@@ -44,16 +42,11 @@ const AlbumDetailsPage: React.FC = () => {
     const playable = albumTracks.filter((t) => Boolean(t.audioUrl));
     if (playable.length === 0) return;
 
-    if (!isAuthenticated) {
-      navigate('/login', { state: { from: location } });
-      return;
-    }
-
     const startIndex = mode === 'shuffle' ? Math.floor(Math.random() * playable.length) : 0;
     dispatch(setShuffle(mode === 'shuffle'));
     dispatch(setQueue({ tracks: playable, startIndex }));
     dispatch(playTrack(playable[startIndex]));
-  }, [albumTracks, dispatch, isAuthenticated, location, navigate]);
+  }, [albumTracks, dispatch]);
 
   useEffect(() => {
     if (!autoplayMode) return;
