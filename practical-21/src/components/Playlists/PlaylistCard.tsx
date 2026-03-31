@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Play, Shuffle } from "lucide-react";
@@ -6,6 +6,7 @@ import Button from "../UI/Button";
 import type { Playlist } from "../../types/api";
 import { playTrack, setQueue } from "../../store/playerSlice";
 import type { RootState } from "../../store/store";
+import { useTracks } from "../../hooks/useTracks";
 
 interface PlaylistCardProps {
   playlist: Playlist;
@@ -16,13 +17,24 @@ const PlaylistCard: React.FC<PlaylistCardProps> = ({ playlist, onDetails }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { tracks: allTracks } = useTracks();
+
+  const playlistTracks = useMemo(() => {
+    const trackLookup = new Map(allTracks.map((track) => [track.id, track]));
+
+    return (playlist.tracks || []).map((track) => {
+      const fullTrack = trackLookup.get(track.id);
+
+      return fullTrack ? { ...track, ...fullTrack } : track;
+    });
+  }, [allTracks, playlist.tracks]);
 
   const handlePlay = () => {
     if (!isAuthenticated) {
       navigate("/login");
       return;
     }
-    const tracks = playlist.tracks || [];
+    const tracks = playlistTracks;
     if (!tracks.length) return;
 
     dispatch(setQueue({ tracks, startIndex: 0 }));
@@ -34,7 +46,7 @@ const PlaylistCard: React.FC<PlaylistCardProps> = ({ playlist, onDetails }) => {
       navigate("/login");
       return;
     }
-    const tracks = playlist.tracks || [];
+    const tracks = playlistTracks;
     if (!tracks.length) return;
 
     const startIndex = Math.floor(Math.random() * tracks.length);

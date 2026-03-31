@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import PlaylistCard from "./PlaylistCard";
 import Modal from "../UI/Modal";
 import TrackList from "../Tracks/TrackList";
 import Loading from "../UI/Loading";
 import type { Playlist } from "../../types/api";
+import { useTracks } from "../../hooks/useTracks";
 
 interface PlaylistListProps {
   playlists: Playlist[];
@@ -15,11 +16,24 @@ interface PlaylistListProps {
 const PlaylistList: React.FC<PlaylistListProps> = ({ playlists, loading, title = "Playlists" }) => {
   const [selected, setSelected] = useState<Playlist | null>(null);
   const [detailsOpen, setDetailsOpen] = useState(false);
+  const { tracks: allTracks } = useTracks();
 
   const handleDetails = (playlist: Playlist) => {
     setSelected(playlist);
     setDetailsOpen(true);
   };
+
+  const selectedTracks = useMemo(() => {
+    if (!selected) return [];
+
+    const trackLookup = new Map(allTracks.map((track) => [track.id, track]));
+
+    return selected.tracks.map((track) => {
+      const fullTrack = trackLookup.get(track.id);
+
+      return fullTrack ? { ...track, ...fullTrack } : track;
+    });
+  }, [allTracks, selected]);
 
   if (loading) return <Loading className="h-64" />;
   if (!playlists.length) return <div className="text-gray-400">No playlists found.</div>;
@@ -41,8 +55,8 @@ const PlaylistList: React.FC<PlaylistListProps> = ({ playlists, loading, title =
         size="xl"
         variant="dark"
       >
-        {selected && selected.tracks.length > 0 ? (
-          <TrackList tracks={selected.tracks} loading={false} title="" />
+        {selected && selectedTracks.length > 0 ? (
+          <TrackList tracks={selectedTracks} loading={false} title="" />
         ) : (
           <div className="text-gray-400">No tracks in this playlist.</div>
         )}

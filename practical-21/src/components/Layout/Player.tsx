@@ -201,6 +201,9 @@ const Player: React.FC = () => {
               <img src={currentTrack.image} alt={currentTrack.title} className="w-14 h-14 rounded-xl object-cover shadow-lg ring-1 ring-white/10" />
               <div className="flex flex-col items-start min-w-0">
                 <h3 className="font-semibold text-sm md:text-base truncate max-w-[12rem] md:max-w-[16rem]">{currentTrack.title}</h3>
+                <p className="text-xs text-gray-400 truncate max-w-[12rem] md:max-w-[16rem]">
+                  {currentTrack.artistName || 'Unknown Artist'}
+                </p>
               </div>
             </button>
 
