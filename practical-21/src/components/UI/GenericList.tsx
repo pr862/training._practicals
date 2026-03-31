@@ -39,7 +39,7 @@ const GenericList = <T,>({
       {title && (
         <div className="flex justify-between items-center mb-6 px-4 md:px-0">
           <h2 className="text-2xl font-bold">{title}</h2>
-          {variant === "slider" && (
+          {(variant === "slider" || onShowAll) && (
             <button
               type="button"
               onClick={() => (onShowAll ? onShowAll() : navigate("/app/tracks"))}

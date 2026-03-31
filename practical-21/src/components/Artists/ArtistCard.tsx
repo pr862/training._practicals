@@ -15,13 +15,11 @@ const ArtistCard: React.FC<ArtistCardProps> = ({ artist }) => {
 
   return (
     <div
+      onClick={() => artist?.id && navigate(`/app/artists/${artist.id}`)}
       className="group w-52 p-3 rounded-xl flex-shrink-0 cursor-pointer text-center
         transition-all duration-300 hover:bg-neutral-700/60 hover:scale-[1.03] relative z-0 hover:z-10"
     >
-      <div
-        className="relative flex justify-center"
-        onClick={() => artist?.id && navigate(`/app/artists/${artist.id}`)}
-      >
+      <div className="relative flex justify-center">
         <Image
           src={artist.image}
           alt={artist.name || 'Artist'}
@@ -31,7 +29,10 @@ const ArtistCard: React.FC<ArtistCardProps> = ({ artist }) => {
         />
 
         <button
-          onClick={handlePlay}
+          onClick={(e) => {
+            e.stopPropagation();
+            handlePlay(e);
+          }}
           className="absolute bottom-3 right-3 w-12 h-12 
             bg-gradient-to-r from-teal-400 via-teal-500 to-emerald-500 
             rounded-full flex items-center justify-center shadow-lg 

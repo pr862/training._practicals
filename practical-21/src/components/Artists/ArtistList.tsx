@@ -9,6 +9,7 @@ interface Props {
   loading: boolean;
   variant?: "slider" | "grid";
   title?: string;
+  onShowAll?: () => void;
 }
 
 const ArtistList: React.FC<Props> = ({
@@ -16,6 +17,7 @@ const ArtistList: React.FC<Props> = ({
   loading,
   variant = "grid",
   title = "Popular Artists",
+  onShowAll,
 }) => {
   const navigate = useNavigate();
 
@@ -30,7 +32,7 @@ const ArtistList: React.FC<Props> = ({
       variant={variant}
       title={title}
       renderItem={renderItem}
-      onShowAll={() => navigate("/app/artists")}
+      onShowAll={onShowAll ?? (() => navigate("/app/artists"))}
       itemMinWidth="180px"
     />
   );
