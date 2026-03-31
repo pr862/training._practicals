@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
 import { Playlist, Track, PlaylistTrack } from '../../models';
-import { AuthRequest } from '../../middleware/auth';
 
-export const addTrackToUserPlaylist = async (req: AuthRequest, res: Response): Promise<void> => {
+export const addTrackToUserPlaylist = async (req: Request, res: Response): Promise<void> => {
   try {
     const playlistId = Number(req.params.id);
     const trackId = Number(req.params.trackId);
@@ -42,7 +41,7 @@ export const addTrackToUserPlaylist = async (req: AuthRequest, res: Response): P
   }
 };
 
-export const removeTrackFromUserPlaylist = async (req: AuthRequest, res: Response): Promise<void> => {
+export const removeTrackFromUserPlaylist = async (req: Request, res: Response): Promise<void> => {
   try {
     const playlistId = Number(req.params.id);
     const trackId = Number(req.params.trackId);
