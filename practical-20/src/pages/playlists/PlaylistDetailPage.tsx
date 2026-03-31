@@ -4,12 +4,12 @@ import { adminPlaylistsApi } from '../../api/admin/playlists';
 import { adminTracksApi } from '../../api/admin/tracks';
 import type { PlaylistDetail } from '../../types/playlist';
 import type { Track } from '../../types/track';
-import { PageHeader } from '../common/PageHeader';
+import { PageHeader } from '../../components/ui/PageHeader';
 import { Select } from '../../components/ui/Select';
 import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
-import { useToast } from '../../components/ui/ToastProvider';
-import { useConfirm } from '../../components/ui/ConfirmProvider';
+import { useToast } from '../../context/ToastProvider';
+import { useConfirm } from '../../context/ConfirmProvider';
 import { Trash2, MoveLeft } from 'lucide-react';
 
 export const PlaylistDetailPage: React.FC = () => {

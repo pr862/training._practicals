@@ -1,6 +1,6 @@
 import React, { createContext, useCallback, useContext, useMemo, useRef, useState } from 'react';
-import { Modal } from './Modal';
-import { Button } from './Button';
+import { Modal } from '../components/ui/Modal';
+import { Button } from '../components/ui/Button';
 
 export type ConfirmVariant = 'primary' | 'danger';
 
@@ -60,32 +60,32 @@ export const ConfirmProvider: React.FC<React.PropsWithChildren> = ({ children })
   return (
     <ConfirmContext.Provider value={value}>
       {children}
-     <Modal
-  open={state.open}
-  title={state.title}
-  subtitle={undefined}
-  onClose={() => close(false)}
-  maxWidthClassName="max-w-md"
-  footer={
-    <div className="flex items-center justify-end gap-3">
-      <Button variant="secondary" onClick={() => close(false)}>
-        {state.cancelText}
-      </Button>
-      <Button
-        variant={state.variant === 'danger' ? 'danger' : 'accent'}
-        onClick={() => close(true)}
+      <Modal
+        open={state.open}
+        title={state.title}
+        subtitle={undefined}
+        onClose={() => close(false)}
+        maxWidthClassName="max-w-md"
+        footer={
+          <div className="flex items-center justify-end gap-3">
+            <Button variant="secondary" onClick={() => close(false)}>
+              {state.cancelText}
+            </Button>
+            <Button
+              variant={state.variant === 'danger' ? 'danger' : 'accent'}
+              onClick={() => close(true)}
+            >
+              {state.confirmText}
+            </Button>
+          </div>
+        }
       >
-        {state.confirmText}
-      </Button>
-    </div>
-  }
->
-  {state.description && (
-    <p className="text-sm text-white/60">
-      {state.description}
-    </p>
-  )}
-</Modal>
+        {state.description && (
+          <p className="text-sm text-white/60">
+            {state.description}
+          </p>
+        )}
+      </Modal>
     </ConfirmContext.Provider>
   );
 };

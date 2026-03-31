@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { adminUsersApi } from '../../api/admin/users';
 import type { User } from '../../types/user';
-import { PageHeader } from '../common/PageHeader';
-import { useToast } from '../../components/ui/ToastProvider';
+import { PageHeader } from '../../components/ui/PageHeader';
+import { useToast } from '../../context/ToastProvider';
 
 export const UsersPage: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);

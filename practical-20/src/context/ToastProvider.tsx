@@ -1,7 +1,7 @@
 import React, { createContext, useCallback, useContext, useMemo, useState } from 'react';
-import { AlertToast } from './Alert';
+import { AlertToast, type  AlertVariant } from '../components/ui/Alert';
 
-export type ToastType = 'success' | 'error' | 'warning' | 'info';
+export type ToastType =  AlertVariant;
 
 export type ToastOptions = {
   type: ToastType;

@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 import type { Playlist } from '../../types/playlist';
 import { adminPlaylistsApi } from '../../api/admin/playlists';
 import { assetUrl } from '../../lib/assetUrl';
-import { PageHeader } from '../common/PageHeader';
+import { PageHeader } from '../../components/ui/PageHeader';
 import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
 import { PlaylistForm, type PlaylistFormValues } from '../../components/forms/PlaylistForm';
-import { useToast } from '../../components/ui/ToastProvider';
-import { useConfirm } from '../../components/ui/ConfirmProvider';
+import { useToast } from '../../context/ToastProvider';
+import { useConfirm } from '../../context/ConfirmProvider';
 import { Edit, Trash2 } from 'lucide-react';
 
 export const PlaylistsPage: React.FC = () => {

@@ -3,13 +3,13 @@ import type { Track } from '../../types/track';
 import type { Album } from '../../types/album';
 import { adminTracksApi } from '../../api/admin/tracks';
 import { adminAlbumsApi } from '../../api/admin/albums';
-import { PageHeader } from '../common/PageHeader';
+import { PageHeader } from '../../components/ui/PageHeader';
 import { Button } from '../../components/ui/Button';
 import { assetUrl } from '../../lib/assetUrl';
 import { Modal } from '../../components/ui/Modal';
 import { TrackForm, type TrackFormValues } from '../../components/forms/TrackForm';
-import { useToast } from '../../components/ui/ToastProvider';
-import { useConfirm } from '../../components/ui/ConfirmProvider';
+import { useToast } from '../../context/ToastProvider';
+import { useConfirm } from '../../context/ConfirmProvider';
 import { Edit, Trash2 } from 'lucide-react';
 
 export const TracksPage: React.FC = () => {

@@ -12,7 +12,7 @@ import { AlbumDetailPage } from './pages/albums/AlbumDetailPage';
 import { TracksPage } from './pages/tracks/TracksPage';
 import { PlaylistsPage } from './pages/playlists/PlaylistsPage';
 import { PlaylistDetailPage } from './pages/playlists/PlaylistDetailPage';
-import { ConfirmProvider } from './components/ui/ConfirmProvider';
+import { ConfirmProvider } from './context/ConfirmProvider';
 
 const App: React.FC = () => {
   return (

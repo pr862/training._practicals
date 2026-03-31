@@ -4,13 +4,13 @@ import type { Artist } from '../../types/artist';
 import { adminAlbumsApi } from '../../api/admin/albums';
 import { adminArtistsApi } from '../../api/admin/artists';
 import { assetUrl } from '../../lib/assetUrl';
-import { PageHeader } from '../common/PageHeader';
+import { PageHeader } from '../../components/ui/PageHeader';
 import { Button } from '../../components/ui/Button';
 import { Link } from 'react-router-dom';
 import { Modal } from '../../components/ui/Modal';
 import { AlbumForm, type AlbumFormValues } from '../../components/forms/AlbumForm';
-import { useToast } from '../../components/ui/ToastProvider';
-import { useConfirm } from '../../components/ui/ConfirmProvider';
+import { useToast } from '../../context/ToastProvider';
+import { useConfirm } from '../../context/ConfirmProvider';
 import { Edit, Trash2 } from 'lucide-react';
 
 export const AlbumsPage: React.FC = () => {

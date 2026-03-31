@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { PageHeader } from './common/PageHeader';
+import { PageHeader } from '../components/ui/PageHeader';
 import { adminUsersApi } from '../api/admin/users';
 import { adminArtistsApi } from '../api/admin/artists';
 import { adminAlbumsApi } from '../api/admin/albums';
 import { adminTracksApi } from '../api/admin/tracks';
 import { adminPlaylistsApi } from '../api/admin/playlists';
-import { useToast } from '../components/ui/ToastProvider';
+import { useToast } from '../context/ToastProvider';
 
 export const DashboardPage: React.FC = () => {
   const [loading, setLoading] = useState(true);

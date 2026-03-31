@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Button } from '../components/ui/Button';
-import { useConfirm } from '../components/ui/ConfirmProvider';
+import { useConfirm } from '../context/ConfirmProvider';
 import {
   LayoutDashboard,
   Users2,

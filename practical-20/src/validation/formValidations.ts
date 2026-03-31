@@ -39,6 +39,7 @@ export const trackValidation = {
 
 export const playlistValidation = {
   name: validationRules.required('Playlist name is required'),
+  description: (_value: string) => undefined,
   image: (file: File | null) => {
     if (file && file.size > 5 * 1024 * 1024) return 'Image file size must be less than 5MB';
     return undefined;
@@ -105,6 +106,7 @@ export const createTrackValidation = (isEditing: boolean) => ({
 
 export const createPlaylistValidation = (isEditing: boolean) => ({
   name: validationRules.required('Playlist name is required'),
+  description: (_value: string) => undefined,
   image: (file: File | null) => {
     if (file && file.size > 5 * 1024 * 1024) return 'Image file size must be less than 5MB';
     return undefined;

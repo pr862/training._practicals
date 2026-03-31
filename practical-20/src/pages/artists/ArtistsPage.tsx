@@ -2,18 +2,18 @@ import React, { useEffect, useState } from 'react';
 import type { Artist } from '../../types/artist';
 import { adminArtistsApi } from '../../api/admin/artists';
 import { assetUrl } from '../../lib/assetUrl';
-import { PageHeader } from '../common/PageHeader';
+import { PageHeader } from '../../components/ui/PageHeader';
 import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
 import { ArtistForm } from '../../components/forms/ArtistForm';
-import { AlertToast } from '../../components/ui/Alert';
+import { AlertToast, type  AlertVariant } from '../../components/ui/Alert';
 import { Edit, Trash2 } from 'lucide-react';
-import { useConfirm } from '../../components/ui/ConfirmProvider';
+import { useConfirm } from '../../context/ConfirmProvider';
 
 export const ArtistsPage: React.FC = () => {
   const [items, setItems] = useState<Artist[]>([]);
   const [loading, setLoading] = useState(true);
-  const [alerts, setAlerts] = useState<Array<{ id: string; type: 'success' | 'error' | 'warning' | 'info'; message: string }>>([]);
+  const [alerts, setAlerts] = useState<Array<{ id: string; type: AlertVariant; message: string }>>([]);
 
   const [showCreate, setShowCreate] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
@@ -37,7 +37,7 @@ export const ArtistsPage: React.FC = () => {
     void refresh();
   }, []);
 
-  const addAlert = (id: string, type: 'success' | 'error' | 'warning' | 'info', message: string) => {
+  const addAlert = (id: string, type:  AlertVariant, message: string) => {
     setAlerts(prev => [...prev, { id, type, message }]);
     setTimeout(() => {
       setAlerts(prev => prev.filter(alert => alert.id !== id));
