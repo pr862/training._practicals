@@ -1,0 +1,11 @@
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  className="h-5 w-5 text-teal-400"
+  viewBox="0 0 24 24"
+  fill="#6ac2b5"
+  stroke="#000000"
+  strokeWidth="2"
+>
+  <circle cx="12" cy="12" r="10" />
+  <path d="M9 12l2 2 4-4" />
+</svg>      
