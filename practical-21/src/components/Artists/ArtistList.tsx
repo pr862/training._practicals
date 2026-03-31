@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import type { Artist } from "../../types/api";
 import ArtistCard from "./ArtistCard";
 import GenericList from "../UI/GenericList";
@@ -16,6 +17,8 @@ const ArtistList: React.FC<Props> = ({
   variant = "grid",
   title = "Popular Artists",
 }) => {
+  const navigate = useNavigate();
+
   const renderItem = (artist: Artist, _index: number) => (
     <ArtistCard key={artist.id} artist={artist} />
   );
@@ -27,7 +30,7 @@ const ArtistList: React.FC<Props> = ({
       variant={variant}
       title={title}
       renderItem={renderItem}
-      onShowAll={() => window.location.href = "/app/artists"}
+      onShowAll={() => navigate("/app/artists")}
       itemMinWidth="180px"
     />
   );

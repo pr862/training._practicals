@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import type { Album } from "../../types/api";
 import AlbumCard from "./AlbumCard";
 import GenericList from "../UI/GenericList";
@@ -16,6 +17,8 @@ const AlbumList: React.FC<Props> = ({
   variant = "grid",
   title = "Popular Albums",
 }) => {
+  const navigate = useNavigate();
+
   const renderItem = (album: Album, _index: number) => (
     <AlbumCard key={album.id} album={album} />
   );
@@ -27,7 +30,7 @@ const AlbumList: React.FC<Props> = ({
       variant={variant}
       title={title}
       renderItem={renderItem}
-      onShowAll={() => window.location.href = "/app/albums"}
+      onShowAll={() => navigate("/app/albums")}
       itemMinWidth="180px"
     />
   );
