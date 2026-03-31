@@ -88,6 +88,7 @@ export const AlbumForm: React.FC<AlbumFormProps> = ({ album, artists, onSubmit, 
           </Select>
 
           <Input
+            type="date"
             label="Published At"
             placeholder="2026-03-17"
             value={publishedAt}
