@@ -56,7 +56,7 @@ const PlaylistCard: React.FC<PlaylistCardProps> = ({ playlist, onDetails }) => {
 
   return (
     <div className="bg-[#0e0e12] rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
-      <div className="relative w-full h-48">
+      <div className="relative w-full h-44 sm:h-48">
         <img
           src={playlist.image}
           alt={playlist.title}
@@ -68,12 +68,12 @@ const PlaylistCard: React.FC<PlaylistCardProps> = ({ playlist, onDetails }) => {
         </div>
       </div>
 
-      <div className="flex items-center justify-between p-3 border-t border-gray-800">
-        <span className="text-gray-400 text-sm">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between p-3 border-t border-gray-800">
+        <span className="text-gray-400 text-xs sm:text-sm">
           Created {playlist.createdAt ? new Date(playlist.createdAt).toLocaleDateString() : "Unknown"}
         </span>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
           <button
             onClick={handlePlay}
             className="w-9 h-9 flex items-center justify-center bg-white/5 hover:bg-white/10 rounded-full border border-white/10 transition-colors"

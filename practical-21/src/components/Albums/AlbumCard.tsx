@@ -14,7 +14,7 @@ const AlbumCard: React.FC<AlbumCardProps> = ({ album }) => {
   return (
     <div
       onClick={() => navigate(`/app/albums/${album.id}`)}
-      className="group w-52 p-3 rounded-xl flex-shrink-0 cursor-pointer text-center transition-all duration-300 hover:bg-neutral-700/60 hover:scale-[1.03]">
+      className="group relative z-0 hover:z-10 w-52 p-3 rounded-xl flex-shrink-0 cursor-pointer text-center transition-all duration-300 hover:bg-neutral-700/60 hover:scale-[1.03]">
       <div className="relative">
         <Image
           src={album.image}

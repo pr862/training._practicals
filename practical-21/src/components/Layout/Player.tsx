@@ -190,18 +190,18 @@ const Player: React.FC = () => {
         className="hidden"
       />
       
-      <div className="max-w-7xl mx-auto px-4 py-3">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-3 min-w-0">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:gap-4">
+          <div className="flex items-center gap-3 min-w-0 md:flex-none">
             <button
               onClick={() => navigate(`/app/tracks/${currentTrack.id}`)}
               className="flex items-center gap-3 min-w-0 hover:opacity-90 transition-opacity"
               title="Open track"
             >
-              <img src={currentTrack.image} alt={currentTrack.title} className="w-14 h-14 rounded-xl object-cover shadow-lg ring-1 ring-white/10" />
+              <img src={currentTrack.image} alt={currentTrack.title} className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl object-cover shadow-lg ring-1 ring-white/10" />
               <div className="flex flex-col items-start min-w-0">
-                <h3 className="font-semibold text-sm md:text-base truncate max-w-[12rem] md:max-w-[16rem]">{currentTrack.title}</h3>
-                <p className="text-xs text-gray-400 truncate max-w-[12rem] md:max-w-[16rem]">
+                <h3 className="font-semibold text-sm md:text-base truncate max-w-[10rem] sm:max-w-[12rem] md:max-w-[16rem]">{currentTrack.title}</h3>
+                <p className="text-[11px] sm:text-xs text-gray-400 truncate max-w-[10rem] sm:max-w-[12rem] md:max-w-[16rem]">
                   {currentTrack.artistName || 'Unknown Artist'}
                 </p>
               </div>
@@ -229,8 +229,8 @@ const Player: React.FC = () => {
             </button>
           </div>
 
-          <div className="flex flex-col flex-1 items-center gap-2 min-w-0">
-            <div className="flex items-center gap-2">
+          <div className="flex flex-col flex-1 items-center gap-2 min-w-0 w-full">
+            <div className="flex items-center justify-center gap-2 flex-wrap">
               <button
                 onClick={handleShuffle}
                 className={`hidden sm:inline-flex items-center justify-center w-9 h-9 rounded-full transition-colors ${
@@ -277,7 +277,7 @@ const Player: React.FC = () => {
             </div>
 
             <div className="w-full max-w-xl flex items-center gap-2">
-              <span className="text-[11px] text-gray-400 w-10 text-right tabular-nums">{currentDuration}</span>
+              <span className="text-[10px] sm:text-[11px] text-gray-400 w-9 sm:w-10 text-right tabular-nums">{currentDuration}</span>
               <div
                 className="flex-1 bg-white/10 rounded-full h-1.5 relative cursor-pointer group"
                 onClick={handleProgressClick}
@@ -291,7 +291,7 @@ const Player: React.FC = () => {
                   style={{ left: `calc(${progress}% - 6px)` }}
                 />
               </div>
-              <span className="text-[11px] text-gray-400 w-10 tabular-nums">{totalDuration}</span>
+              <span className="text-[10px] sm:text-[11px] text-gray-400 w-9 sm:w-10 tabular-nums">{totalDuration}</span>
             </div>
 
             {audioError ? (

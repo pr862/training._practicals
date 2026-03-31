@@ -9,7 +9,7 @@ const MainLayout: React.FC = () => {
       <Navbar />
 
       <div className="flex-1 overflow-hidden">
-        <main className="flex-1">
+        <main className="flex-1 pb-36 md:pb-28">
           <Outlet />
         </main>
       </div>

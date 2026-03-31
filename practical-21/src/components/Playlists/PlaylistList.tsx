@@ -40,9 +40,9 @@ const PlaylistList: React.FC<PlaylistListProps> = ({ playlists, loading, title =
 
   return (
     <div className="space-y-6">
-      {title && <h1 className="text-3xl font-bold mb-6">{title}</h1>}
+      {title && <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-6">{title}</h1>}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
         {playlists.map((playlist) => (
           <PlaylistCard key={playlist.id} playlist={playlist} onDetails={handleDetails} />
         ))}

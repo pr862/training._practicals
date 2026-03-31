@@ -16,7 +16,7 @@ const ArtistCard: React.FC<ArtistCardProps> = ({ artist }) => {
   return (
     <div
       className="group w-52 p-3 rounded-xl flex-shrink-0 cursor-pointer text-center
-        transition-all duration-300 hover:bg-neutral-700/60 hover:scale-[1.03]"
+        transition-all duration-300 hover:bg-neutral-700/60 hover:scale-[1.03] relative z-0 hover:z-10"
     >
       <div
         className="relative flex justify-center"
