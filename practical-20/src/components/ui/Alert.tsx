@@ -1,7 +1,14 @@
 import React from 'react';
 
+export enum AlertType {
+  SUCCESS = 'success',
+  ERROR = 'error',
+  WARNING = 'warning',
+  INFO = 'info',
+}
+
 interface AlertProps {
-  type: 'success' | 'error' | 'warning' | 'info';
+  type: AlertType;
   message: string;
   onClose?: () => void;
 }
@@ -9,13 +16,13 @@ interface AlertProps {
 export const Alert: React.FC<AlertProps> = ({ type, message, onClose }) => {
   const getStyles = () => {
     switch (type) {
-      case 'success':
+      case AlertType.SUCCESS:
         return 'bg-neutral-900/90 border-teal-400/25 text-white';
-      case 'error':
+      case AlertType.ERROR:
         return 'bg-neutral-900/90 border-rose-400/25 text-white';
-      case 'warning':
+      case AlertType.WARNING:
         return 'bg-neutral-900/90 border-amber-400/25 text-white';
-      case 'info':
+      case AlertType.INFO:
         return 'bg-neutral-900/90 border-sky-400/25 text-white';
       default:
         return 'bg-neutral-900/90 border-white/15 text-white';
@@ -24,7 +31,7 @@ export const Alert: React.FC<AlertProps> = ({ type, message, onClose }) => {
 
   const getIcon = () => {
     switch (type) {
-      case 'success':
+      case AlertType.SUCCESS:
         return (
           <svg className="h-5 w-5 text-teal-400" viewBox="0 0 20 20" fill="currentColor">
             <path
@@ -34,7 +41,7 @@ export const Alert: React.FC<AlertProps> = ({ type, message, onClose }) => {
             />
           </svg>
         );
-      case 'error':
+      case AlertType.ERROR:
         return (
           <svg className="h-5 w-5 text-rose-400" viewBox="0 0 20 20" fill="currentColor">
             <path
@@ -44,7 +51,7 @@ export const Alert: React.FC<AlertProps> = ({ type, message, onClose }) => {
             />
           </svg>
         );
-      case 'warning':
+      case AlertType.WARNING:
         return (
           <svg className="h-5 w-5 text-amber-400" viewBox="0 0 20 20" fill="currentColor">
             <path
@@ -54,7 +61,7 @@ export const Alert: React.FC<AlertProps> = ({ type, message, onClose }) => {
             />
           </svg>
         );
-      case 'info':
+      case AlertType.INFO:
         return (
           <svg className="h-5 w-5 text-sky-400" viewBox="0 0 20 20" fill="currentColor">
             <path
@@ -76,7 +83,7 @@ export const Alert: React.FC<AlertProps> = ({ type, message, onClose }) => {
         <div className="ml-3 flex-1">
           <p className="text-sm font-medium text-white">{message}</p>
         </div>
-        {onClose ? (
+        {onClose && (
           <div className="ml-auto pl-3">
             <button
               onClick={onClose}
@@ -92,14 +99,14 @@ export const Alert: React.FC<AlertProps> = ({ type, message, onClose }) => {
               </svg>
             </button>
           </div>
-        ) : null}
+        )}
       </div>
     </div>
   );
 };
 
 interface AlertToastProps {
-  alerts: Array<{ id: string; type: 'success' | 'error' | 'warning' | 'info'; message: string }>;
+  alerts: Array<{ id: string; type: AlertType; message: string }>;
   onDismiss: (id: string) => void;
 }
 
