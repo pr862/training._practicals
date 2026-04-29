@@ -3,19 +3,33 @@ import { Recipe, RecipeStatus } from "../types/recipe";
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
+  host: "://gmail.com",
+  port: 465,
+  secure: true,
   auth: {
     user: process.env.EMAIL_USERNAME,
     pass: process.env.EMAIL_PASSWORD,
   },
+  debug: true,
+  logger: true 
 });
 
 export const sendEmail = async (to: string, subject: string, htmlContent: string) => {
+  console.log(" DEBUG: Checking Environment Variables...");
+  console.log("EMAIL_USERNAME exists:", !!process.env.EMAIL_USERNAME);
+  console.log("EMAIL_PASSWORD exists:", !!process.env.EMAIL_PASSWORD);
+
   if (!process.env.EMAIL_USERNAME || !process.env.EMAIL_PASSWORD) {
-    console.error(" MAIL_ERROR: Missing environment variables for EMAIL.");
+    console.error(" MAIL_ERROR: Missing credentials in Render Dashboard.");
     return false;
   }
+
   try {
-    console.log(`Attempting to send email to: ${to}...`);
+    console.log(" DEBUG: Verifying connection to SMTP server...");
+    await transporter.verify();
+    console.log(" DEBUG: Connection ready to send mail");
+
+    console.log(`📧 Attempting to send email to: ${to}...`);
     
     const info = await transporter.sendMail({
       from: `"Recipe Book" <${process.env.EMAIL_USERNAME}>`,
@@ -27,9 +41,16 @@ export const sendEmail = async (to: string, subject: string, htmlContent: string
     console.log("MAIL_SUCCESS: Message sent ID:", info.messageId);
     return true;
   } catch (error: any) {
-    console.error(" MAIL_ERROR: Full details below:");
-    console.error("Code:", error.code);
-    console.error("Message:", error.message);
+    console.error(" MAIL_ERROR: Detailed Breakdown below:");
+    console.error("- Error Code:", error.code);        
+    console.error("- Command:", error.command);     
+    console.error("- Response:", error.response);    
+    console.error("- Message:", error.message);
+    
+    if (error.code === 'ENETUNREACH' || error.code === 'ETIMEDOUT') {
+      console.error("TIP: Render Free Tier blocks SMTP. This error confirms the firewall is blocking you.");
+    }
+    
     return false;
   }
 };
