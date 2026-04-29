@@ -11,17 +11,25 @@ const transporter = nodemailer.createTransport({
 
 export const sendEmail = async (to: string, subject: string, htmlContent: string) => {
   if (!process.env.EMAIL_USERNAME || !process.env.EMAIL_PASSWORD) {
+    console.error(" MAIL_ERROR: Missing environment variables for EMAIL.");
     return false;
   }
   try {
-    await transporter.sendMail({
+    console.log(`Attempting to send email to: ${to}...`);
+    
+    const info = await transporter.sendMail({
       from: `"Recipe Book" <${process.env.EMAIL_USERNAME}>`,
       to,
       subject,
-      html: htmlContent, 
+      html: htmlContent,
     });
+
+    console.log("MAIL_SUCCESS: Message sent ID:", info.messageId);
     return true;
-  } catch (error) {
+  } catch (error: any) {
+    console.error(" MAIL_ERROR: Full details below:");
+    console.error("Code:", error.code);
+    console.error("Message:", error.message);
     return false;
   }
 };
@@ -36,7 +44,7 @@ const wrapEmailTemplate = (content: string) => `
       &copy; ${new Date().getFullYear()} RecipeBook. All rights reserved.<br>
       You received this because of your recipe submission.
     </div>
-  </div>`;
+</div>`;
 
 export const sendStatusUpdateEmail = async (to: string, recipe: Recipe, status: RecipeStatus, feedback?: string) => {
   const accentColor = "#f97316";
