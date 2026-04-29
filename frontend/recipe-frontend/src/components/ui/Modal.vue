@@ -29,10 +29,10 @@
         </button>
         <button 
           @click="$emit('confirm')" 
-          :disabled="confirmDisabled" 
-          class="flex-1 px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-400  hover:bg-orange-600 text-white font-bold rounded-xl cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          :disabled="loading" 
+          class="flex-1 px-6 py-3 bg-gradient-to-r from-orange-500 to-orange-400 hover:bg-orange-600 text-white font-bold rounded-xl cursor-pointer transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          <span v-if="loading" class="animate-spin">⚙️</span>
+          <Loader2 v-if="loading" class="size-5 animate-spin" />
           <span>{{ confirmText || 'Confirm' }}</span>
         </button>
       </div>
@@ -41,6 +41,7 @@
 </template>
 
 <script setup lang="ts">
+import {Loader2} from "@lucide/vue"
 defineProps<{
   isOpen: boolean
   title: string

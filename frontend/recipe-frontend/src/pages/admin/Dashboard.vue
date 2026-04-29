@@ -109,42 +109,20 @@
         </div>
       </div>
 
-      <div v-if="feedbackModal.isOpen" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" @click.self="closeFeedbackModal">
-        <div class="bg-white rounded-3xl p-8 max-w-md w-full max-h-[90vh] overflow-y-auto shadow-2xl">
-          <div class="flex items-center justify-between mb-6">
-            <h3 class="text-2xl font-black text-gray-900">
-              {{ feedbackModal.action === 'rejected' }}
-            </h3>
-            <button @click="closeFeedbackModal" class="p-2 text-gray-400 hover:text-gray-600 rounded-xl transition-all cursor-pointer">
-              <X class="size-6" />
-            </button>
-          </div>
-          <div v-if="feedbackModal.recipe" class="mb-6 p-4 bg-orange-50 border border-orange-100 rounded-2xl">
-            <div class="flex items-center gap-3 mb-2">
-              <img :src="feedbackModal.recipe.image || '/placeholder.jpg'" class="w-12 h-12 rounded-xl object-cover" />
-              <div>
-                <p class="font-bold text-gray-900">{{ feedbackModal.recipe.name }}</p>
-                <p class="text-sm text-gray-600">{{ feedbackModal.recipe.status }}</p>
-              </div>
-            </div>
-          </div>
+      <Modal :isOpen="feedbackModal.isOpen" :loading="actionLoading[feedbackModal.recipe?.id || '']":title="feedbackModal.action === 'rejected' ? 'Reject Recipe' : 'Revision Feedback'" :confirm-text="feedbackModal.action === 'rejected' ? 'Reject' : 'Send Feedback' "@close="closeFeedbackModal" @confirm="submitFeedback" class="backdrop-blur-md"
+      >
+        <div class="space-y-5 py-4">
+          <p class="text-sm font-bold text-neutral-400 uppercase tracking-widest">
+            Revision Feedback
+          </p>
           <textarea 
             v-model="feedbackModal.feedback" 
-            placeholder="Provide detailed feedback, suggestions, or reasons for rejection..." 
-            class="w-full p-4 border border-gray-200 rounded-2xl focus:ring-4 focus:ring-orange-500/20 focus:border-orange-500 resize-vertical min-h-[150px] text-sm font-medium"
-            @keydown.enter.exact.prevent="submitFeedback"
+            :disabled="actionLoading[feedbackModal.recipe?.id || '']"
+            placeholder="Provide constructive notes for the chef..." 
+            class="w-full p-6 border border-white/5 rounded-3xl bg-neutral-950 text-white focus:ring-2 focus:ring-orange-500 focus:outline-none h-48 resize-none font-medium"
           ></textarea>
-          <div class="flex gap-3 mt-6 pt-6 border-t border-gray-100">
-            <button @click="closeFeedbackModal" class="flex-1 px-6 py-3 text-gray-700 font-bold border border-gray-200 rounded-xl hover:bg-gray-50 cusor-pointer transition-all">
-              Cancel
-            </button>
-            <button @click="submitFeedback" :disabled="!feedbackModal.feedback.trim() || actionLoading[feedbackModal.recipe?.id || '']" class="flex-1 px-6 py-3 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer">
-              <Loader2 v-if="actionLoading[feedbackModal.recipe?.id || '']" class="size-5 animate-spin" />
-              <span>{{ feedbackModal.action === 'rejected' ? 'Reject' : 'Send Feedback' }}</span>
-            </button>
-          </div>
         </div>
-      </div>
+      </Modal>
     </template>
   </div>
 </template>
@@ -153,11 +131,12 @@
 import { ref, computed, onMounted } from 'vue'
 import { adminRecipeAPI } from '../../services/api'
 import type { Recipe } from '../../types/recipe'
-import { Loader2, Clock, CheckCircle, XCircle, FileText, Eye, RotateCcw, Edit3, LayoutDashboard } from '@lucide/vue'
+import { Clock, CheckCircle, XCircle, FileText, Eye, RotateCcw, Edit3, LayoutDashboard } from '@lucide/vue'
 import { formatDate } from '../../utils/format'
 import Navbar from '@/components/ui/Navbar.vue'
 import StatusBadge from '@/components/ui/StatusBadge.vue'
 import Loading from '@/components/ui/Loading.vue'
+import Modal from '@/components/ui/Modal.vue'
 
 const loading = ref(false)
 const statusFilter = ref('all')

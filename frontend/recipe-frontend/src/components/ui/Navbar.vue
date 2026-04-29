@@ -150,6 +150,7 @@
 
   <Modal 
     :isOpen="showLogoutModal" 
+    :loading="processing"
     @close="showLogoutModal = false" 
     @confirm="confirmLogout" 
     title="Confirm Logout" 
@@ -167,6 +168,7 @@ import Modal from './Modal.vue'
 
 const authStore = useAuthStore()
 const isOpen = ref(false)
+const processing = ref(false)
 
 const homeLink = computed(() => {
   if (!authStore.isLoggedIn) return '/'
@@ -189,9 +191,15 @@ const handleLogout = () => {
   showLogoutModal.value = true
 }
 
-const confirmLogout = () => {
-  authStore.logout()
-  showLogoutModal.value = false
-  closeMenu()
+const confirmLogout = async () => {
+  processing.value = true
+  try {
+    await new Promise(resolve => setTimeout(resolve, 800))
+    authStore.logout()
+    showLogoutModal.value = false
+    closeMenu()
+  } finally {
+    processing.value = false
+  }
 }
 </script>

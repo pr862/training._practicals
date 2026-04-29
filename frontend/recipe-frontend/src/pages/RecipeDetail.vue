@@ -112,17 +112,23 @@
             </div>
           </div>
 
-        <div v-if="isAdmin || (isChef && hasFeedback)" class="rounded-[2rem] border overflow-hidden backdrop-blur-xl" :class="statusClasses">
-          <div class="p-8 flex flex-col md:flex-row md:items-center gap-8">
-            <div class="p-4 bg-white/20 rounded-[1.5rem] self-start shadow-xl">
-              <MessageSquare v-if="hasFeedback" class="size-7 text-white" />
-              <CheckCircle v-else class="size-7 text-white" />
+        <div v-if="isAdmin || (isChef && hasFeedback)" class="rounded-[1.5rem] sm:rounded-[2rem] border overflow-hidden backdrop-blur-xl transition-all" :class="statusClasses">
+          <div class="p-5 sm:p-8 flex flex-col md:flex-row md:items-center gap-4 sm:gap-8">
+            <div class="p-3 sm:p-4 bg-white/20 rounded-[1.2rem] sm:rounded-[1.5rem] w-fit shadow-xl shrink-0">
+              <MessageSquare v-if="hasFeedback" class="size-6 sm:size-7 text-white" />
+              <CheckCircle v-else class="size-6 sm:size-7 text-white" />
             </div>
-            <div class="flex-1 space-y-2">
-              <h3 class="font-black text-xl tracking-tight uppercase">Status: {{ recipe.status }}</h3>
-              <div v-if="hasFeedback" class="text-white/80 text-lg font-medium leading-relaxed italic" v-html="recipe.feedback"></div>
-              <p v-else class="text-sm font-bold opacity-70">Published by {{ recipe.createdByEmail }} • {{ formatDate(recipe.createdAt) }}</p>
+            <div class="flex-1 space-y-1 sm:space-y-2 min-w-0">
+              <h3 class="font-black text-lg sm:text-xl tracking-tight uppercase truncate">Status: {{ recipe.status }}</h3>
+              <div v-if="hasFeedback" class="text-white/80 text-sm sm:text-lg font-medium leading-relaxed italic break-words" v-html="recipe.feedback">
             </div>
+      
+              <p v-else class="text-xs sm:text-sm font-bold opacity-70">Published by {{ recipe.createdByEmail }} <span class="hidden xs:inline">•</span> 
+                <br class="xs:hidden" />
+                {{ formatDate(recipe.createdAt) }}
+              </p>
+              </div>
+    
           </div>
         </div>
 
@@ -142,19 +148,20 @@
                   <span>Reject</span>
                 </button>
               </template>
+              </div>
               <button v-if="isChef" @click="handleEdit" 
-                :class="[isAdmin ? 'col-span-2 sm:flex-1' : 'col-span-2']"
+                :class="[isAdmin ? 'flex-1' : 'w-full']"
                 class="flex items-center justify-center gap-2 h-14 bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white rounded-2xl font-black shadow-lg shadow-orange-900/20 transition-all active:scale-95 text-sm sm:px-30 cursor-pointer">
                 <Edit class="size-4" />
                 <span>Edit Recipe</span>
               </button>
-            </div>
+          
           </div>
         </div>
       </div>
     </div>
 
-    <Modal :isOpen="showModal" @close="showModal = false" @confirm="submitFeedback" :confirm-text="confirmText" :title="modalTitle" class="backdrop-blur-md">
+    <Modal :isOpen="showModal" :loading="processing" @close="showModal = false" @confirm="submitFeedback" :confirm-text="confirmText" :title="modalTitle" class="backdrop-blur-md">
       <div class="space-y-5 py-4">
         <p class="text-sm font-bold text-neutral-400 uppercase tracking-widest">Revision Feedback</p>
         <textarea v-model="feedback" placeholder="Provide constructive notes for the chef..." 
