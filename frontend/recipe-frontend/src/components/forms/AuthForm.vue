@@ -19,7 +19,7 @@
               id="name" 
               v-model="form.name" 
               :class="[errors.name ? 'border-red-500 focus:ring-red-50' : 'border-transparent focus:border-orange-400 focus:ring-orange-100', 'w-full pl-11 sm:pl-12 pr-4 py-3.5 sm:py-4 bg-gray-50 border rounded-xl sm:rounded-2xl focus:bg-white transition-all outline-none text-sm sm:text-base']"
-              placeholder="John Doe"
+              placeholder="chef"
               @input="validateField('name')"
             />
           </div>
