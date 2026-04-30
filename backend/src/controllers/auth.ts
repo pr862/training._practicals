@@ -37,9 +37,15 @@ export const Register = async (req: Request, res: Response) => {
       createdAt: new Date(),
     });
 
+    const token = jwt.sign(
+      { id: newUser.id, email: newUser.email, role: newUser.role },
+      process.env.JWT_SECRET!,
+      { expiresIn: "7d" }
+    );
+
     const { password: _, ...safeUser } = newUser;
 
-    return res.status(201).json({message: `${role || "User"} created successfully`,user: safeUser,});
+    return res.status(201).json({message: `${role || "User"} created successfully`,token,user: safeUser,});
   } catch (error) {
     return res.status(500).json({ message: "Server error" });
   }
