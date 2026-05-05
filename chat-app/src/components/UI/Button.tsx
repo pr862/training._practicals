@@ -17,14 +17,14 @@ const Button: React.FC<ButtonProps> = ({
   iconPosition = 'left',
   ...props
 }) => {
-  const baseClasses ='inline-flex items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60 cursor-pointer';
+  const baseClasses ='inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl font-semibold transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/30 focus-visible:ring-offset-2 focus-visible:ring-offset-white active:translate-y-px disabled:cursor-not-allowed disabled:opacity-60';
 
   const variants: Record<string, string> = {
-    primary:'text-white shadow-lg hover:shadow-blue-500/25 bg-gradient-to-r from-blue-500 via-blue-600 to-indigo-600 hover:brightness-105',
-    secondary:'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 focus:ring-blue-500',
-    danger:'bg-gradient-to-r from-red-500 to-rose-600 text-white shadow-sm hover:shadow-md hover:brightness-105',
-    outline:'bg-transparent border-2 border-blue-500 text-blue-600 hover:bg-blue-50 focus:ring-blue-500',
-    accent:'text-white text-sm shadow-md bg-gradient-to-r from-blue-400 to-blue-600 hover:brightness-105',
+    primary: 'text-white shadow-lg hover:shadow-blue-700/25 bg-gradient-to-tr from-cyan-400 to-blue-500 hover:brightness-105',
+    secondary: 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50 focus:ring-blue-500',
+    danger: 'bg-gradient-to-r from-red-500 to-rose-600 text-white shadow-sm hover:shadow-md hover:brightness-105',
+    outline: 'bg-transparent border-2 border-blue-500 text-blue-600 hover:bg-blue-50 focus:ring-blue-500',
+    accent: 'text-white text-sm shadow-md bg-gradient-to-r from-blue-400 to-blue-600 hover:brightness-105',
   };
 
   const sizes: Record<string, string> = {

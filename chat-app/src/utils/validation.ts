@@ -25,3 +25,17 @@ export const validateConfirmPassword = (confirmPassword: string, password: strin
   if (confirmPassword !== password) return 'Passwords do not match.'
   return ''
 }
+
+export const validateProfileImage = (file: File | null): string => {
+  if (!file) return "";
+  const maxSize = 2 * 1024 * 1024;
+  const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
+
+  if (!allowedTypes.includes(file.type)) {
+    return "Please select a valid image (JPG, PNG, or WebP).";
+  }
+  if (file.size > maxSize) {
+    return "Image must be smaller than 2 MB.";
+  }
+  return "";
+};

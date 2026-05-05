@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useState, useMemo } from "react";
 import type { ReactNode } from "react";
 import type { User } from "firebase/auth";
-import { listenAuth, logoutUser } from "../firebase/auth";
+import { listenAuth, logoutUser } from "../services/auth";
 
 interface AuthContextType {
   currentUser: User | null;

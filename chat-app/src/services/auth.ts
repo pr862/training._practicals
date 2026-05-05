@@ -3,7 +3,8 @@ import {
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
   signOut, 
-  onAuthStateChanged 
+  onAuthStateChanged, 
+  updateProfile
 } from "firebase/auth";
 import type { User, UserCredential, Unsubscribe } from "firebase/auth";
 
@@ -18,3 +19,8 @@ export const logoutUser = (): Promise<void> =>
 
 export const listenAuth = (callback: (user: User | null) => void): Unsubscribe => 
   onAuthStateChanged(auth, callback);
+
+export const updateUserProfile = (
+  user: User,
+  profile: { displayName?: string; photoURL?: string }
+): Promise<void> => updateProfile(user, profile);

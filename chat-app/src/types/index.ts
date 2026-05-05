@@ -1,9 +1,9 @@
 export interface User {
-  uId: string;
+  uid: string;
   email: string;
-  Name: string;
-  image: string;
-  createdAt: any; 
+  name: string;
+  photoURL?: string;
+  createdAt?: unknown;
 }
 
 export interface Chat {
@@ -13,14 +13,15 @@ export interface Chat {
   groupName?: string;
   adminId?: string;
   lastMessage?: string;
-  updatedAt: any;
+  updatedAt: unknown;
 }
 
 export interface Message {
-  messageId: string;
+  id: string;
+  messageId?: string;
   senderId: string;
   text: string;
-  imageUrl?: string;
-  type: "text" | "image";
-  createdAt: any;
+  imageUrl?: string | null;
+  type?: "text" | "image";
+  createdAt: unknown;
 }
