@@ -13,7 +13,11 @@ export interface Chat {
   groupName?: string;
   adminId?: string;
   lastMessage?: string;
+  createdAt?: unknown;
   updatedAt: unknown;
+  unreadCount?: Record<string, number>;
+  deletedAt?: unknown;
+  deletedBy?: string;
 }
 
 export interface Message {
@@ -22,6 +26,6 @@ export interface Message {
   senderId: string;
   text: string;
   imageUrl?: string | null;
-  type?: "text" | "image";
+  type?: "text" | "image" | "system";
   createdAt: unknown;
 }

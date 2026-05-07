@@ -1,18 +1,33 @@
 import { useEffect, useState } from "react";
 import { signOut } from "firebase/auth";
-import { Loader2, MessageSquare } from "lucide-react";
+import { MessageSquare } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { auth } from "../firebase/config";
 import { useUsersDirectory } from "../hooks/useUsers";
 import Chat from "../components/UI/Chat";
 import Sidebar from "../components/Layout/Sidebar";
 import ChatHeader from "../components/UI/ChatHeader";
+import ConfirmationModal from "../components/UI/ConfirmationModal";
+import CreateGroup from "../components/UI/CreateGroup";
+import Loading from "../components/UI/Loading";
+import { addGroupMembers } from "../services/chat";
+
+type ConfirmAction = "logout" | "leave-group" | "delete-group" | null;
+
+interface ConfirmDialogConfig {
+  title: string;
+  description: string;
+  confirmLabel: string;
+  variant?: "danger" | "primary";
+  onConfirm: () => void | Promise<void>;
+}
 
 export default function Users() {
-  const [showLogoutModal, setShowLogoutModal] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<ConfirmAction>(null);
   const [isMessagesLoading, setIsMessagesLoading] = useState(false);
+  const [isAddMembersModalOpen, setIsAddMembersModalOpen] = useState(false);
   const navigate = useNavigate();
-  const { userId } = useParams();
+  const { userId, groupId } = useParams();
 
   const {
     users,
@@ -20,17 +35,30 @@ export default function Users() {
     me,
     otherUsers,
     selectedUser,
+    selectedGroupChat,
+    selectedGroupChatId,
+    groupChats,
     chatPreviewsByUserId,
     chatId,
     searchQuery,
     setSearchQuery,
     handleUserClick,
+    handleGroupClick,
+    handleCreateGroup,
+    handleLeaveGroup,
+    handleDeleteGroup,
+    resetSelection,
     isChatLoading,
     isProfileImageUploading,
     updateCurrentUserPhoto,
   } = useUsersDirectory();
-  const hasChatRoute = Boolean(userId);
+  const hasChatRoute = Boolean(userId || groupId);
   const activeUser = hasChatRoute ? selectedUser : null;
+  const activeGroup = hasChatRoute ? selectedGroupChat : null;
+  const usersById = Object.fromEntries(users.map((user) => [user.uid, user]));
+  const activeGroupMembers = activeGroup
+    ? activeGroup.members.map((memberId) => usersById[memberId]).filter(Boolean)
+    : [];
 
   const handleProfileImageChange = async (file: File) => {
     if (!file.type.startsWith("image/")) return;
@@ -52,21 +80,93 @@ export default function Users() {
     }
   }, [handleUserClick, selectedUser?.uid, userId, users]);
 
+  useEffect(() => {
+    if (!groupId) return;
+    if (selectedGroupChatId === groupId && chatId === groupId) return;
+    handleGroupClick(groupId);
+  }, [chatId, groupId, handleGroupClick, selectedGroupChatId]);
+
   const openChat = (user: typeof otherUsers[number]) => {
     navigate(`/chat/${user.uid}`);
   };
 
+  const openGroupChat = (chat: typeof groupChats[number]) => {
+    navigate(`/group/${chat.chatId}`);
+  };
+
+  const createGroup = async (groupName: string, memberIds: string[]) => {
+    const nextChatId = await handleCreateGroup(groupName, memberIds);
+    navigate(`/group/${nextChatId}`);
+  };
+
   const closeChat = () => {
     setIsMessagesLoading(false);
+    resetSelection();
     navigate("/", { replace: true });
   };
 
+  const leaveActiveGroup = async () => {
+    if (!activeGroup) return;
+    await handleLeaveGroup(activeGroup.chatId);
+    setConfirmAction(null);
+    closeChat();
+  };
+
+  const deleteActiveGroup = async () => {
+    if (!activeGroup) return;
+    await handleDeleteGroup(activeGroup.chatId);
+    setConfirmAction(null);
+  };
+
+  const handleAddMembersToGroup = async (groupName: string, memberIds: string[]) => {
+    if (!activeGroup || !me) return;
+    try {
+      await addGroupMembers(
+        activeGroup.chatId,
+        me.uid,
+        memberIds,
+        me.name || me.email,
+        Object.fromEntries(users.map(u => [u.uid, u.name || u.email]))
+      );
+      setIsAddMembersModalOpen(false);
+    } catch (error) {
+      console.error("Failed to add members:", error);
+    }
+  };
+  const confirmDialogProps: ConfirmDialogConfig | null = (() => {
+    if (confirmAction === "logout") {
+      return {
+        title: "Logout",
+        description: "Are you sure you want to log out?",
+        confirmLabel: "Logout",
+        onConfirm: () => signOut(auth),
+      };
+    }
+
+    if (confirmAction === "leave-group") {
+      return {
+        title: "Leave group",
+        description: `Leave "${activeGroup?.groupName || "Group chat"}"? You will no longer receive messages from this group.`,
+        confirmLabel: "Leave",
+        variant: "primary",
+        onConfirm: leaveActiveGroup,
+      };
+    }
+
+    if (confirmAction === "delete-group") {
+      return {
+        title: "Delete group",
+        description: `Delete "${activeGroup?.groupName || "Group chat"}" for all members? The chat will become read-only.`,
+        confirmLabel: "Delete",
+        onConfirm: deleteActiveGroup,
+      };
+    }
+
+    return null;
+  })();
+
   if (loading) {
-    return (
-      <div className="h-screen flex items-center justify-center bg-slate-50">
-        <Loader2 className="size-10 text-slate-900 animate-spin" />
-      </div>
-    );
+    return <Loading fullScreen label="Loading directory..." />;
   }
 
   return (
@@ -75,12 +175,16 @@ export default function Users() {
         me={me}
         otherUsers={otherUsers}
         selectedUser={selectedUser}
+        selectedGroupChatId={selectedGroupChatId}
+        groupChats={groupChats}
         chatPreviewsByUserId={chatPreviewsByUserId}
         isChatOpen={hasChatRoute}
         searchQuery={searchQuery}
         onSearchChange={(e) => setSearchQuery(e.target.value)}
         onUserClick={openChat}
-        onLogoutClick={() => setShowLogoutModal(true)}
+        onGroupClick={openGroupChat}
+        onCreateGroup={createGroup}
+        onLogoutClick={() => setConfirmAction("logout")}
         onProfileImageChange={handleProfileImageChange}
         isProfileImageUploading={isProfileImageUploading}
       />
@@ -98,58 +202,66 @@ export default function Users() {
               Choose a contact from the list to start messaging.
             </p>
           </div>
-        ) : activeUser ? (
+        ) : activeUser || activeGroup ? (
           <>
-            <ChatHeader user={activeUser} onBack={closeChat} />
+            <ChatHeader
+              user={activeUser ?? undefined}
+              group={activeGroup ?? undefined}
+              groupMembers={activeGroupMembers}
+              currentUserId={auth.currentUser?.uid}
+              onBack={closeChat}
+              onLeaveGroup={activeGroup && !activeGroup.deletedAt ? () => setConfirmAction("leave-group") : undefined}
+              onDeleteGroup={activeGroup && !activeGroup.deletedAt ? () => setConfirmAction("delete-group") : undefined}
+              onAddMembers={activeGroup && !activeGroup.deletedAt && activeGroup.adminId === me?.uid ? () => setIsAddMembersModalOpen(true) : undefined}
+            />
             <div className="relative min-h-0 flex-1 overflow-hidden">
               {chatId && (
                 <Chat
                   key={chatId}
                   chatId={chatId}
-                  user={activeUser}
+                  user={activeUser ?? undefined}
+                  title={activeGroup?.groupName}
+                  isGroup={Boolean(activeGroup)}
+                  usersById={usersById}
+                  readOnlyMessage={activeGroup?.deletedAt ? "This group was deleted. Messages are read-only." : ""}
                   onLoadingChange={setIsMessagesLoading}
                 />
               )}
               {(!chatId || isChatLoading || isMessagesLoading) && (
-                <div className="absolute inset-0 flex items-center justify-center bg-white">
-                  <div className="flex flex-col items-center gap-3">
-                    <Loader2 className="size-6 animate-spin text-slate-300" />
-                    <span className="text-sm font-medium text-slate-400">Loading messages...</span>
-                  </div>
-                </div>
+                <Loading 
+                  label="Loading messages..." 
+                  className="absolute inset-0 bg-white" 
+                  iconClassName="text-slate-300" 
+                />
               )}
             </div>
           </>
         ) : (
-          <div className="flex flex-1 items-center justify-center bg-white">
-            <Loader2 className="size-6 animate-spin text-slate-300" />
-          </div>
+          <Loading className="bg-white" iconClassName="text-slate-300" />
         )}
       </main>
 
-      {showLogoutModal && (
-        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="w-full max-w-sm animate-in fade-in zoom-in rounded-2xl bg-white p-6 shadow-xl ring-1 ring-black/5 duration-200">
-            <h3 className="mb-2 text-xl font-bold text-slate-950">Logout</h3>
-            <p className="mb-6 text-sm leading-relaxed text-slate-500">Are you sure you want to log out?</p>
-            <div className="flex gap-3">
-              <button
-                type="button"
-                onClick={() => setShowLogoutModal(false)}
-                className="flex-1 rounded-xl border border-slate-200 px-4 py-2 font-semibold text-slate-600 transition-colors hover:bg-slate-50"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                onClick={() => signOut(auth)}
-                className="flex-1 rounded-xl bg-rose-600 px-4 py-2 font-semibold text-white transition-colors hover:bg-rose-700"
-              >
-                Logout
-              </button>
-            </div>
-          </div>
-        </div>
+      {confirmDialogProps && (
+        <ConfirmationModal
+          open={Boolean(confirmAction)}
+          title={confirmDialogProps.title}
+          description={confirmDialogProps.description}
+          confirmLabel={confirmDialogProps.confirmLabel}
+          variant={confirmDialogProps.variant}
+          onCancel={() => setConfirmAction(null)}
+          onConfirm={confirmDialogProps.onConfirm}
+        />
+      )}
+
+      {activeGroup && (
+        <CreateGroup
+          open={isAddMembersModalOpen}
+          mode="add"
+          users={otherUsers}
+          excludedUserIds={activeGroup.members}
+          onCancel={() => setIsAddMembersModalOpen(false)}
+          onSubmit={handleAddMembersToGroup}
+        />
       )}
     </div>
   );

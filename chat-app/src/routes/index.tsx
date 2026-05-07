@@ -22,6 +22,14 @@ export const router = createBrowserRouter([
     ),
   },
   {
+    path: '/group/:groupId',
+    element: (
+      <ProtectedRoute>
+        <Users />
+      </ProtectedRoute>
+    ),
+  },
+  {
     path: '/login',
     element: (
       <PublicRoute>

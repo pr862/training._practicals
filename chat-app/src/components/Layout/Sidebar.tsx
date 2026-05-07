@@ -1,14 +1,19 @@
 import type { ChangeEvent, FC } from "react";
-import { Camera, Loader2, LogOut, Search, UserCircle2 } from "lucide-react";
-import { Input } from "../UI/Input";
+import { useState } from "react";
+import { Camera, Loader2, LogOut, MessageSquare, Plus, Search, UserCircle2, Users } from "lucide-react";
 import UserCard from "../UI/UserCard";
 import UserAvatar from "../UI/UserAvatar";
-import type { User } from "../../types";
+import CreateGroup from "../UI/CreateGroup";
+import { formatChatTime } from "../../utils/chat";
+import { Input } from "../UI/Input";
+import type { Chat, User } from "../../types";
 
 interface SidebarProps {
   me: User | undefined;
   otherUsers: User[];
   selectedUser: User | null;
+  selectedGroupChatId?: string | null;
+  groupChats?: Chat[];
   chatPreviewsByUserId?: Record<string, {
     unreadCount: number;
     lastMessageTime: string;
@@ -17,24 +22,40 @@ interface SidebarProps {
   searchQuery: string;
   onSearchChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onUserClick: (user: User) => void;
+  onGroupClick: (chat: Chat) => void;
+  onCreateGroup: (groupName: string, memberIds: string[]) => Promise<void>;
   onLogoutClick: () => void;
   onProfileImageChange: (file: File) => void;
   isProfileImageUploading?: boolean;
 }
 
+const TabButton = ({ active, onClick, icon: Icon, label }: { active: boolean, onClick: () => void, icon: any, label: string }) => (
+  <button onClick={onClick} 
+    className={`flex items-center justify-center gap-2 rounded-lg py-2 text-xs font-bold transition-all ${active ? "bg-cyan-50 text-cyan-900 shadow-lg" : "text-slate-400 hover:text-slate-200"}`}>
+    <Icon size={14} /> {label}
+  </button>
+);
+
 const Sidebar: FC<SidebarProps> = ({
   me,
   otherUsers,
   selectedUser,
+  selectedGroupChatId = null,
+  groupChats = [],
   chatPreviewsByUserId = {},
   isChatOpen = false,
   searchQuery,
   onSearchChange,
   onUserClick,
+  onGroupClick,
+  onCreateGroup,
   onLogoutClick,
   onProfileImageChange,
   isProfileImageUploading = false,
 }) => {
+  const [activeTab, setActiveTab] = useState<"chats" | "groups">("chats");
+  const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
+
   const handleProfileImageInput = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     e.target.value = "";
@@ -44,40 +65,32 @@ const Sidebar: FC<SidebarProps> = ({
   };
 
   return (
-    <aside className={`${isChatOpen ? "hidden md:flex" : "flex"} h-full w-full flex-col border-r border-slate-200 bg-white md:w-[20rem] lg:w-[23rem]`}>
-      <div className="flex items-center justify-between border-b border-slate-200 bg-white px-6 py-5">
-        <div className="min-w-0">
-          <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-blue-600">Secure Chat</p>
-          <h2 className="mt-0.5 truncate text-2xl font-black tracking-tight text-slate-900">Messages</h2>
-        </div>
-      </div>
-
+    <aside className={`${isChatOpen ? "hidden md:flex" : "flex"} h-full w-full flex-col border-r border-white/10 bg-gradient-to-br from-cyan-950 to-blue-950 md:w-[20rem] lg:w-[23rem]`}>
       {me && (
-        <div className="mx-4 mt-4 overflow-hidden rounded-2xl bg-gradient-to-r from-cyan-600 to-blue-500 ">
-          <div className="flex items-center justify-between bg-white/5 px-4 py-4 backdrop-blur-sm">
-            <div className="flex items-center gap-4 min-w-0">
-              <label className="relative shrink-0 cursor-pointer group" aria-label="Update profile image">
-                <UserAvatar user={me} size="md" className="border-2 border-blue-500" />
-                <span className="absolute -bottom-1 -right-1 flex size-6 items-center justify-center rounded-full border-2 border-blue-500 bg-white text-blue-500 shadow-md transition-transform group-hover:scale-110">
+        <div className="mx-4 mt-4 overflow-hidden rounded-2xl border border-white/10 bg-cyan-50 backdrop-blur-md">
+          <div className="flex items-center justify-between px-4 py-4">
+            <div className="flex items-center gap-3 min-w-0">
+              <label className="relative shrink-0 cursor-pointer group">
+                <UserAvatar user={me} size="md" className="border-2 border-cyan-500/50" />
+                <span className="absolute -bottom-1 -right-1 flex size-6 items-center justify-center rounded-full border border-white/20 bg-cyan-600 text-white shadow-md transition-transform group-hover:scale-110">
                   {isProfileImageUploading ? (
                     <Loader2 className="size-3 animate-spin" />
                   ) : (
                     <Camera className="size-3" />
                   )}
                 </span>
-                <input type="file" accept="image/*" className="sr-only" disabled={isProfileImageUploading} onChange={handleProfileImageInput} />
+                <input type="file" accept="image/*" className="sr-only" onChange={handleProfileImageInput} />
               </label>
               <div className="min-w-0">
-                <p className="truncate text-sm font-bold text-white">{me.name || "My profile"}</p>
-                <p className="truncate text-[11px] text-slate-200 opacity-80">{me.email}</p>
+                <p className="truncate text-md font-bold text-cyan-900 leading-tight">{me.name}</p>
+                <p className="truncate text-[11px] text-gray-400 font-medium">you</p>
               </div>
             </div>
 
             <button
               type="button"
               onClick={onLogoutClick}
-              className="ml-2 flex size-8 shrink-0 items-center justify-center rounded-xl bg-white/10 text-white transition-all hover:bg-rose-500 hover:text-white focus:outline-none"
-              aria-label="Log out"
+              className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-cyan-50/5 text-cyan-900 transition-all hover:bg-rose-400/20 hover:text-rose-500 border border-white/5"
             >
               <LogOut size={16} />
             </button>
@@ -85,50 +98,97 @@ const Sidebar: FC<SidebarProps> = ({
         </div>
       )}
 
-      <div className="px-5 py-6">
-        <div className="relative">
-          <Input
-            placeholder="Search conversations..."
-            value={searchQuery}
-            onChange={onSearchChange}
-            inputClassName="rounded-xl border-slate-100 bg-slate-50 py-5 pl-10 text-sm shadow-none focus:bg-white focus:ring-2 focus:ring-blue-500/10"
-            icon={<Search size={16} className="text-slate-400" />}
-          />
+      <div className="px-5 py-6 space-y-4">
+        <Input
+          placeholder="Search conversations..." 
+          value={searchQuery}
+          onChange={onSearchChange}
+          icon={<Search size={16} />}
+          className="text-sm"
+          inputClassName="bg-white/5 border-white/10 text-white placeholder-slate-500 focus:bg-white/10 focus:border-cyan-500/40"
+        />
+
+        <div className="grid grid-cols-2 rounded-xl bg-black/20 p-1 border border-white/5">
+          <TabButton active={activeTab === "chats"} onClick={() => setActiveTab("chats")} icon={MessageSquare} label="Chats" />
+          <TabButton active={activeTab === "groups"} onClick={() => setActiveTab("groups")} icon={Users} label="Groups" />
         </div>
       </div>
 
       <div className="flex-1 overflow-y-auto px-3 custom-scrollbar">
-        {otherUsers.length > 0 && (
-          <p className="px-3 pb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
-            Recent Chats
+        <div className="flex items-center justify-between px-3 pb-3">
+          <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-cyan-50/70">
+            {activeTab === "chats" ? "Recent Activity" : "Your Communities"}
           </p>
-        )}
-        <div className="space-y-1 pb-4">
-          {otherUsers.length > 0 ? (
-            otherUsers.map((user) => (
-              <div key={user.uid}>
-                <UserCard
-                  user={user}
-                  selected={selectedUser?.uid === user.uid}
-                  unreadCount={chatPreviewsByUserId[user.uid]?.unreadCount ?? 0}
-                  lastMessageTime={chatPreviewsByUserId[user.uid]?.lastMessageTime}
-                  onClick={() => onUserClick(user)}
+          {activeTab === "groups" && (
+            <button 
+              onClick={() => setIsGroupModalOpen(true)} 
+              className="flex items-center gap-1 text-[12px] font-bold text-cyan-500 hover:text-cyan-300 transition-colors"
+            >
+              <Plus size={14} />Create Group
+            </button>
+          )}
+        </div>
+
+        <div className="space-y-2 pb-4">
+          {activeTab === "chats" ? (
+            otherUsers.length > 0 ? (
+              otherUsers.map((user) => (
+                <UserCard 
+                  key={user.uid} 
+                  user={user} 
+                  selected={selectedUser?.uid === user.uid} 
+                  unreadCount={chatPreviewsByUserId[user.uid]?.unreadCount ?? 0} 
+                  lastMessageTime={chatPreviewsByUserId[user.uid]?.lastMessageTime} 
+                  onClick={() => onUserClick(user)} 
                 />
-              </div>
-            ))
+              ))
+            ) : (
+              <EmptyState title="No users found" />
+            )
           ) : (
-            <div className="flex flex-col items-center justify-center px-6 pt-12 text-center">
-              <div className="mb-4 flex size-14 items-center justify-center rounded-full bg-slate-50">
-                <UserCircle2 className="text-slate-300" size={28} />
-              </div>
-              <p className="text-sm font-semibold text-slate-600">No users found</p>
-              <p className="mt-1 text-xs text-slate-400">Try searching for someone else.</p>
-            </div>
+            groupChats.length > 0 ? (
+              groupChats.map((chat) => (
+                <UserCard 
+                  key={chat.chatId} 
+                  title={chat.groupName || "Group chat"} 
+                  subtitle={chat.lastMessage || `${chat.members.length} members`} 
+                  avatar={
+                    <div className="flex size-11 items-center justify-center rounded-full bg-cyan-500/10 text-cyan-600 border border-cyan-500/20 font-black">
+                      <Users size={20} />
+                    </div>
+                  } 
+                  onClick={() => onGroupClick(chat)} 
+                  selected={selectedGroupChatId === chat.chatId} 
+                  unreadCount={chat.unreadCount?.[me?.uid ?? ""] ?? 0} 
+                  lastMessageTime={formatChatTime(chat.updatedAt)} 
+                />
+              ))
+            ) : (
+              <EmptyState title="No groups found" />
+            )
           )}
         </div>
       </div>
+
+      <CreateGroup 
+        open={isGroupModalOpen}
+        mode="create"
+        users={otherUsers}
+        onCancel={() => setIsGroupModalOpen(false)}
+        onSubmit={onCreateGroup}
+      />
     </aside>
   );
 };
+
+const EmptyState = ({ title }: { title: string }) => (
+  <div className="flex flex-col items-center justify-center px-6 pt-12 text-center">
+    <div className="mb-4 flex size-14 items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-slate-500">
+      <UserCircle2 size={28} strokeWidth={1.5} />
+    </div>
+    <p className="text-sm font-bold text-slate-300">{title}</p>
+    <p className="mt-1 text-xs text-slate-500">Nothing to show here yet.</p>
+  </div>
+);
 
 export default Sidebar;

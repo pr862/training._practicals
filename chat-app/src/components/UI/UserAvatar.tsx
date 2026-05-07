@@ -32,7 +32,7 @@ const UserAvatar = ({ user, size = 'md', className = '' }: UserAvatarProps) => {
   return (
     <div
       className={`
-        relative flex shrink-0 items-center justify-center overflow-hidden rounded-2xl 
+        relative flex shrink-0 items-center justify-center overflow-hidden rounded-full 
         bg-gradient-to-br from-slate-100 to-slate-200 font-black tracking-tighter text-slate-500
         shadow-inner transition-transform duration-200 active:scale-95
         ${sizeClasses[size]} 

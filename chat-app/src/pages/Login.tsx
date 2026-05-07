@@ -38,7 +38,7 @@ export function Login() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-100 to-blue-100 px-4">
       <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-3xl shadow-lg">
         <div className="text-center">
-          <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-tr from-cyan-600 to-blue-500 text-white shadow-md shadow-blue-500/30">
+          <div className="mx-auto mb-6 flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-900 to-blue-900 text-white shadow-md shadow-blue-500/30">
             <MessagesSquare className="size-8" />
           </div>
           <h2 className="text-3xl font-extrabold tracking-tight text-slate-900">Welcome back </h2>
@@ -66,7 +66,7 @@ export function Login() {
         </form>
         <div className="mt-8 border-t border-slate-100 pt-6 text-center">
           <p className="text-sm text-slate-600">
-            Don't have an account?{" "}<Link to="/register" className="font-bold text-blue-500 hover:text-blue-500/80">Create account</Link>
+            Don't have an account?{" "}<Link to="/register" className="font-bold text-blue-800 hover:text-blue-900/80">Create account</Link>
           </p>
         </div>
       </div>

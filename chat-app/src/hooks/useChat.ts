@@ -135,10 +135,16 @@ export const useChatMessages = (chatId: string) => {
       }
 
       const chatSnap = await getDoc(doc(db, "chats", chatId));
-      const members = chatSnap.data()?.members;
+      const chat = chatSnap.data();
+      const members = chat?.members;
       if (!chatSnap.exists() || !Array.isArray(members) || !members.includes(senderId)) {
         throw new Error("You do not have access to this chat.");
       }
+
+      if (chat?.deletedAt) {
+        throw new Error("This group was deleted.");
+      }
+
       const recipientIds = members.filter(
         (memberId): memberId is string =>
           typeof memberId === "string" && memberId !== senderId

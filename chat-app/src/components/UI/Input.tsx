@@ -34,7 +34,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             ref={ref}
             id={inputId}
             className={cx(
-              'h-11 w-full rounded-lg border border-gray-300 bg-white text-sm text-gray-900 shadow-sm transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-500/10 disabled:cursor-not-allowed disabled:opacity-60 hover:border-gray-400',
+              'h-11 w-full rounded-lg border border-gray-300 bg-white text-sm text-gray-900 shadow-sm transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-4 focus:ring-blue-800/10 disabled:cursor-not-allowed disabled:opacity-60 hover:border-gray-400',
               icon ? 'pl-11 pr-4' : 'px-4', 
               error ? 'border-rose-500 focus:border-rose-500 focus:ring-rose-500/10' : null,
               inputClassName
