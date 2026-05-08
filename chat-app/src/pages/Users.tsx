@@ -1,16 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { signOut } from "firebase/auth";
-import { MessageSquare } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
 import { auth } from "../firebase/config";
 import { useUsersDirectory } from "../hooks/useUsers";
-import Chat from "../components/UI/Chat";
 import Sidebar from "../components/Layout/Sidebar";
-import ChatHeader from "../components/UI/ChatHeader";
 import ConfirmationModal from "../components/UI/ConfirmationModal";
+import ConversationPane from "../components/UI/ConversationPane";
 import CreateGroup from "../components/UI/CreateGroup";
+import GroupInfoModal from "../components/UI/GroupInfoModal";
 import Loading from "../components/UI/Loading";
-import { addGroupMembers } from "../services/chat";
+import ProfileEditModal from "../components/UI/ProfileEditModal";
 
 type ConfirmAction = "logout" | "leave-group" | "delete-group" | null;
 
@@ -26,6 +25,8 @@ export default function Users() {
   const [confirmAction, setConfirmAction] = useState<ConfirmAction>(null);
   const [isMessagesLoading, setIsMessagesLoading] = useState(false);
   const [isAddMembersModalOpen, setIsAddMembersModalOpen] = useState(false);
+  const [isGroupInfoOpen, setIsGroupInfoOpen] = useState(false);
+  const [isProfileEditOpen, setIsProfileEditOpen] = useState(false);
   const navigate = useNavigate();
   const { userId, groupId } = useParams();
 
@@ -45,24 +46,33 @@ export default function Users() {
     handleUserClick,
     handleGroupClick,
     handleCreateGroup,
+    handleAddGroupMembers,
     handleLeaveGroup,
     handleDeleteGroup,
+    handleRemoveGroupMember,
     resetSelection,
     isChatLoading,
     isProfileImageUploading,
     updateCurrentUserPhoto,
+    updateCurrentUserProfile,
   } = useUsersDirectory();
   const hasChatRoute = Boolean(userId || groupId);
   const activeUser = hasChatRoute ? selectedUser : null;
   const activeGroup = hasChatRoute ? selectedGroupChat : null;
-  const usersById = Object.fromEntries(users.map((user) => [user.uid, user]));
+  const usersById = useMemo(
+    () => Object.fromEntries(users.map((user) => [user.uid, user])),
+    [users]
+  );
   const activeGroupMembers = activeGroup
     ? activeGroup.members.map((memberId) => usersById[memberId]).filter(Boolean)
     : [];
+  const activeGroupAdminExited = Boolean(activeGroup?.adminExitedAt);
+  const visibleGroupChats = useMemo(
+    () => groupChats.filter((chat) => !chat.deletedAt),
+    [groupChats]
+  );
 
   const handleProfileImageChange = async (file: File) => {
-    if (!file.type.startsWith("image/")) return;
-    if (file.size > 2 * 1024 * 1024) return;
     try {
       await updateCurrentUserPhoto(file);
     } catch {
@@ -107,31 +117,31 @@ export default function Users() {
 
   const leaveActiveGroup = async () => {
     if (!activeGroup) return;
+    const isSoleAdmin = activeGroup.adminId === me?.uid && activeGroup.members.length <= 1;
     await handleLeaveGroup(activeGroup.chatId);
     setConfirmAction(null);
-    closeChat();
+    if (!isSoleAdmin) {
+      closeChat();
+    }
   };
 
   const deleteActiveGroup = async () => {
     if (!activeGroup) return;
     await handleDeleteGroup(activeGroup.chatId);
     setConfirmAction(null);
+    closeChat();
+  };
+  
+
+  const removeActiveGroupMember = async (memberId: string) => {
+    if (!activeGroup) return;
+    await handleRemoveGroupMember(activeGroup.chatId, memberId);
   };
 
-  const handleAddMembersToGroup = async (groupName: string, memberIds: string[]) => {
-    if (!activeGroup || !me) return;
-    try {
-      await addGroupMembers(
-        activeGroup.chatId,
-        me.uid,
-        memberIds,
-        me.name || me.email,
-        Object.fromEntries(users.map(u => [u.uid, u.name || u.email]))
-      );
-      setIsAddMembersModalOpen(false);
-    } catch (error) {
-      console.error("Failed to add members:", error);
-    }
+  const handleAddMembersToGroup = async (_groupName: string, memberIds: string[]) => {
+    if (!activeGroup) return;
+    await handleAddGroupMembers(activeGroup.chatId, memberIds);
+    setIsAddMembersModalOpen(false);
   };
   const confirmDialogProps: ConfirmDialogConfig | null = (() => {
     if (confirmAction === "logout") {
@@ -144,10 +154,14 @@ export default function Users() {
     }
 
     if (confirmAction === "leave-group") {
+      const isSoleAdmin =
+        Boolean(activeGroup && activeGroup.adminId === me?.uid && activeGroup.members.length <= 1);
       return {
-        title: "Leave group",
-        description: `Leave "${activeGroup?.groupName || "Group chat"}"? You will no longer receive messages from this group.`,
-        confirmLabel: "Leave",
+        title: isSoleAdmin ? "Exit group" : "Leave group",
+        description: isSoleAdmin
+          ? `Exit "${activeGroup?.groupName || "Group chat"}"? Delete Group will become available after you exit.`
+          : `Leave "${activeGroup?.groupName}"?`,
+        confirmLabel: isSoleAdmin ? "Exit" : "Leave",
         variant: "primary",
         onConfirm: leaveActiveGroup,
       };
@@ -156,8 +170,9 @@ export default function Users() {
     if (confirmAction === "delete-group") {
       return {
         title: "Delete group",
-        description: `Delete "${activeGroup?.groupName || "Group chat"}" for all members? The chat will become read-only.`,
-        confirmLabel: "Delete",
+        description: `This will permanently delete the group and remove it from your chat list.`,
+        confirmLabel: "Delete Group",
+        variant: "danger",
         onConfirm: deleteActiveGroup,
       };
     }
@@ -176,7 +191,7 @@ export default function Users() {
         otherUsers={otherUsers}
         selectedUser={selectedUser}
         selectedGroupChatId={selectedGroupChatId}
-        groupChats={groupChats}
+        groupChats={visibleGroupChats}
         chatPreviewsByUserId={chatPreviewsByUserId}
         isChatOpen={hasChatRoute}
         searchQuery={searchQuery}
@@ -186,60 +201,28 @@ export default function Users() {
         onCreateGroup={createGroup}
         onLogoutClick={() => setConfirmAction("logout")}
         onProfileImageChange={handleProfileImageChange}
-        isProfileImageUploading={isProfileImageUploading}
+        onProfileEdit={() => setIsProfileEditOpen(true)}
       />
 
-      <main className={`${hasChatRoute ? "flex" : "hidden md:flex"} min-w-0 flex-1 flex-col overflow-hidden bg-white`}>
-        {!hasChatRoute ? (
-          <div className="flex flex-1 flex-col items-center justify-center bg-slate-50 p-6 text-center">
-            <div className="mb-6 flex size-20 items-center justify-center rounded-2xl border border-slate-200 bg-white shadow-sm">
-              <MessageSquare size={32} className="text-blue-900" />
-            </div>
-            <h2 className="mb-2 text-2xl font-black tracking-tight text-slate-950">
-              Select a conversation
-            </h2>
-            <p className="max-w-[320px] text-sm leading-relaxed text-slate-500">
-              Choose a contact from the list to start messaging.
-            </p>
-          </div>
-        ) : activeUser || activeGroup ? (
-          <>
-            <ChatHeader
-              user={activeUser ?? undefined}
-              group={activeGroup ?? undefined}
-              groupMembers={activeGroupMembers}
-              currentUserId={auth.currentUser?.uid}
-              onBack={closeChat}
-              onLeaveGroup={activeGroup && !activeGroup.deletedAt ? () => setConfirmAction("leave-group") : undefined}
-              onDeleteGroup={activeGroup && !activeGroup.deletedAt ? () => setConfirmAction("delete-group") : undefined}
-              onAddMembers={activeGroup && !activeGroup.deletedAt && activeGroup.adminId === me?.uid ? () => setIsAddMembersModalOpen(true) : undefined}
-            />
-            <div className="relative min-h-0 flex-1 overflow-hidden">
-              {chatId && (
-                <Chat
-                  key={chatId}
-                  chatId={chatId}
-                  user={activeUser ?? undefined}
-                  title={activeGroup?.groupName}
-                  isGroup={Boolean(activeGroup)}
-                  usersById={usersById}
-                  readOnlyMessage={activeGroup?.deletedAt ? "This group was deleted. Messages are read-only." : ""}
-                  onLoadingChange={setIsMessagesLoading}
-                />
-              )}
-              {(!chatId || isChatLoading || isMessagesLoading) && (
-                <Loading 
-                  label="Loading messages..." 
-                  className="absolute inset-0 bg-white" 
-                  iconClassName="text-slate-300" 
-                />
-              )}
-            </div>
-          </>
-        ) : (
-          <Loading className="bg-white" iconClassName="text-slate-300" />
-        )}
-      </main>
+      <ConversationPane
+        hasChatRoute={hasChatRoute}
+        activeUser={activeUser}
+        activeGroup={activeGroup}
+        activeGroupMembers={activeGroupMembers}
+        activeGroupAdminExited={activeGroupAdminExited}
+        currentUserId={auth.currentUser?.uid}
+        currentUserProfileId={me?.uid}
+        chatId={chatId}
+        usersById={usersById}
+        isChatLoading={isChatLoading}
+        isMessagesLoading={isMessagesLoading}
+        onMessagesLoadingChange={setIsMessagesLoading}
+        onBack={closeChat}
+        onLeaveGroup={() => setConfirmAction("leave-group")}
+        onDeleteGroup={() => setConfirmAction("delete-group")}
+        onAddMembers={() => setIsAddMembersModalOpen(true)}
+        onViewGroupInfo={() => setIsGroupInfoOpen(true)}
+      />
 
       {confirmDialogProps && (
         <ConfirmationModal
@@ -263,6 +246,25 @@ export default function Users() {
           onSubmit={handleAddMembersToGroup}
         />
       )}
+
+      {activeGroup && (
+        <GroupInfoModal
+          open={isGroupInfoOpen}
+          group={activeGroup}
+          members={activeGroupMembers}
+          currentUserId={me?.uid}
+          onCancel={() => setIsGroupInfoOpen(false)}
+          onRemoveMember={removeActiveGroupMember}
+        />
+      )}
+
+      <ProfileEditModal
+        open={isProfileEditOpen}
+        user={me}
+        isSubmitting={isProfileImageUploading}
+        onCancel={() => setIsProfileEditOpen(false)}
+        onSubmit={updateCurrentUserProfile}
+      />
     </div>
   );
 }

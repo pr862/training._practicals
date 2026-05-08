@@ -13,13 +13,35 @@ import {
 } from "firebase/firestore";
 import type { Chat } from "../types";
 
-const addSystemMessage = async (chatId: string, text: string) => {
+const addSystemMessage = async (chatId: string, text: string, actorId?: string, actorName?: string) => {
   await addDoc(collection(db, "chats", chatId, "messages"), {
     chatId,
     senderId: "system",
+    ...(actorId ? { actorId } : {}),
+    ...(actorName ? { actorName } : {}),
     text,
     imageUrl: null,
     type: "system",
+    createdAt: serverTimestamp(),
+  });
+};
+
+const addTargetedSystemMessage = async (
+  chatId: string,
+  text: string,
+  visibleTo?: string[],
+  actorId?: string,
+  actorName?: string
+) => {
+  await addDoc(collection(db, "chats", chatId, "messages"), {
+    chatId,
+    senderId: "system",
+    ...(actorId ? { actorId } : {}),
+    ...(actorName ? { actorName } : {}),
+    text,
+    imageUrl: null,
+    type: "system",
+    ...(visibleTo?.length ? { visibleTo } : {}),
     createdAt: serverTimestamp(),
   });
 };
@@ -114,7 +136,9 @@ export const createGroupChat = async (
 
   await addSystemMessage(
     chatRef.id,
-    `${currentUserName} created the group.`
+    `${currentUserName} created the group.`,
+    currentUserId,
+    currentUserName
   );
 
   const joinedNames = selectedMemberIds
@@ -151,10 +175,7 @@ export const addGroupMembers = async (
 
   const chat = chatSnap.data() as Chat;
 
-  if (
-    chat.type !== "group" ||
-    !chat.members.includes(currentUserId)
-  ) {
+  if (chat.type !== "group" || !chat.members.includes(currentUserId)) {
     throw new Error("You cannot add members to this group.");
   }
 
@@ -192,7 +213,7 @@ export const addGroupMembers = async (
     ...unreadUpdates,
   });
 
-  await addSystemMessage(chatId, systemText);
+  await addSystemMessage(chatId, systemText, currentUserId, currentUserName);
 };
 
 export const leaveGroupChat = async (
@@ -227,15 +248,16 @@ export const leaveGroupChat = async (
 
   if (!remainingMembers.length) {
     await updateDoc(chatRef, {
-      deletedAt: serverTimestamp(),
-      deletedBy: currentUserId,
-      lastMessage: `${currentUserName} left and the group was closed.`,
+      adminExitedAt: serverTimestamp(),
+      lastMessage: `${currentUserName} exited the group.`,
       updatedAt: serverTimestamp(),
     });
 
     await addSystemMessage(
       chatId,
-      `${currentUserName} left and the group was closed.`
+      `${currentUserName} exited the group.`,
+      currentUserId,
+      currentUserName
     );
 
     return;
@@ -256,7 +278,57 @@ export const leaveGroupChat = async (
     [`unreadCount.${currentUserId}`]: deleteField(),
   });
 
-  await addSystemMessage(chatId, systemText);
+  await addTargetedSystemMessage(
+    chatId,
+    systemText,
+    remainingMembers,
+    currentUserId,
+    currentUserName
+  );
+};
+
+export const removeGroupMember = async (
+  chatId: string,
+  currentUserId: string,
+  memberId: string,
+  currentUserName = "Someone",
+  memberName = "A member"
+) => {
+  if (memberId === currentUserId) {
+    throw new Error("Use Leave Group to remove yourself.");
+  }
+
+  const chatRef = doc(db, "chats", chatId);
+  const chatSnap = await getDoc(chatRef);
+
+  if (!chatSnap.exists()) {
+    throw new Error("Group not found.");
+  }
+
+  const chat = chatSnap.data() as Chat;
+
+  if (chat.type !== "group" || chat.adminId !== currentUserId) {
+    throw new Error("Only the group admin can remove members.");
+  }
+
+  if (chat.deletedAt) {
+    throw new Error("This group was deleted.");
+  }
+
+  if (!chat.members.includes(memberId)) {
+    throw new Error("This member is no longer in the group.");
+  }
+
+  const systemText = `${currentUserName} removed ${memberName}.`;
+
+  await updateDoc(chatRef, {
+    members: arrayRemove(memberId),
+    lastMessage: systemText,
+    updatedAt: serverTimestamp(),
+    [`unreadCount.${memberId}`]: deleteField(),
+  });
+
+  await addTargetedSystemMessage(chatId, systemText, chat.members, currentUserId, currentUserName);
 };
 
 export const deleteGroupChat = async (
@@ -287,6 +359,12 @@ export const deleteGroupChat = async (
     return;
   }
 
+  if (chat.members.length > 1 || !chat.adminExitedAt) {
+    throw new Error(
+      "Remove all other participants, then exit the group before deleting it."
+    );
+  }
+
   const systemText = `${currentUserName} deleted the group.`;
 
   await updateDoc(chatRef, {
@@ -296,7 +374,7 @@ export const deleteGroupChat = async (
     updatedAt: serverTimestamp(),
   });
 
-  await addSystemMessage(chatId, systemText);
+  await addSystemMessage(chatId, systemText, currentUserId, currentUserName);
 };
 
 export const updateLastMessage = async (

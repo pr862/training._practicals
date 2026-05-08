@@ -22,5 +22,5 @@ export const listenAuth = (callback: (user: User | null) => void): Unsubscribe =
 
 export const updateUserProfile = (
   user: User,
-  profile: { displayName?: string; photoURL?: string }
+  profile: { displayName?: string; photoURL?: string | null }
 ): Promise<void> => updateProfile(user, profile);

@@ -26,6 +26,7 @@ interface SidebarProps {
   onCreateGroup: (groupName: string, memberIds: string[]) => Promise<void>;
   onLogoutClick: () => void;
   onProfileImageChange: (file: File) => void;
+  onProfileEdit: () => void;
   isProfileImageUploading?: boolean;
 }
 
@@ -51,6 +52,7 @@ const Sidebar: FC<SidebarProps> = ({
   onCreateGroup,
   onLogoutClick,
   onProfileImageChange,
+  onProfileEdit,
   isProfileImageUploading = false,
 }) => {
   const [activeTab, setActiveTab] = useState<"chats" | "groups">("chats");
@@ -81,10 +83,10 @@ const Sidebar: FC<SidebarProps> = ({
                 </span>
                 <input type="file" accept="image/*" className="sr-only" onChange={handleProfileImageInput} />
               </label>
-              <div className="min-w-0">
+              <button type="button" onClick={onProfileEdit} className="min-w-0 text-left">
                 <p className="truncate text-md font-bold text-cyan-900 leading-tight">{me.name}</p>
-                <p className="truncate text-[11px] text-gray-400 font-medium">you</p>
-              </div>
+                <p className="text-xs text-gray-400">{me.email}</p>
+              </button>
             </div>
 
             <button

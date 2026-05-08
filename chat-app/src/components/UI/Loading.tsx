@@ -25,7 +25,7 @@ export default function Loading({
       <div className="flex flex-col items-center gap-3 text-center">
         <Loader2
           className={cx(
-            "size-8 animate-spin text-slate-900",
+            "size-8 animate-spin text-blue-900",
             iconClassName
           )}
         />

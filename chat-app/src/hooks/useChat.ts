@@ -15,6 +15,7 @@ import {
 } from "firebase/firestore";
 import { db, auth } from "../firebase/config";
 import { uploadImageToCloudinary } from "../services/upload";
+import { validateProfileImage } from "../utils/validation";
 import type { Message } from "../types";
 
 export const useChatMessages = (chatId: string) => {
@@ -63,7 +64,11 @@ export const useChatMessages = (chatId: string) => {
           id: doc.id,
           ...doc.data(),
         })) as Message[];
-        setMessages(msgs);
+        const visibleMessages = msgs.filter((message) => {
+          if (!Array.isArray(message.visibleTo)) return true;
+          return message.visibleTo.includes(currentUserId);
+        });
+        setMessages(visibleMessages);
         setLoading(false);
         void updateDoc(
           doc(db, "chats", chatId),
@@ -97,13 +102,18 @@ export const useChatMessages = (chatId: string) => {
 
   const handleImageUpload = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    e.target.value = "";
+    const imageError = validateProfileImage(file ?? null);
+    if (imageError) {
+      setError(imageError);
+      return;
+    }
     if (!file) return;
     setError("");
     setSelectedFile(file);
     const reader = new FileReader();
     reader.onloadend = () => setImagePreview(reader.result as string);
     reader.readAsDataURL(file);
-    e.target.value = "";
   };
 
   const clearImageSelection = () => {
@@ -143,6 +153,10 @@ export const useChatMessages = (chatId: string) => {
 
       if (chat?.deletedAt) {
         throw new Error("This group was deleted.");
+      }
+
+      if (chat?.adminExitedAt && chat?.adminId === senderId) {
+        throw new Error("You can't send messages to this group because you're no longer a member");
       }
 
       const recipientIds = members.filter(

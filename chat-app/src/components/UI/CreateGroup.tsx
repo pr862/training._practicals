@@ -22,7 +22,7 @@ const CreateGroup = ({ open, mode, users = [], excludedUserIds = [], onCancel, o
 
   const selectableUsers = useMemo(() => {
     const excludedSet = new Set(excludedUserIds.map(id => String(id)));
-    return (users || []).filter((user) => !excludedSet.has(String(user.uid || (user as any).id)));
+    return users.filter((user) => !excludedSet.has(user.uid));
   }, [users, excludedUserIds]);
 
   if (!open) return null;
@@ -44,8 +44,8 @@ const CreateGroup = ({ open, mode, users = [], excludedUserIds = [], onCancel, o
     try {
       await onSubmit(groupName, selectedMemberIds);
       close();
-    } catch (err: any) {
-      setError(err?.message || "Operation failed");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Operation failed");
     } finally {
       setIsSubmitting(false);
     }
@@ -76,7 +76,7 @@ const CreateGroup = ({ open, mode, users = [], excludedUserIds = [], onCancel, o
             <div className="space-y-2">
               {selectableUsers.length > 0 ? (
                 selectableUsers.map((user) => {
-                  const uid = user.uid || (user as any).id;
+                  const uid = user.uid;
                   const isSelected = selectedMemberIds.includes(uid);
                   return (
                     <button key={uid} type="button" onClick={() => setSelectedMemberIds(prev => isSelected ? prev.filter(id => id !== uid) : [...prev, uid])} 

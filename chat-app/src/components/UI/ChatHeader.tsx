@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { ArrowLeft, Trash2, MoreVertical, Users, LogOut, UserPlus } from 'lucide-react';
+import { ArrowLeft, Trash2, MoreVertical, Users, LogOut, UserPlus, Info } from 'lucide-react';
 import UserAvatar from '../UI/UserAvatar';
 import type { Chat, User } from '../../types';
 
@@ -12,13 +12,20 @@ interface ChatHeaderProps {
   onLeaveGroup?: () => void;
   onDeleteGroup?: () => void;
   onAddMembers?: () => void;
+  onViewGroupInfo?: () => void;
 }
-const ChatHeader = ({ user, group, groupMembers = [], currentUserId, onBack, onLeaveGroup, onDeleteGroup, onAddMembers }: ChatHeaderProps) => {
+const ChatHeader = ({ user, group, groupMembers = [], currentUserId, onBack, onLeaveGroup, onDeleteGroup, onAddMembers, onViewGroupInfo }: ChatHeaderProps) => {
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   const isGroup = Boolean(group);
   const isGroupAdmin = group?.adminId === currentUserId;
+  const hasMenuActions = Boolean(
+    onViewGroupInfo ||
+    onLeaveGroup ||
+    (isGroupAdmin && onAddMembers) ||
+    (isGroupAdmin && onDeleteGroup)
+  );
 
   const title = group?.groupName || user?.name || user?.email?.split('@')[0] || 'Conversation';
   const subtitle = group 
@@ -56,7 +63,7 @@ const ChatHeader = ({ user, group, groupMembers = [], currentUserId, onBack, onL
         </div>
       </div>
 
-      {isGroup && (
+      {isGroup && hasMenuActions && (
         <div className="relative z-30" ref={menuRef}>
           <button
             onClick={() => setShowMenu(!showMenu)}
@@ -67,6 +74,15 @@ const ChatHeader = ({ user, group, groupMembers = [], currentUserId, onBack, onL
 
           {showMenu && (
             <div className="absolute right-0 top-full mt-2 w-48 rounded-xl border border-blue-100 bg-white p-1.5 shadow-xl shadow-blue-900/10 z-50">
+              {onViewGroupInfo && (
+                <button
+                  onClick={() => { onViewGroupInfo(); setShowMenu(false); }}
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-blue-50"
+                >
+                  <Info size={16} />
+                  Group Info
+                </button>
+              )}
               {onLeaveGroup && (
                 <button
                   onClick={() => { onLeaveGroup(); setShowMenu(false); }}

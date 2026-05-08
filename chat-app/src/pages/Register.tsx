@@ -48,7 +48,7 @@ export default function Register() {
       name: validateName(values.name),
       email: validateEmail(values.email),
       password: validatePassword(values.password),
-      confirmPassword: validateConfirmPassword(values.password, values.confirmPassword),
+      confirmPassword: validateConfirmPassword(values.confirmPassword, values.password),
     };
 
     if (Object.values(newErrors).some((err) => err) || imageError) {

@@ -99,6 +99,16 @@ const Chat: FC<ChatProps> = ({ chatId, user, title, isGroup = false, usersById =
       email: "",
     };
   };
+  const getSystemText = (msg: typeof messages[number]) => {
+    if (!msg.actorId || msg.actorId !== auth.currentUser?.uid) {
+      return msg.text;
+    }
+
+    const actorName = msg.actorName || getSenderName(msg.actorId);
+    return msg.text.startsWith(`${actorName} `)
+      ? `You ${msg.text.slice(actorName.length + 1)}`
+      : msg.text;
+  };
 
   return (
     <div className="flex h-full min-w-0 flex-col bg-[#f8fafc]">
@@ -149,7 +159,7 @@ const Chat: FC<ChatProps> = ({ chatId, user, title, isGroup = false, usersById =
                   {isSystem ? (
                     <div className="flex justify-center animate-in fade-in slide-in-from-bottom-1 duration-300">
                       <div className="max-w-[85%] rounded-full border border-slate-200 bg-white px-4 py-1.5 text-center text-[11px] font-semibold text-slate-500 shadow-sm">
-                        {msg.text}
+                        {getSystemText(msg)}
                       </div>
                     </div>
                   ) : (
