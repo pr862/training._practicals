@@ -11,7 +11,7 @@ import {
   setDoc,
   updateDoc,
 } from "firebase/firestore";
-import type { Chat } from "../types";
+import type { Chat } from "../types/chat";
 
 const addSystemMessage = async (chatId: string, text: string, actorId?: string, actorName?: string) => {
   await addDoc(collection(db, "chats", chatId, "messages"), {

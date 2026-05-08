@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "../firebase/config";
-import type { User } from "../types";
+import type { User } from "../types/user";
 
 interface FirestoreUser {
   uid?: string;

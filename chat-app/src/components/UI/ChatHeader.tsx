@@ -1,7 +1,9 @@
 import { useState, useRef } from 'react';
 import { ArrowLeft, Trash2, MoreVertical, Users, LogOut, UserPlus, Info } from 'lucide-react';
 import UserAvatar from '../UI/UserAvatar';
-import type { Chat, User } from '../../types';
+import type { Chat } from '../../types/chat';
+import type { User } from '../../types/user';
+
 
 interface ChatHeaderProps {
   user?: User;

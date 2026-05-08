@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { collection, onSnapshot, query, where } from "firebase/firestore";
 import { db } from "../firebase/config";
-import { formatChatTime, getChatTimeValue } from "../utils/chat";
-import type { Chat } from "../types";
+import { formatChatTime, getChatTimeValue } from "../utils/dateUtils";
+import type { Chat } from "../types/chat";
 
 interface PrivateChatPreview {
   unreadCount: number;

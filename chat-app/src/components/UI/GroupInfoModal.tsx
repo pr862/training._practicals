@@ -1,6 +1,7 @@
 import { Loader2, Shield, Trash2, UserMinus, X } from "lucide-react";
 import { useState } from "react";
-import type { Chat, User } from "../../types";
+import type { User } from "../../types/user";
+import type { Chat } from "../../types/chat";
 import ConfirmationModal from "./ConfirmationModal";
 import UserAvatar from "./UserAvatar";
 

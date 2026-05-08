@@ -16,7 +16,7 @@ import {
 import { db, auth } from "../firebase/config";
 import { uploadImageToCloudinary } from "../services/upload";
 import { validateProfileImage } from "../utils/validation";
-import type { Message } from "../types";
+import type { Message } from "../types/chat";
 
 export const useChatMessages = (chatId: string) => {
   const currentUserId = auth.currentUser?.uid;

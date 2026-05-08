@@ -2,7 +2,7 @@ import type { ChangeEvent, FormEvent } from "react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { Camera, Loader2, X } from "lucide-react";
-import type { User } from "../../types";
+import type { User } from "../../types/user";
 import UserAvatar from "./UserAvatar";
 import { Input } from "./Input";
 import { validateName, validateProfileImage } from "../../utils/validation";

@@ -1,11 +1,3 @@
-export interface User {
-  uid: string;
-  email: string;
-  name: string;
-  photoURL?: string;
-  createdAt?: unknown;
-}
-
 export interface Chat {
   chatId: string;
   type: "private" | "group";

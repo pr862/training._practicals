@@ -1,4 +1,4 @@
-import type { User } from '../../types';
+import type { User } from '../../types/user';
 import { useImageFallback } from '../../hooks/useImageFallback';
 
 interface UserAvatarProps {

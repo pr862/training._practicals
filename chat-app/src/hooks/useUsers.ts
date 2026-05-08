@@ -5,7 +5,7 @@ import { useAuth } from "../context/Auth";
 import { useChatDirectory } from "./useChatDirectory";
 import { useCurrentUserProfile } from "./useCurrentUserProfile";
 import { useUsersCollection } from "./useUsersCollection";
-import type { User } from "../types";
+import type { User } from "../types/user";
 
 function getDisplayName(currentUser: FirebaseUser | null, me?: User) {
   return me?.name || me?.email || currentUser?.displayName || "Someone";

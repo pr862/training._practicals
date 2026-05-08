@@ -1,7 +1,7 @@
 import type { FormEvent } from "react";
 import { useMemo, useState } from "react";
 import { Check, Loader2, X } from "lucide-react";
-import type { User } from "../../types";
+import type { User } from "../../types/user";
 import { Input } from "./Input";
 import UserAvatar from "./UserAvatar";
 

@@ -2,7 +2,9 @@ import { MessageSquare } from "lucide-react";
 import Chat from "./Chat";
 import ChatHeader from "./ChatHeader";
 import Loading from "./Loading";
-import type { Chat as ChatType, User } from "../../types";
+import type { User } from "../../types/user";
+import type { Chat as ChatType} from "../../types/chat";
+
 
 interface ConversationPaneProps {
   hasChatRoute: boolean;

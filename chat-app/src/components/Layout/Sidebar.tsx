@@ -4,9 +4,10 @@ import { Camera, Loader2, LogOut, MessageSquare, Plus, Search, UserCircle2, User
 import UserCard from "../UI/UserCard";
 import UserAvatar from "../UI/UserAvatar";
 import CreateGroup from "../UI/CreateGroup";
-import { formatChatTime } from "../../utils/chat";
+import { formatChatTime } from "../../utils/dateUtils";
 import { Input } from "../UI/Input";
-import type { Chat, User } from "../../types";
+import type { Chat } from "../../types/chat";
+import type {User} from "../../types/user";
 
 interface SidebarProps {
   me: User | undefined;

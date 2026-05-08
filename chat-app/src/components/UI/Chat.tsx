@@ -3,7 +3,7 @@ import { useRef, useEffect, memo } from "react";
 import { ImagePlus, SendHorizonal, X, Loader2 } from "lucide-react";
 import { auth } from "../../firebase/config";
 import { useChatMessages } from "../../hooks/useChat";
-import type { User } from "../../types";
+import type { User } from "../../types/user";
 import UserAvatar from "./UserAvatar";
 import Loading from "./Loading";
 

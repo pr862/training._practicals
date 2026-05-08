@@ -4,7 +4,7 @@ import { updateUserProfile } from "../services/auth";
 import { saveUser, updateUser } from "../services/user";
 import { uploadImageToCloudinary } from "../services/upload";
 import { validateName, validateProfileImage } from "../utils/validation";
-import type { User } from "../types";
+import type { User } from "../types/user";
 
 export function useCurrentUserProfile(currentUser: FirebaseUser | null, me?: User) {
   const [isProfileImageUploading, setIsProfileImageUploading] = useState(false);

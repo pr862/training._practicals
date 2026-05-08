@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import type { User } from '../../types';
+import type { User } from '../../types/user';
 import UserAvatar from './UserAvatar';
 
 interface UserCardProps {
