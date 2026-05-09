@@ -1,27 +1,27 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
-import type { Recipe } from "../types/recipe";
+import { RecipeStatus, type Recipe } from "../types/recipe";
 import { recipeAPI, publicRecipeAPI, adminRecipeAPI } from "../services/api";
 
 export const useRecipeStore = defineStore("recipe", () => {
   const recipes = ref<Recipe[]>([]);
   const loading = ref(false);
   const error = ref("");
-  const filter = ref<"all" | "pending" | "draft" | "approved" | "rejected">("all");
+  const filter = ref<RecipeStatus | "all">("all");
 
   const filteredRecipes = computed(() => {
     if (filter.value === "all") return recipes.value;
     return recipes.value.filter(
-      (r) => r.status.toLowerCase() === filter.value
+      (r) => r.status === filter.value
     );
   });
 
   const statusCounts = computed(() => ({
     all: recipes.value.length,
-    pending: recipes.value.filter((r) => r.status.toLowerCase() === "pending").length,
-    draft: recipes.value.filter((r) => r.status.toLowerCase() === "draft").length,
-    approved: recipes.value.filter((r) => r.status.toLowerCase() === "approved").length,
-    rejected: recipes.value.filter((r) => r.status.toLowerCase() === "rejected").length,
+    pending: recipes.value.filter((r) => r.status === RecipeStatus.PENDING).length,
+    draft: recipes.value.filter((r) => r.status === RecipeStatus.DRAFT).length,
+    approved: recipes.value.filter((r) => r.status === RecipeStatus.APPROVED).length,
+    rejected: recipes.value.filter((r) => r.status === RecipeStatus.REJECTED).length,
   }));
 
   const handleError = (msg: string) => {
@@ -42,8 +42,8 @@ export const useRecipeStore = defineStore("recipe", () => {
   }
 
   const fetchPublicRecipes = () => performFetch(() => publicRecipeAPI.listApproved());
-  const fetchMyRecipes = (status?: string) => performFetch(() => recipeAPI.myList(status));
-  const fetchAdminRecipes = (status?: string) => performFetch(() => adminRecipeAPI.list(status));
+  const fetchMyRecipes = (status?: RecipeStatus) => performFetch(() => recipeAPI.myList(status));
+  const fetchAdminRecipes = (status?: RecipeStatus) => performFetch(() => adminRecipeAPI.list(status));
 
   async function fetchRecipeDetails(id: string) {
     loading.value = true;
