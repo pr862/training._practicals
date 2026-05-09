@@ -7,7 +7,7 @@ import {
   findUserByEmail,
   findAdmin,
   createUser,
-} from "../models/user";
+} from "../repository/user";
 
 
 export const Register = async (req: Request, res: Response) => {

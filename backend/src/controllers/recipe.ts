@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { AuthRequest } from "../middleware/auth";
 import { RecipeStatus, Recipe } from "../types/recipe";
-import { createRecipe, getRecipeById, getAllRecipes, updateRecipeStatus, updateRecipe } from "../models/recipe";
+import { createRecipe, getRecipeById, getAllRecipes, updateRecipeStatus, updateRecipe } from "../repository/recipe";
 import { sendStatusUpdateEmail } from "../utils/mail";
 
 const parseJSON = (value: any) => {
