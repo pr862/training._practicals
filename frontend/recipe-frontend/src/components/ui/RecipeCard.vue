@@ -8,8 +8,11 @@
       :alt="recipe.name" 
       class="absolute inset-0 w-full h-full object-cover" 
     />
-    <div v-else class="absolute inset-0 bg-neutral-800 flex items-center justify-center text-4xl sm:text-6xl">
-      <pizza class="size-5"/>
+    <div v-else class="absolute inset-0 bg-gradient-to-br from-neutral-800 to-neutral-900 flex flex-col items-center justify-center gap-4">
+      <div class="p-6 rounded-3xl bg-neutral-700/30 border border-white/5 shadow-inner">
+        <ChefHat class="size-12 sm:size-16 text-orange-500/40" />
+      </div>
+      <span class="text-neutral-500 text-[10px] font-black uppercase tracking-[0.2em]">Image Coming Soon</span>
     </div>
 
     <div class="absolute inset-x-0 bottom-0 p-4 sm:p-6 bg-black/70 border-t border-white/10">
@@ -38,7 +41,7 @@
 
 <script setup lang="ts">
 import type { Recipe } from '../../types/recipe'
-import { Pizza } from '@lucide/vue';
+import { ChefHat } from '@lucide/vue';
 
 defineProps<{ recipe?: Recipe }>()
 defineEmits<{ (e: 'click', recipe: Recipe): void }>()

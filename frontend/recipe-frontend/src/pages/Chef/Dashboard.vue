@@ -51,8 +51,8 @@
             
             <div class="relative w-full lg:w-48 h-48  overflow-hidden bg-gray-50 shrink-0 rounded-xl border border-gray-100/50">
               <img v-if="recipe.image" :src="recipe.image" class="w-full h-full object-cover " />
-              <div v-else class="w-full h-full flex items-center justify-center text-gray-200">
-                <Utensils class="w-14 h-14" />
+              <div v-else class="w-full h-full flex flex-col items-center justify-center bg-orange-50/50 text-orange-200">
+                <ChefHat class="w-14 h-14" />
               </div>
             </div>
 
@@ -129,7 +129,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { recipeAPI } from '../../services/api'
 import type { Recipe } from '../../types/recipe'
-import {Clock, Users, FileText, CheckCircle, XCircle, Edit, Eye, Utensils, MessageSquare, ChevronDown, Plus, Layers, ArrowRight, LayoutDashboard} from '@lucide/vue'
+import {Clock, Users, FileText, CheckCircle, XCircle, Edit, Eye, Utensils, MessageSquare, ChevronDown, Plus, Layers, ArrowRight, LayoutDashboard, ChefHat} from '@lucide/vue'
 import Navbar from '@/components/ui/Navbar.vue'
 import StatusBadge from '@/components/ui/StatusBadge.vue'
 import Loading from '@/components/ui/Loading.vue'

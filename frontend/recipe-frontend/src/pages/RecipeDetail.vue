@@ -29,7 +29,13 @@
           <div class="lg:col-span-5 xl:col-span-4">
             <div class="lg:sticky lg:top-28 space-y-8">
               <div class="relative group aspect-square rounded-[2.5rem] overflow-hidden border border-white/10 shadow-2xl">
-                <img :src="recipe.image" :alt="recipe.name" class="w-full h-full object-cover" />
+                <img v-if="recipe.image" :src="recipe.image" :alt="recipe.name" class="w-full h-full object-cover" />
+                <div v-else class="absolute inset-0 bg-gradient-to-br from-neutral-800 to-neutral-900 flex flex-col items-center justify-center gap-4">
+                  <div class="p-8 rounded-[2rem] bg-neutral-700/30 border border-white/5">
+                    <ChefHat class="size-20 text-orange-500/40" />
+                  </div>
+                  <span class="text-neutral-500 text-xs font-black uppercase tracking-[0.2em]">Image Not Available</span>
+                </div>
                 <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-60"></div>
                 </div>
                 <div class="grid grid-cols-2 gap-3 sm:gap-4">
@@ -176,7 +182,7 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute, RouterLink, useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import type { Recipe } from '../types/recipe'
-import { Clock, Users, Loader2, CheckCircle, XCircle, Edit, MessageSquare, MoveLeft, Video } from '@lucide/vue'
+import { Clock, Users, Loader2, CheckCircle, XCircle, Edit, MessageSquare, MoveLeft, Video, ChefHat } from '@lucide/vue'
 import Modal from '@/components/ui/Modal.vue'
 import { adminRecipeAPI, publicRecipeAPI, recipeAPI } from '../services/api'
 import { formatDate } from '@/utils/format'

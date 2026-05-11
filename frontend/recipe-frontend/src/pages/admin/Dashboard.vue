@@ -72,8 +72,8 @@
                   <div class="flex items-center gap-4">
                     <div class="relative shrink-0">
                       <img v-if="recipe.image" :src="recipe.image" class="w-12 h-12 lg:w-14 lg:h-14 rounded-2xl object-cover shadow-sm ring-2 ring-white" />
-                      <div v-else class="w-12 h-12 lg:w-14 lg:h-14 rounded-2xl bg-gray-100 flex items-center justify-center text-gray-300 border border-dashed border-gray-200">
-                        <FileText class="size-6" />
+                      <div v-else class="w-12 h-12 lg:w-14 lg:h-14 rounded-2xl bg-orange-50 flex items-center justify-center text-orange-200 border border-orange-100">
+                        <ChefHat class="size-6" />
                       </div>
                       <div v-if="recipe.feedback" class="absolute -top-1 -right-1 w-3.5 h-3.5 bg-orange-400 border-2 border-white rounded-full"></div>
                     </div>
@@ -131,7 +131,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { adminRecipeAPI } from '../../services/api'
 import type { Recipe } from '../../types/recipe'
-import { Clock, CheckCircle, XCircle, FileText, Eye, RotateCcw, Edit3, LayoutDashboard } from '@lucide/vue'
+import { Clock, CheckCircle, XCircle, FileText, Eye, RotateCcw, Edit3, LayoutDashboard, ChefHat } from '@lucide/vue'
 import { formatDate } from '../../utils/format'
 import Navbar from '@/components/ui/Navbar.vue'
 import StatusBadge from '@/components/ui/StatusBadge.vue'
