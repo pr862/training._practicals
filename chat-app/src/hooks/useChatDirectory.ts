@@ -16,7 +16,7 @@ interface FirestoreChat {
   chatId?: string;
   type?: "private" | "group";
   members?: unknown;
-  groupName?: string;
+  groupName: string;
   adminId?: string;
   lastMessage?: string;
   unreadCount?: Record<string, unknown>;

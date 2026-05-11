@@ -4,7 +4,7 @@ export interface Chat {
   chatId: string;
   type: "private" | "group";
   members: string[];
-  groupName?: string;
+  groupName: string;
   adminId?: string;
   lastMessage?: string;
   createdAt?: Timestamp;
