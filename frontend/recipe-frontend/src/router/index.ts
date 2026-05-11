@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import { UserRole } from '../types/user'
 
 const routes = [
   { path: "/", name: 'home', component: () => import('../pages/Public/Home.vue') },
-  { path: '/recipe/:id', name: 'PublicRecipeDetail', component: () => import('../pages/RecipeDetail.vue'),props: { role: 'public' } },
+  { path: '/recipe/:id', name: 'PublicRecipeDetail', component: () => import('../pages/RecipeDetail.vue'),props: { role: UserRole.PUBLIC } },
   
   { path: '/login', name: 'Login', component: () => import('../pages/Auth/login.vue') },
   { path: '/register', name: 'Register', component: () => import('../pages/Auth/register.vue') },
@@ -12,7 +13,7 @@ const routes = [
     children: [
       { path: 'dashboard', name: 'ChefDashboard', component: () => import('../pages/Chef/Dashboard.vue') },
       { path: 'submit', name: 'SubmitRecipe', component: () => import('../pages/Chef/SubmitRecipe.vue') },
-      { path: 'recipes/:id', name: 'ChefRecipeDetail', component: () => import('../pages/RecipeDetail.vue'), props: { role: 'chef' } },
+      { path: 'recipes/:id', name: 'ChefRecipeDetail', component: () => import('../pages/RecipeDetail.vue'), props: { role: UserRole.CHEF } },
     ]
   },
   
@@ -20,7 +21,7 @@ const routes = [
     path: '/admin',
     children:[
       { path:'dashboard', name: 'adminDashboard', component: () => import('../pages/admin/Dashboard.vue')  },
-      { path: 'recipe/:id', name: 'AdminRecipeDetail', component: () => import('../pages/RecipeDetail.vue'), props: { role: 'admin' } },
+      { path: 'recipe/:id', name: 'AdminRecipeDetail', component: () => import('../pages/RecipeDetail.vue'), props: { role: UserRole.ADMIN } },
     ]
   }
 ]

@@ -182,13 +182,14 @@ import { ref, onMounted, computed } from 'vue'
 import { useRoute, RouterLink, useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import type { Recipe } from '../types/recipe'
+import { UserRole } from '../types/user'
 import { Clock, Users, Loader2, CheckCircle, XCircle, Edit, MessageSquare, MoveLeft, Video, ChefHat } from '@lucide/vue'
 import Modal from '@/components/ui/Modal.vue'
 import { adminRecipeAPI, publicRecipeAPI, recipeAPI } from '../services/api'
 import { formatDate } from '@/utils/format'
 import Loading from '@/components/ui/Loading.vue'
 
-const props = defineProps<{ role: 'public' | 'chef' | 'admin' }>()
+const props = defineProps<{ role: UserRole }>()
 const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
@@ -205,20 +206,20 @@ const modalTitle = computed(() => feedbackAction.value === 'rejected' ? 'Reject 
 const confirmText = computed(() => feedbackAction.value === 'rejected' ? 'Reject' : 'Send Feedback')
 
 const api = computed(() => {
-  if (props.role === 'admin') return adminRecipeAPI
-  if (props.role === 'chef') return recipeAPI
+  if (props.role === UserRole.ADMIN) return adminRecipeAPI
+  if (props.role === UserRole.CHEF) return recipeAPI
   return publicRecipeAPI
 })
 
 const backLink = computed(() => {
-  if (props.role === 'admin') return '/admin/dashboard'
-  if (props.role === 'chef') return '/chef/dashboard'
+  if (props.role === UserRole.ADMIN) return '/admin/dashboard'
+  if (props.role === UserRole.CHEF) return '/chef/dashboard'
   return '/'
 })
 
-const backLabel = computed(() => props.role === 'public' ? 'Recipes' : 'Dashboard')
-const isAdmin = computed(() => props.role === 'admin')
-const isChef = computed(() => props.role === 'chef')
+const backLabel = computed(() => props.role === UserRole.PUBLIC ? 'Recipes' : 'Dashboard')
+const isAdmin = computed(() => props.role === UserRole.ADMIN)
+const isChef = computed(() => props.role === UserRole.CHEF)
 
 const statusClasses = computed(() => {
   const map: Record<string, string> = {
