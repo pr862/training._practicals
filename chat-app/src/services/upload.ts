@@ -1,3 +1,5 @@
+import { assertRequiredFile } from "./validation";
+
 const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
 const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 const uploadFolder = import.meta.env.VITE_CLOUDINARY_UPLOAD_FOLDER;
@@ -7,12 +9,14 @@ interface CloudinaryUploadResponse {
 }
 
 export const uploadImageToCloudinary = async (file: File) => {
+  const validatedFile = assertRequiredFile(file);
+
   if (!cloudName || !uploadPreset) {
     throw new Error("Cloudinary environment variables are missing");
   }
 
   const formData = new FormData();
-  formData.append("file", file);
+  formData.append("file", validatedFile);
   formData.append("upload_preset", uploadPreset);
 
   if (uploadFolder) {

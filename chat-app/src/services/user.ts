@@ -1,5 +1,10 @@
 import { db } from "../firebase/config";
 import { deleteField, doc, setDoc, serverTimestamp, updateDoc } from "firebase/firestore";
+import {
+  assertAtLeastOneField,
+  assertRequiredString,
+  assertRequiredValue,
+} from "./validation";
 
 export const saveUser = async (
   uid: string,
@@ -7,12 +12,14 @@ export const saveUser = async (
   name?: string,
   photoURL?: string | null
 ) => {
+  const validatedUid = assertRequiredString(uid, "User ID");
+  const validatedEmail = assertRequiredString(email, "Email");
   const normalizedName = name?.trim() || "";
   const normalizedPhotoURL = photoURL?.trim() || "";
 
   const payload: Record<string, unknown> = {
-    uid,
-    email,
+    uid: validatedUid,
+    email: validatedEmail,
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
   };
@@ -26,31 +33,35 @@ export const saveUser = async (
     payload.photoURL = normalizedPhotoURL;
   }
 
-  return await setDoc(doc(db, "users", uid), payload, { merge: true });
+  return await setDoc(doc(db, "users", validatedUid), payload, { merge: true });
 };
 
 export const updateUser = async (
   uid: string,
   payload: { name?: string; email?: string; photoURL?: string | null }
 ) => {
+  const validatedUid = assertRequiredString(uid, "User ID");
+  const validatedPayload = assertRequiredValue(payload, "User update");
+  assertAtLeastOneField(validatedPayload, "User update");
+
   const updates: Record<string, unknown> = {
     updatedAt: serverTimestamp(),
   };
 
-  const normalizedName = payload.name?.trim();
+  const normalizedName =validatedPayload.name === undefined? undefined: assertRequiredString(validatedPayload.name, "Name");
   if (normalizedName !== undefined) {
     updates.name = normalizedName;
     updates.Name = normalizedName;
   }
 
-  if (payload.email !== undefined) {
-    updates.email = payload.email;
+  if (validatedPayload.email !== undefined) {
+    updates.email = assertRequiredString(validatedPayload.email, "Email");
   }
 
-  if (payload.photoURL !== undefined) {
-    const normalizedPhotoURL = payload.photoURL?.trim() ?? "";
+  if (validatedPayload.photoURL !== undefined) {
+    const normalizedPhotoURL = validatedPayload.photoURL?.trim() ?? "";
     updates.photoURL = normalizedPhotoURL || deleteField();
   }
 
-  return updateDoc(doc(db, "users", uid), updates);
+  return updateDoc(doc(db, "users", validatedUid), updates);
 };

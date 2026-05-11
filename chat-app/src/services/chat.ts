@@ -12,14 +12,23 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import type { Chat } from "../types/chat";
+import {
+  assertRequiredString,
+  assertRequiredStringArray,
+} from "./validation";
 
 const addSystemMessage = async (chatId: string, text: string, actorId?: string, actorName?: string) => {
-  await addDoc(collection(db, "chats", chatId, "messages"), {
-    chatId,
+  const validatedChatId = assertRequiredString(chatId, "Chat ID");
+  const validatedText = assertRequiredString(text, "Message text");
+  const normalizedActorId = actorId?.trim();
+  const normalizedActorName = actorName?.trim();
+
+  await addDoc(collection(db, "chats", validatedChatId, "messages"), {
+    chatId: validatedChatId,
     senderId: "system",
-    ...(actorId ? { actorId } : {}),
-    ...(actorName ? { actorName } : {}),
-    text,
+    ...(normalizedActorId ? { actorId: normalizedActorId } : {}),
+    ...(normalizedActorName ? { actorName: normalizedActorName } : {}),
+    text: validatedText,
     imageUrl: null,
     type: "system",
     createdAt: serverTimestamp(),
@@ -33,15 +42,23 @@ const addTargetedSystemMessage = async (
   actorId?: string,
   actorName?: string
 ) => {
-  await addDoc(collection(db, "chats", chatId, "messages"), {
-    chatId,
+  const validatedChatId = assertRequiredString(chatId, "Chat ID");
+  const validatedText = assertRequiredString(text, "Message text");
+  const normalizedVisibleTo = visibleTo?.length
+    ? assertRequiredStringArray(visibleTo, "Visible recipients")
+    : [];
+  const normalizedActorId = actorId?.trim();
+  const normalizedActorName = actorName?.trim();
+
+  await addDoc(collection(db, "chats", validatedChatId, "messages"), {
+    chatId: validatedChatId,
     senderId: "system",
-    ...(actorId ? { actorId } : {}),
-    ...(actorName ? { actorName } : {}),
-    text,
+    ...(normalizedActorId ? { actorId: normalizedActorId } : {}),
+    ...(normalizedActorName ? { actorName: normalizedActorName } : {}),
+    text: validatedText,
     imageUrl: null,
     type: "system",
-    ...(visibleTo?.length ? { visibleTo } : {}),
+    ...(normalizedVisibleTo.length ? { visibleTo: normalizedVisibleTo } : {}),
     createdAt: serverTimestamp(),
   });
 };
@@ -50,10 +67,15 @@ export const getPrivateChatId = (
   currentUserId: string,
   selectedUserId: string
 ) => {
-  const [firstUserId, secondUserId] = [
+  const validatedCurrentUserId = assertRequiredString(
     currentUserId,
+    "Current user ID"
+  );
+  const validatedSelectedUserId = assertRequiredString(
     selectedUserId,
-  ].sort();
+    "Selected user ID"
+  );
+  const [firstUserId, secondUserId] = [validatedCurrentUserId, validatedSelectedUserId,].sort();
 
   return `private_${firstUserId}_${secondUserId}`;
 };
@@ -62,14 +84,16 @@ export const getOrCreateChat = async (
   currentUserId: string,
   selectedUserId: string
 ) => {
-  const chatId = getPrivateChatId(currentUserId, selectedUserId);
+  const validatedCurrentUserId = assertRequiredString(currentUserId, "Current user ID");
+  const validatedSelectedUserId = assertRequiredString(selectedUserId, "Selected user ID");
+  const chatId = getPrivateChatId(validatedCurrentUserId, validatedSelectedUserId);
 
   const chatRef = doc(db, "chats", chatId);
   const chatSnap = await getDoc(chatRef);
 
   if (chatSnap.exists()) {
     await updateDoc(chatRef, {
-      [`unreadCount.${currentUserId}`]: 0,
+      [`unreadCount.${validatedCurrentUserId}`]: 0,
     });
 
     return {
@@ -81,13 +105,13 @@ export const getOrCreateChat = async (
   const initialChatData = {
     chatId,
     type: "private",
-    members: [currentUserId, selectedUserId],
+    members: [validatedCurrentUserId, validatedSelectedUserId],
     lastMessage: "",
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
     unreadCount: {
-      [currentUserId]: 0,
-      [selectedUserId]: 0,
+      [validatedCurrentUserId]: 0,
+      [validatedSelectedUserId]: 0,
     },
   };
 
@@ -102,18 +126,16 @@ export const createGroupChat = async (
   currentUserName = "Someone",
   memberNamesById: Record<string, string> = {}
 ) => {
+  const validatedCurrentUserId = assertRequiredString(currentUserId, "Current user ID");
+  const validatedMemberIds = assertRequiredStringArray(selectedMemberIds,"Selected members");
+  const trimmedGroupName = assertRequiredString(groupName, "Group name");
+  const normalizedCurrentUserName = currentUserName.trim() || "Someone";
   const members = Array.from(
-    new Set([currentUserId, ...selectedMemberIds])
+    new Set([validatedCurrentUserId, ...validatedMemberIds])
   );
 
   if (members.length < 3) {
     throw new Error("Select at least two other members.");
-  }
-
-  const trimmedGroupName = groupName.trim();
-
-  if (!trimmedGroupName) {
-    throw new Error("Group name is required.");
   }
 
   const chatRef = doc(collection(db, "chats"));
@@ -123,7 +145,7 @@ export const createGroupChat = async (
     type: "group",
     members,
     groupName: trimmedGroupName,
-    adminId: currentUserId,
+    adminId: validatedCurrentUserId,
     lastMessage: "",
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp(),
@@ -136,12 +158,12 @@ export const createGroupChat = async (
 
   await addSystemMessage(
     chatRef.id,
-    `${currentUserName} created the group.`,
-    currentUserId,
-    currentUserName
+    `${normalizedCurrentUserName} created the group.`,
+    validatedCurrentUserId,
+    normalizedCurrentUserName
   );
 
-  const joinedNames = selectedMemberIds
+  const joinedNames = validatedMemberIds
     .map((memberId) => memberNamesById[memberId])
     .filter(Boolean);
 
@@ -165,7 +187,17 @@ export const addGroupMembers = async (
   currentUserName = "Someone",
   memberNamesById: Record<string, string> = {}
 ) => {
-  const chatRef = doc(db, "chats", chatId);
+  const validatedChatId = assertRequiredString(chatId, "Chat ID");
+  const validatedCurrentUserId = assertRequiredString(
+    currentUserId,
+    "Current user ID"
+  );
+  const validatedMemberIds = assertRequiredStringArray(
+    selectedMemberIds,
+    "Selected members"
+  );
+  const normalizedCurrentUserName = currentUserName.trim() || "Someone";
+  const chatRef = doc(db, "chats", validatedChatId);
 
   const chatSnap = await getDoc(chatRef);
 
@@ -175,7 +207,7 @@ export const addGroupMembers = async (
 
   const chat = chatSnap.data() as Chat;
 
-  if (chat.type !== "group" || !chat.members.includes(currentUserId)) {
+  if (chat.type !== "group" || !chat.members.includes(validatedCurrentUserId)) {
     throw new Error("You cannot add members to this group.");
   }
 
@@ -184,7 +216,7 @@ export const addGroupMembers = async (
   }
 
   const newMemberIds = Array.from(
-    new Set(selectedMemberIds)
+    new Set(validatedMemberIds)
   ).filter((memberId) => !chat.members.includes(memberId));
 
   if (!newMemberIds.length) {
@@ -196,8 +228,8 @@ export const addGroupMembers = async (
     .filter(Boolean);
 
   const systemText = joinedNames.length
-    ? `${currentUserName} added ${joinedNames.join(", ")}.`
-    : `${currentUserName} added new members.`;
+    ? `${normalizedCurrentUserName} added ${joinedNames.join(", ")}.`
+    : `${normalizedCurrentUserName} added new members.`;
 
   const unreadUpdates = Object.fromEntries(
     newMemberIds.map((memberId) => [
@@ -213,7 +245,7 @@ export const addGroupMembers = async (
     ...unreadUpdates,
   });
 
-  await addSystemMessage(chatId, systemText, currentUserId, currentUserName);
+  await addSystemMessage(validatedChatId, systemText, validatedCurrentUserId, normalizedCurrentUserName);
 };
 
 export const leaveGroupChat = async (
@@ -221,7 +253,13 @@ export const leaveGroupChat = async (
   currentUserId: string,
   currentUserName = "Someone"
 ) => {
-  const chatRef = doc(db, "chats", chatId);
+  const validatedChatId = assertRequiredString(chatId, "Chat ID");
+  const validatedCurrentUserId = assertRequiredString(
+    currentUserId,
+    "Current user ID"
+  );
+  const normalizedCurrentUserName = currentUserName.trim() || "Someone";
+  const chatRef = doc(db, "chats", validatedChatId);
 
   const chatSnap = await getDoc(chatRef);
 
@@ -233,7 +271,7 @@ export const leaveGroupChat = async (
 
   if (
     chat.type !== "group" ||
-    !chat.members.includes(currentUserId)
+    !chat.members.includes(validatedCurrentUserId)
   ) {
     throw new Error("You cannot leave this chat.");
   }
@@ -243,47 +281,47 @@ export const leaveGroupChat = async (
   }
 
   const remainingMembers = chat.members.filter(
-    (memberId) => memberId !== currentUserId
+    (memberId) => memberId !== validatedCurrentUserId
   );
 
   if (!remainingMembers.length) {
     await updateDoc(chatRef, {
       adminExitedAt: serverTimestamp(),
-      lastMessage: `${currentUserName} exited the group.`,
+      lastMessage: `${normalizedCurrentUserName} exited the group.`,
       updatedAt: serverTimestamp(),
     });
 
     await addSystemMessage(
-      chatId,
-      `${currentUserName} exited the group.`,
-      currentUserId,
-      currentUserName
+      validatedChatId,
+      `${normalizedCurrentUserName} exited the group.`,
+      validatedCurrentUserId,
+      normalizedCurrentUserName
     );
 
     return;
   }
 
   const nextAdminId =
-    chat.adminId === currentUserId
+    chat.adminId === validatedCurrentUserId
       ? remainingMembers[0]
       : chat.adminId;
 
-  const systemText = `${currentUserName} left the group.`;
+  const systemText = `${normalizedCurrentUserName} left the group.`;
 
   await updateDoc(chatRef, {
-    members: arrayRemove(currentUserId),
+    members: arrayRemove(validatedCurrentUserId),
     adminId: nextAdminId,
     lastMessage: systemText,
     updatedAt: serverTimestamp(),
-    [`unreadCount.${currentUserId}`]: deleteField(),
+    [`unreadCount.${validatedCurrentUserId}`]: deleteField(),
   });
 
   await addTargetedSystemMessage(
-    chatId,
+    validatedChatId,
     systemText,
     remainingMembers,
-    currentUserId,
-    currentUserName
+    validatedCurrentUserId,
+    normalizedCurrentUserName
   );
 };
 
@@ -294,11 +332,20 @@ export const removeGroupMember = async (
   currentUserName = "Someone",
   memberName = "A member"
 ) => {
-  if (memberId === currentUserId) {
+  const validatedChatId = assertRequiredString(chatId, "Chat ID");
+  const validatedCurrentUserId = assertRequiredString(
+    currentUserId,
+    "Current user ID"
+  );
+  const validatedMemberId = assertRequiredString(memberId, "Member ID");
+  const normalizedCurrentUserName = currentUserName.trim() || "Someone";
+  const normalizedMemberName = memberName.trim() || "A member";
+
+  if (validatedMemberId === validatedCurrentUserId) {
     throw new Error("Use Leave Group to remove yourself.");
   }
 
-  const chatRef = doc(db, "chats", chatId);
+  const chatRef = doc(db, "chats", validatedChatId);
   const chatSnap = await getDoc(chatRef);
 
   if (!chatSnap.exists()) {
@@ -307,7 +354,7 @@ export const removeGroupMember = async (
 
   const chat = chatSnap.data() as Chat;
 
-  if (chat.type !== "group" || chat.adminId !== currentUserId) {
+  if (chat.type !== "group" || chat.adminId !== validatedCurrentUserId) {
     throw new Error("Only the group admin can remove members.");
   }
 
@@ -315,20 +362,26 @@ export const removeGroupMember = async (
     throw new Error("This group was deleted.");
   }
 
-  if (!chat.members.includes(memberId)) {
+  if (!chat.members.includes(validatedMemberId)) {
     throw new Error("This member is no longer in the group.");
   }
 
-  const systemText = `${currentUserName} removed ${memberName}.`;
+  const systemText = `${normalizedCurrentUserName} removed ${normalizedMemberName}.`;
 
   await updateDoc(chatRef, {
-    members: arrayRemove(memberId),
+    members: arrayRemove(validatedMemberId),
     lastMessage: systemText,
     updatedAt: serverTimestamp(),
-    [`unreadCount.${memberId}`]: deleteField(),
+    [`unreadCount.${validatedMemberId}`]: deleteField(),
   });
 
-  await addTargetedSystemMessage(chatId, systemText, chat.members, currentUserId, currentUserName);
+  await addTargetedSystemMessage(
+    validatedChatId,
+    systemText,
+    chat.members,
+    validatedCurrentUserId,
+    normalizedCurrentUserName
+  );
 };
 
 export const deleteGroupChat = async (
@@ -336,7 +389,13 @@ export const deleteGroupChat = async (
   currentUserId: string,
   currentUserName = "Someone"
 ) => {
-  const chatRef = doc(db, "chats", chatId);
+  const validatedChatId = assertRequiredString(chatId, "Chat ID");
+  const validatedCurrentUserId = assertRequiredString(
+    currentUserId,
+    "Current user ID"
+  );
+  const normalizedCurrentUserName = currentUserName.trim() || "Someone";
+  const chatRef = doc(db, "chats", validatedChatId);
 
   const chatSnap = await getDoc(chatRef);
 
@@ -348,7 +407,7 @@ export const deleteGroupChat = async (
 
   if (
     chat.type !== "group" ||
-    chat.adminId !== currentUserId
+    chat.adminId !== validatedCurrentUserId
   ) {
     throw new Error(
       "Only the group admin can delete this chat."
@@ -365,25 +424,30 @@ export const deleteGroupChat = async (
     );
   }
 
-  const systemText = `${currentUserName} deleted the group.`;
+  const systemText = `${normalizedCurrentUserName} deleted the group.`;
 
   await updateDoc(chatRef, {
     deletedAt: serverTimestamp(),
-    deletedBy: currentUserId,
+    deletedBy: validatedCurrentUserId,
     lastMessage: systemText,
     updatedAt: serverTimestamp(),
   });
 
-  await addSystemMessage(chatId, systemText, currentUserId, currentUserName);
+  await addSystemMessage(validatedChatId, systemText, validatedCurrentUserId, normalizedCurrentUserName);
 };
 
 export const updateLastMessage = async (
   chatId: string,
   messageText: string
 ) => {
-  const chatRef = doc(db, "chats", chatId);
+  const validatedChatId = assertRequiredString(chatId, "Chat ID");
+  const validatedMessageText = assertRequiredString(
+    messageText,
+    "Message text"
+  );
+  const chatRef = doc(db, "chats", validatedChatId);
   await updateDoc(chatRef, {
-    lastMessage: messageText,
+    lastMessage: validatedMessageText,
     updatedAt: serverTimestamp(),
   });
 };
