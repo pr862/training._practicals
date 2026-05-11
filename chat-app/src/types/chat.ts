@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+
 export interface Chat {
   chatId: string;
   type: "private" | "group";
@@ -5,11 +7,11 @@ export interface Chat {
   groupName?: string;
   adminId?: string;
   lastMessage?: string;
-  createdAt?: unknown;
-  updatedAt: unknown;
+  createdAt?: Timestamp;
+  updatedAt: Timestamp;
   unreadCount?: Record<string, number>;
-  adminExitedAt?: unknown;
-  deletedAt?: unknown;
+  adminExitedAt?: Timestamp;
+  deletedAt?: Timestamp;
   deletedBy?: string;
 }
 
@@ -23,5 +25,5 @@ export interface Message {
   imageUrl?: string | null;
   type?: "text" | "image" | "system";
   visibleTo?: string[];
-  createdAt: unknown;
+  createdAt: Timestamp;
 }

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { collection, onSnapshot, query, where } from "firebase/firestore";
+import { collection, onSnapshot, query, where, Timestamp } from "firebase/firestore";
 import { db } from "../firebase/config";
 import { formatChatTime, getChatTimeValue } from "../utils/dateUtils";
 import type { Chat } from "../types/chat";
@@ -20,9 +20,9 @@ interface FirestoreChat {
   adminId?: string;
   lastMessage?: string;
   unreadCount?: Record<string, unknown>;
-  updatedAt?: unknown;
-  adminExitedAt?: unknown;
-  deletedAt?: unknown;
+  updatedAt?: Timestamp;
+  adminExitedAt?: Timestamp;
+  deletedAt?: Timestamp;
   deletedBy?: string;
 }
 
@@ -63,7 +63,7 @@ export function useChatDirectory(currentUserId?: string) {
           groupName: chat.groupName,
           adminId: chat.adminId,
           lastMessage: chat.lastMessage,
-          updatedAt: chat.updatedAt,
+          updatedAt: chat.updatedAt ?? Timestamp.now(),
           adminExitedAt: chat.adminExitedAt,
           deletedAt: chat.deletedAt,
           deletedBy: chat.deletedBy,
@@ -81,7 +81,7 @@ export function useChatDirectory(currentUserId?: string) {
         if (!otherUserId) return;
         nextPreviews[otherUserId] = {
           unreadCount,
-          lastMessageTime: formatChatTime(chat.updatedAt),
+          lastMessageTime: formatChatTime(chat.updatedAt ?? Timestamp.now()),
           lastMessage: chat.lastMessage,
         };
       });

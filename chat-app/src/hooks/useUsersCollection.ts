@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, onSnapshot, Timestamp } from "firebase/firestore";
 import { db } from "../firebase/config";
 import type { User } from "../types/user";
 
@@ -9,7 +9,7 @@ interface FirestoreUser {
   name?: string;
   image?: string;
   photoURL?: string;
-  createdAt?: unknown;
+  createdAt?: Timestamp;
 }
 
 const normalizeUser = (id: string, data: FirestoreUser): User => ({

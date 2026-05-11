@@ -1,4 +1,6 @@
-export const formatChatTime = (updatedAt: unknown) => {
+import type { Timestamp } from "firebase/firestore";
+
+export const formatChatTime = (updatedAt: Timestamp) => {
   if (
     updatedAt &&
     typeof updatedAt === "object" &&
@@ -14,7 +16,7 @@ export const formatChatTime = (updatedAt: unknown) => {
   return "";
 };
 
-export const getChatTimeValue = (updatedAt: unknown) => {
+export const getChatTimeValue = (updatedAt: Timestamp) => {
   if (
     updatedAt &&
     typeof updatedAt === "object" &&

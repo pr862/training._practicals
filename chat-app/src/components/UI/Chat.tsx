@@ -1,5 +1,6 @@
 import type { FC } from "react";
 import { useRef, useEffect, memo } from "react";
+import { Timestamp } from "firebase/firestore";
 import { ImagePlus, SendHorizonal, X, Loader2 } from "lucide-react";
 import { auth } from "../../firebase/config";
 import { useChatMessages } from "../../hooks/useChat";
@@ -74,7 +75,7 @@ const Chat: FC<ChatProps> = ({ chatId, user, title, isGroup = false, usersById =
     });
   };
 
-  const getMessageDate = (createdAt: unknown) => {
+  const getMessageDate = (createdAt: Timestamp | Date | null | undefined) => {
     if (createdAt instanceof Date) return createdAt;
     if (
       createdAt &&
