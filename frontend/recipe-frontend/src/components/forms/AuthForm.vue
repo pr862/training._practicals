@@ -162,7 +162,14 @@ const validateField = (field: keyof typeof form) => {
   };
   
   if (validators[field]) errors[field as keyof typeof errors] = validators[field]();
-  if (field === 'password' && props.mode === 'register') errors.confirmPassword = validateConfirmPassword(form.confirmPassword, form.password);
+  if (field === 'confirmPassword' && props.mode === 'register') errors.confirmPassword = validateConfirmPassword(form.confirmPassword,form.password);
+
+  if (field === 'password' && props.mode === 'register' && form.confirmPassword) {
+    errors.confirmPassword = validateConfirmPassword(
+      form.confirmPassword,
+      form.password
+    )
+  }
 }
 
 const isFormValid = computed(() => {
