@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { AuthRequest } from "../middleware/auth";
 import { RecipeStatus, Recipe } from "../types/recipe";
+import { UserRole } from "../types/user";
 import { createRecipe, getRecipeById, getAllRecipes, updateRecipeStatus, updateRecipe } from "../repository/recipe";
 import { sendStatusUpdateEmail } from "../utils/mail";
 
@@ -55,7 +56,7 @@ export const submitRecipe = async (req: AuthRequest, res: Response) => {
 
     const parsed = parseRecipeFields(req.body);
     const errorMsg = validateRecipeData(req.body, parsed.ingredients);
-    if (errorMsg) return res.status(400).json({ message: errorMsg });
+    if (errorMsg) return res.status(404).json({ message: errorMsg });
 
     const { imagePath, videoPath } = resolveFiles(req);
 
@@ -114,7 +115,7 @@ export const adminUpdateStatus = async (req: Request, res: Response) => {
     const { status, feedback } = req.body;
     const normalizedStatus = normalizeStatus(status);
 
-    if (!id) return res.status(400).json({ message: "Recipe ID is required" });
+    if (!id) return res.status(404).json({ message: "Recipe ID is required" });
     if (!normalizedStatus) return res.status(400).json({ message: "Invalid status" });
 
     const updatedRecipe = await updateRecipeStatus(
@@ -140,7 +141,7 @@ export const getRecipes = async (req: AuthRequest, res: Response) => {
 
     if (!req.user) {
       status = RecipeStatus.APPROVED;
-    } else if (req.user.role !== "admin") {
+    } else if (req.user.role !== UserRole.ADMIN) {
       createdBy = req.user.id;
     }
 
@@ -156,7 +157,7 @@ export const getRecipeDetails = async (req: AuthRequest, res: Response) => {
     const recipe = await getRecipeById(req.params.id);
     if (!recipe) return res.status(404).json({ message: "Recipe not found" });
 
-    const isAdmin = req.user?.role === "admin";
+    const isAdmin = req.user?.role === UserRole.ADMIN;
     const isCreator = req.user?.id === recipe.createdBy;
 
     if (!isAdmin && !isCreator && recipe.status !== RecipeStatus.APPROVED) {

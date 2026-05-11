@@ -14,16 +14,31 @@ export const Register = async (req: Request, res: Response) => {
   try {
     const { name, email, password, role } = req.body;
 
+    if (!name || name.trim() === "") {
+      res.status(404).json({ message: "Name is required" });
+      return;
+    }
+
+    if (!email || email.trim() === "") {
+      res.status(404).json({ message: "Email is required" });
+      return;
+    }
+
+    if (!password || password.trim() === "") {
+      res.status(404).json({ message: "Password is required" });
+      return;
+    }
+    
     const existingUser = await findUserByEmail(email);
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists" });
+      return res.status(409).json({ message: "User already exists" });
     }
 
     if (role === UserRole.ADMIN) {
       const adminExists = await findAdmin();
 
       if (adminExists) {
-        return res.status(400).json({ message: "Admin already exists" });
+        return res.status(409).json({ message: "Admin already exists" });
       }
     }
 
@@ -54,6 +69,15 @@ export const Register = async (req: Request, res: Response) => {
 export const Login = async (req: Request, res: Response) => {
   try {
     const { email, password } = req.body;
+      if (!email || email.trim() === "") {
+        res.status(404).json({ message: "Email is required" });
+        return;
+      }
+
+      if (!password || password.trim() === "") {
+        res.status(404).json({ message: "Password is required" });
+        return;
+      }
 
     const user = await findUserByEmail(email);
 
