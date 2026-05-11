@@ -10,6 +10,13 @@ export interface Ingredient {
   quantity: string;
 }
 
+export interface Nutrition {
+  calories?: number;
+  protein?: number;
+  carbs?: number;
+  fat?: number;
+}
+
 export interface Recipe {
   id: string;
   name: string;
@@ -21,7 +28,7 @@ export interface Recipe {
   image?: string;
   video?: string;
   allergens?: string[];
-  nutrition?: any;
+  nutrition?: Nutrition;
   servingSize: number;
   status: RecipeStatus;
   feedback?: string;
