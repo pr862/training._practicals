@@ -187,7 +187,7 @@ export default function Users() {
   return (
     <div className="relative flex h-dvh overflow-hidden bg-slate-100 font-sans text-slate-900">
       <Sidebar
-        me={me}
+        currentUser={me}
         otherUsers={otherUsers}
         selectedUser={selectedUser}
         selectedGroupChatId={selectedGroupChatId}

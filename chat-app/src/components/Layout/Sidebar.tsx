@@ -7,10 +7,17 @@ import CreateGroup from "../UI/CreateGroup";
 import { formatChatTime } from "../../utils/dateUtils";
 import { Input } from "../UI/Input";
 import type { Chat } from "../../types/chat";
-import type {User} from "../../types/user";
+import type { User } from "../../types/user";
+
+const SidebarTab = {
+  Chats: "chats",
+  Groups: "groups",
+} as const;
+
+type SidebarTab = (typeof SidebarTab)[keyof typeof SidebarTab];
 
 interface SidebarProps {
-  me: User | undefined;
+  currentUser: User | undefined;
   otherUsers: User[];
   selectedUser: User | null;
   selectedGroupChatId?: string | null;
@@ -39,7 +46,7 @@ const TabButton = ({ active, onClick, icon: Icon, label }: { active: boolean, on
 );
 
 const Sidebar: FC<SidebarProps> = ({
-  me,
+  currentUser,
   otherUsers,
   selectedUser,
   selectedGroupChatId = null,
@@ -56,7 +63,7 @@ const Sidebar: FC<SidebarProps> = ({
   onProfileEdit,
   isProfileImageUploading = false,
 }) => {
-  const [activeTab, setActiveTab] = useState<"chats" | "groups">("chats");
+  const [activeTab, setActiveTab] = useState<SidebarTab>(SidebarTab.Chats);
   const [isGroupModalOpen, setIsGroupModalOpen] = useState(false);
 
   const handleProfileImageInput = (e: ChangeEvent<HTMLInputElement>) => {
@@ -69,12 +76,12 @@ const Sidebar: FC<SidebarProps> = ({
 
   return (
     <aside className={`${isChatOpen ? "hidden md:flex" : "flex"} h-full w-full flex-col border-r border-white/10 bg-gradient-to-br from-cyan-950 to-blue-950 md:w-[20rem] lg:w-[23rem]`}>
-      {me && (
+      {currentUser && (
         <div className="mx-4 mt-4 overflow-hidden rounded-2xl border border-white/10 bg-cyan-50 backdrop-blur-md">
           <div className="flex items-center justify-between px-4 py-4">
             <div className="flex items-center gap-3 min-w-0">
               <label className="relative shrink-0 cursor-pointer group">
-                <UserAvatar user={me} size="md" className="border-2 border-cyan-500/50" />
+                <UserAvatar user={currentUser} size="md" className="border-2 border-cyan-500/50" />
                 <span className="absolute -bottom-1 -right-1 flex size-6 items-center justify-center rounded-full border border-white/20 bg-cyan-600 text-white shadow-md transition-transform group-hover:scale-110">
                   {isProfileImageUploading ? (
                     <Loader2 className="size-3 animate-spin" />
@@ -85,8 +92,8 @@ const Sidebar: FC<SidebarProps> = ({
                 <input type="file" accept="image/*" className="sr-only" onChange={handleProfileImageInput} />
               </label>
               <button type="button" onClick={onProfileEdit} className="min-w-0 text-left">
-                <p className="truncate text-md font-bold text-cyan-900 leading-tight">{me.name}</p>
-                <p className="text-xs text-gray-400">{me.email}</p>
+                <p className="truncate text-md font-bold text-cyan-900 leading-tight">{currentUser.name}</p>
+                <p className="text-xs text-gray-400">{currentUser.email}</p>
               </button>
             </div>
 
@@ -112,17 +119,17 @@ const Sidebar: FC<SidebarProps> = ({
         />
 
         <div className="grid grid-cols-2 rounded-xl bg-black/20 p-1 border border-white/5">
-          <TabButton active={activeTab === "chats"} onClick={() => setActiveTab("chats")} icon={MessageSquare} label="Chats" />
-          <TabButton active={activeTab === "groups"} onClick={() => setActiveTab("groups")} icon={Users} label="Groups" />
+          <TabButton active={activeTab === SidebarTab.Chats} onClick={() => setActiveTab(SidebarTab.Chats)} icon={MessageSquare} label="Chats" />
+          <TabButton active={activeTab === SidebarTab.Groups} onClick={() => setActiveTab(SidebarTab.Groups)} icon={Users} label="Groups" />
         </div>
       </div>
 
       <div className="flex-1 overflow-y-auto px-3 custom-scrollbar">
         <div className="flex items-center justify-between px-3 pb-3">
           <p className="text-[11px] font-bold uppercase tracking-[0.1em] text-cyan-50/70">
-            {activeTab === "chats" ? "Recent Activity" : "Your Communities"}
+            {activeTab === SidebarTab.Chats ? "Recent Activity" : "Your Communities"}
           </p>
-          {activeTab === "groups" && (
+          {activeTab === SidebarTab.Groups && (
             <button 
               onClick={() => setIsGroupModalOpen(true)} 
               className="flex items-center gap-1 text-[12px] font-bold text-cyan-500 hover:text-cyan-300 transition-colors"
@@ -133,7 +140,7 @@ const Sidebar: FC<SidebarProps> = ({
         </div>
 
         <div className="space-y-2 pb-4">
-          {activeTab === "chats" ? (
+          {activeTab === SidebarTab.Chats ? (
             otherUsers.length > 0 ? (
               otherUsers.map((user) => (
                 <UserCard 
@@ -162,7 +169,7 @@ const Sidebar: FC<SidebarProps> = ({
                   } 
                   onClick={() => onGroupClick(chat)} 
                   selected={selectedGroupChatId === chat.chatId} 
-                  unreadCount={chat.unreadCount?.[me?.uid ?? ""] ?? 0} 
+                  unreadCount={chat.unreadCount?.[currentUser?.uid ?? ""] ?? 0} 
                   lastMessageTime={formatChatTime(chat.updatedAt)} 
                 />
               ))
