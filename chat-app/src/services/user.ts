@@ -1,5 +1,5 @@
 import { db } from "../firebase/config";
-import { deleteField, doc, setDoc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { deleteField, doc, setDoc, Timestamp, updateDoc } from "firebase/firestore";
 import {
   assertAtLeastOneField,
   assertRequiredString,
@@ -20,8 +20,8 @@ export const saveUser = async (
   const payload: Record<string, unknown> = {
     uid: validatedUid,
     email: validatedEmail,
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
+    createdAt: Timestamp.now(),
+    updatedAt: Timestamp.now(),
   };
 
   if (normalizedName) {
@@ -45,7 +45,7 @@ export const updateUser = async (
   assertAtLeastOneField(validatedPayload, "User update");
 
   const updates: Record<string, unknown> = {
-    updatedAt: serverTimestamp(),
+    updatedAt: Timestamp.now(),
   };
 
   const normalizedName =validatedPayload.name === undefined? undefined: assertRequiredString(validatedPayload.name, "Name");

@@ -7,7 +7,7 @@ import {
   deleteField,
   doc,
   getDoc,
-  serverTimestamp,
+  Timestamp,
   setDoc,
   updateDoc,
 } from "firebase/firestore";
@@ -31,7 +31,7 @@ const addSystemMessage = async (chatId: string, text: string, actorId?: string, 
     text: validatedText,
     imageUrl: null,
     type: "system",
-    createdAt: serverTimestamp(),
+    createdAt: Timestamp.now(),
   });
 };
 
@@ -59,7 +59,7 @@ const addTargetedSystemMessage = async (
     imageUrl: null,
     type: "system",
     ...(normalizedVisibleTo.length ? { visibleTo: normalizedVisibleTo } : {}),
-    createdAt: serverTimestamp(),
+    createdAt: Timestamp.now(),
   });
 };
 
@@ -107,8 +107,8 @@ export const getOrCreateChat = async (
     type: "private",
     members: [validatedCurrentUserId, validatedSelectedUserId],
     lastMessage: "",
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
+    createdAt: Timestamp.now(),
+    updatedAt: Timestamp.now(),
     unreadCount: {
       [validatedCurrentUserId]: 0,
       [validatedSelectedUserId]: 0,
@@ -147,8 +147,8 @@ export const createGroupChat = async (
     groupName: trimmedGroupName,
     adminId: validatedCurrentUserId,
     lastMessage: "",
-    createdAt: serverTimestamp(),
-    updatedAt: serverTimestamp(),
+    createdAt: Timestamp.now(),
+    updatedAt: Timestamp.now(),
     unreadCount: Object.fromEntries(
       members.map((memberId) => [memberId, 0])
     ),
@@ -241,7 +241,7 @@ export const addGroupMembers = async (
   await updateDoc(chatRef, {
     members: arrayUnion(...newMemberIds),
     lastMessage: systemText,
-    updatedAt: serverTimestamp(),
+    updatedAt: Timestamp.now(),
     ...unreadUpdates,
   });
 
@@ -286,9 +286,9 @@ export const leaveGroupChat = async (
 
   if (!remainingMembers.length) {
     await updateDoc(chatRef, {
-      adminExitedAt: serverTimestamp(),
+      adminExitedAt: Timestamp.now(),
       lastMessage: `${normalizedCurrentUserName} exited the group.`,
-      updatedAt: serverTimestamp(),
+      updatedAt: Timestamp.now(),
     });
 
     await addSystemMessage(
@@ -312,7 +312,7 @@ export const leaveGroupChat = async (
     members: arrayRemove(validatedCurrentUserId),
     adminId: nextAdminId,
     lastMessage: systemText,
-    updatedAt: serverTimestamp(),
+    updatedAt: Timestamp.now(),
     [`unreadCount.${validatedCurrentUserId}`]: deleteField(),
   });
 
@@ -371,7 +371,7 @@ export const removeGroupMember = async (
   await updateDoc(chatRef, {
     members: arrayRemove(validatedMemberId),
     lastMessage: systemText,
-    updatedAt: serverTimestamp(),
+    updatedAt: Timestamp.now(),
     [`unreadCount.${validatedMemberId}`]: deleteField(),
   });
 
@@ -427,10 +427,10 @@ export const deleteGroupChat = async (
   const systemText = `${normalizedCurrentUserName} deleted the group.`;
 
   await updateDoc(chatRef, {
-    deletedAt: serverTimestamp(),
+    deletedAt: Timestamp.now(),
     deletedBy: validatedCurrentUserId,
     lastMessage: systemText,
-    updatedAt: serverTimestamp(),
+    updatedAt: Timestamp.now(),
   });
 
   await addSystemMessage(validatedChatId, systemText, validatedCurrentUserId, normalizedCurrentUserName);
@@ -448,6 +448,6 @@ export const updateLastMessage = async (
   const chatRef = doc(db, "chats", validatedChatId);
   await updateDoc(chatRef, {
     lastMessage: validatedMessageText,
-    updatedAt: serverTimestamp(),
+    updatedAt: Timestamp.now(),
   });
 };

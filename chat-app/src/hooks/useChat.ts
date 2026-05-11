@@ -5,7 +5,7 @@ import {
   addDoc, 
   FieldPath,
   increment,
-  serverTimestamp, 
+  Timestamp, 
   query, 
   orderBy, 
   onSnapshot, 
@@ -170,7 +170,7 @@ export const useChatMessages = (chatId: string) => {
         imageUrl: imageUrl || null,
         senderId,
         type: imageUrl ? "image" : "text",
-        createdAt: serverTimestamp(),
+        createdAt: Timestamp.now(),
       };
 
       await addDoc(collection(db, "chats", chatId, "messages"), messageData);
@@ -185,7 +185,7 @@ export const useChatMessages = (chatId: string) => {
         "lastMessage",
         imageUrl ? "Image" : currentText,
         "updatedAt",
-        serverTimestamp(),
+        Timestamp.now(),
         ...unreadUpdates
       );
 
