@@ -129,7 +129,7 @@
 import { ref, onMounted, computed } from 'vue'
 import { recipeAPI } from '../../services/api'
 import type { Recipe } from '../../types/recipe'
-import {Clock, Users, FileText, CheckCircle, XCircle, Edit, Eye, Utensils, MessageSquare, ChevronDown, Plus, Layers, ArrowRight, LayoutDashboard, ChefHat} from '@lucide/vue'
+import {Clock, Users, FileText, CheckCircle, XCircle, Edit, Eye, MessageSquare, ChevronDown, Plus, Layers, ArrowRight, LayoutDashboard, ChefHat} from '@lucide/vue'
 import Navbar from '@/components/ui/Navbar.vue'
 import StatusBadge from '@/components/ui/StatusBadge.vue'
 import Loading from '@/components/ui/Loading.vue'

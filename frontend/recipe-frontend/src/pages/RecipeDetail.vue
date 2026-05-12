@@ -142,10 +142,9 @@
           <div class="bg-neutral-900/80 backdrop-blur-2xl border border-white/10 p-3 rounded-[2rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.8)]">
             <div class="grid grid-cols-2 gap-3 sm:flex sm:items-center sm:justify-center">
               <template v-if="isAdmin">
-                <button @click="handleApprove" :disabled="processing" 
+                <button @click="handleApprove"
                   class="flex items-center justify-center gap-2 h-12 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl font-black transition-all active:scale-95 disabled:opacity-50 text-xs uppercase tracking-widest flex-1 sm:px-8 cursor-pointer">
-                  <Loader2 v-if="processing" class="size-5 animate-spin" />
-                  <CheckCircle v-else class="size-4" />
+                  <CheckCircle class="size-4" />
                   <span>Approve</span>
                 </button>
                 <button @click="openFeedbackModal('rejected')" 
@@ -167,7 +166,7 @@
       </div>
     </div>
 
-    <Modal :isOpen="showModal" :loading="processing" @close="showModal = false" @confirm="submitFeedback" :confirm-text="confirmText" :title="modalTitle" class="backdrop-blur-md">
+    <Modal :isOpen="showModal" :loading="false" @close="showModal = false" @confirm="submitFeedback" :confirm-text="confirmText" :title="modalTitle" class="backdrop-blur-md">
       <div class="space-y-5 py-4">
         <p class="text-sm font-bold text-neutral-400 uppercase tracking-widest">Revision Feedback</p>
         <textarea v-model="feedback" placeholder="Provide constructive notes for the chef..." 
@@ -183,7 +182,7 @@ import { useRoute, RouterLink, useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
 import type { Recipe } from '../types/recipe'
 import { UserRole } from '../types/user'
-import { Clock, Users, Loader2, CheckCircle, XCircle, Edit, MessageSquare, MoveLeft, Video, ChefHat } from '@lucide/vue'
+import { Clock, Users, CheckCircle, XCircle, Edit, MessageSquare, MoveLeft, Video, ChefHat } from '@lucide/vue'
 import Modal from '@/components/ui/Modal.vue'
 import { adminRecipeAPI, publicRecipeAPI, recipeAPI } from '../services/api'
 import { formatDate } from '@/utils/format'
@@ -196,7 +195,6 @@ const authStore = useAuthStore()
 const loading = ref(true)
 const recipe = ref<Recipe | null>(null)
 const error = ref('')
-const processing = ref(false)
 const showModal = ref(false)
 const feedback = ref('')
 const feedbackAction = ref<'draft' | 'rejected'>('draft')
@@ -230,9 +228,7 @@ const statusClasses = computed(() => {
   return map[recipe.value?.status?.toLowerCase() || ''] || 'border-blue-500/30 bg-blue-500/10 text-blue-400';
 });
 
-onMounted(async () => {
-  if (isAdmin.value && !authStore.isAdmin) return router.push('/login')
-  if (isChef.value && !authStore.isChef) return router.push('/login')
+const fetchRecipe = async () => {
   try {
     const response = await api.value.details(id)
     recipe.value = response.data.recipe || response.data.data || response.data
@@ -241,18 +237,17 @@ onMounted(async () => {
   } finally {
     loading.value = false
   }
+}
+
+onMounted(async () => {
+  if (isAdmin.value && !authStore.isAdmin) return router.push('/login')
+  if (isChef.value && !authStore.isChef) return router.push('/login')
+  await fetchRecipe()
 })
 
-const handleApprove = async () => {
-  processing.value = true
-  try {
-    await adminRecipeAPI.updateStatus(id, 'approved')
-    router.push('/admin/dashboard')
-  } catch {
-    alert('Approval failed')
-  } finally {
-    processing.value = false
-  }
+const handleApprove = () => {
+  adminRecipeAPI.updateStatus(id, 'approved').catch(err => console.error('Status update failed', err))
+  router.push('/admin/dashboard')
 }
 
 const openFeedbackModal = (action: 'draft' | 'rejected') => {
@@ -261,18 +256,11 @@ const openFeedbackModal = (action: 'draft' | 'rejected') => {
   showModal.value = true
 }
 
-const submitFeedback = async () => {
+const submitFeedback = () => {
   if (!feedback.value.trim()) return
-  processing.value = true
-  try {
-    await adminRecipeAPI.updateStatus(id, feedbackAction.value, feedback.value)
-    showModal.value = false
-    router.push('/admin/dashboard')
-  } catch {
-    alert('Status update failed')
-  } finally {
-    processing.value = false
-  }
+  adminRecipeAPI.updateStatus(id, feedbackAction.value, feedback.value).catch(err => console.error('Feedback update failed', err))
+  showModal.value = false
+  router.push('/admin/dashboard')
 }
 
 const handleEdit = () => router.push(`/chef/submit?edit=${id}`)
