@@ -1,6 +1,5 @@
 import type { FC } from "react";
-import { useRef, useEffect, memo } from "react";
-import { Timestamp } from "firebase/firestore";
+import { useEffect, memo } from "react";
 import { ImagePlus, SendHorizonal, X, Loader2 } from "lucide-react";
 import { auth } from "../../firebase/config";
 import { useChatMessages } from "../../hooks/useChat";
@@ -19,8 +18,6 @@ interface ChatProps {
 }
 
 const Chat: FC<ChatProps> = ({ chatId, user, title, isGroup = false, usersById = {}, readOnlyMessage = "", onLoadingChange}) => {
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
-
   const {
     messages,
     loading,
@@ -33,83 +30,25 @@ const Chat: FC<ChatProps> = ({ chatId, user, title, isGroup = false, usersById =
     imagePreview,
     clearImageSelection,
     error,
-  } = useChatMessages(chatId);
-
-  useEffect(() => {
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-    }
-  }, [chatId]);
+    textareaRef,
+    formatDateLabel,
+    getMessageDate,
+    getSenderName,
+    getSenderUser,
+    getSystemText
+  } = useChatMessages(chatId, usersById);
 
   useEffect(() => {
     onLoadingChange?.(loading);
   }, [loading, onLoadingChange]);
 
-  const submitCurrentMessage = async () => {
-    if (readOnlyMessage) return;
-    if ((!text.trim() && !imagePreview) || isUploading) return;
-
-    await sendMessage();
-    if (textareaRef.current) {
-      textareaRef.current.style.height = "auto";
-    }
-  };
-
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await submitCurrentMessage();
-  };
-
-  const formatDateLabel = (date: Date) => {
-    const today = new Date().toDateString();
-    const yesterdayDate = new Date();
-    yesterdayDate.setDate(yesterdayDate.getDate() - 1);
-    const yesterday = yesterdayDate.toDateString();
-    const target = date.toDateString();
-    if (target === today) return "Today";
-    if (target === yesterday) return "Yesterday";
-    return date.toLocaleDateString([], {
-      month: "short",
-      day: "numeric",
-      year: date.getFullYear() !== new Date().getFullYear() ? "numeric" : undefined
-    });
-  };
-
-  const getMessageDate = (createdAt: Timestamp | Date | null | undefined) => {
-    if (createdAt instanceof Date) return createdAt;
-    if (
-      createdAt &&
-      typeof createdAt === "object" &&
-      "toDate" in createdAt &&
-      typeof createdAt.toDate === "function"
-    ) {
-      return createdAt.toDate() as Date;
-    }
-    return new Date();
+    if (readOnlyMessage) return;
+    await sendMessage();
   };
 
   const conversationTitle = title || user?.name || user?.email || "this chat";
-  const getSenderName = (senderId: string) => {
-    const sender = usersById[senderId];
-    return sender?.name || sender?.email || "Group member";
-  };
-  const getSenderUser = (senderId: string): User => {
-    return usersById[senderId] ?? {
-      uid: senderId,
-      name: getSenderName(senderId),
-      email: "",
-    };
-  };
-  const getSystemText = (msg: typeof messages[number]) => {
-    if (!msg.actorId || msg.actorId !== auth.currentUser?.uid) {
-      return msg.text;
-    }
-
-    const actorName = msg.actorName || getSenderName(msg.actorId);
-    return msg.text.startsWith(`${actorName} `)
-      ? `You ${msg.text.slice(actorName.length + 1)}`
-      : msg.text;
-  };
 
   return (
     <div className="flex h-full min-w-0 flex-col bg-[#f8fafc]">
@@ -264,7 +203,9 @@ const Chat: FC<ChatProps> = ({ chatId, user, title, isGroup = false, usersById =
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
                     e.preventDefault();
-                    void submitCurrentMessage();
+                    if (!readOnlyMessage) {
+                      void sendMessage();
+                    }
                   }
                 }}
                 onInput={(e) => {

@@ -17,8 +17,9 @@ import { db, auth } from "../firebase/config";
 import { uploadImageToCloudinary } from "../services/upload";
 import { validateProfileImage } from "../utils/validation";
 import type { Message } from "../types/chat";
+import type { User } from "../types/user";
 
-export const useChatMessages = (chatId: string) => {
+export const useChatMessages = (chatId: string, usersById: Record<string, User> = {}) => {
   const currentUserId = auth.currentUser?.uid;
   const [messages, setMessages] = useState<Message[]>([]);
   const [loading, setLoading] = useState(Boolean(chatId && currentUserId));
@@ -28,10 +29,15 @@ export const useChatMessages = (chatId: string) => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [error, setError] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     if (!chatId || !currentUserId) {
       return;
+    }
+
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
     }
 
     let unsubscribe: (() => void) | undefined;
@@ -121,9 +127,62 @@ export const useChatMessages = (chatId: string) => {
     setImagePreview(null);
   };
 
+  const formatDateLabel = (date: Date) => {
+    const today = new Date().toDateString();
+    const yesterdayDate = new Date();
+    yesterdayDate.setDate(yesterdayDate.getDate() - 1);
+    const yesterday = yesterdayDate.toDateString();
+    const target = date.toDateString();
+    if (target === today) return "Today";
+    if (target === yesterday) return "Yesterday";
+    return date.toLocaleDateString([], {
+      month: "short",
+      day: "numeric",
+      year: date.getFullYear() !== new Date().getFullYear() ? "numeric" : undefined
+    });
+  };
+
+  const getMessageDate = (createdAt: Timestamp | Date | null | undefined) => {
+    if (createdAt instanceof Date) return createdAt;
+    if (
+      createdAt &&
+      typeof createdAt === "object" &&
+      "toDate" in createdAt &&
+      typeof createdAt.toDate === "function"
+    ) {
+      return createdAt.toDate() as Date;
+    }
+    return new Date();
+  };
+
+  const getSenderName = (senderId: string) => {
+    const sender = usersById[senderId];
+    return sender?.name || sender?.email || "Group member";
+  };
+
+  const getSenderUser = (senderId: string): User => {
+    return usersById[senderId] ?? {
+      uid: senderId,
+      name: getSenderName(senderId),
+      email: "",
+    };
+  };
+
+  const getSystemText = (msg: Message) => {
+    if (!msg.actorId || msg.actorId !== currentUserId) {
+      return msg.text;
+    }
+
+    const actorName = msg.actorName || getSenderName(msg.actorId);
+    return msg.text.startsWith(`${actorName} `)
+      ? `You ${msg.text.slice(actorName.length + 1)}`
+      : msg.text;
+  };
+
   const sendMessage = async (e?: FormEvent) => {
     e?.preventDefault();
-    if (!text.trim() && !selectedFile) return;
+    if ((!text.trim() && !selectedFile) || isUploading) return;
+
     if (!currentUserId || !chatId) {
       setError("Session expired or invalid chat.");
       return;
@@ -136,6 +195,10 @@ export const useChatMessages = (chatId: string) => {
     setText("");
     clearImageSelection();
     setError("");
+
+    if (textareaRef.current) {
+      textareaRef.current.style.height = "auto";
+    }
 
     try {
       let imageUrl = null;
@@ -207,6 +270,12 @@ export const useChatMessages = (chatId: string) => {
     bottomRef,
     imagePreview,
     clearImageSelection,
-    error
+    error,
+    textareaRef,
+    formatDateLabel,
+    getMessageDate,
+    getSenderName,
+    getSenderUser,
+    getSystemText
   };
 };
