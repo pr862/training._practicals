@@ -40,6 +40,10 @@ const resolveFiles = (req: Request) => {
   };
 };
 
+const removeUndefinedFields = <T extends Record<string, any>>(data: T) =>
+  Object.fromEntries(Object.entries(data).filter(([, value]) => value !== undefined)) as Partial<T>;
+
+
 const validateRecipeData = (body: any, parsedIngredients: any) => {
   if (!body.name?.trim()) return "Name is required";
   if (!body.steps?.trim()) return "Cooking steps are required";
@@ -90,17 +94,17 @@ export const updateUserRecipe = async (req: AuthRequest, res: Response) => {
     const parsed = parseRecipeFields(req.body);
     const { imagePath, videoPath } = resolveFiles(req);
 
-    const recipeData: Partial<Recipe> = {
+    const recipeData = removeUndefinedFields<Partial<Recipe>>({
       ...req.body,
       preparationTime: req.body.preparationTime ? Number(req.body.preparationTime) : undefined,
       ingredients: Array.isArray(parsed.ingredients) ? parsed.ingredients : undefined,
       allergens: Array.isArray(parsed.allergens) ? parsed.allergens : undefined,
       nutrition: parsed.nutrition || undefined,
       status: existing.status === RecipeStatus.REJECTED ? RecipeStatus.DRAFT : existing.status,
-      image: imagePath || undefined,
-      video: videoPath || undefined,
+      image: imagePath,
+      video: videoPath,
       updatedAt: new Date(),
-    };
+    });
 
     const updatedRecipe = await updateRecipe(id, recipeData);
     return res.status(200).json({ message: "Recipe updated", recipe: updatedRecipe });

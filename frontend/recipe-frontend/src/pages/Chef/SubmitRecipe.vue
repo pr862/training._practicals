@@ -88,6 +88,9 @@
               </div>
               <div class="relative group aspect-video bg-gray-50 rounded-xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center overflow-hidden transition-all hover:border-orange-300">
                 <img v-if="imagePreview" :src="imagePreview" class="absolute inset-0 w-full h-full object-cover" />
+                <button v-if="imagePreview" type="button" @click.stop="removeImage" class="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity z-20">
+                  <Trash2 class="size-4" />
+                </button>
                 <div v-else class="text-center p-4">
                   <Camera class="size-8 text-gray-300 mx-auto mb-2" />
                   <p class="text-xs text-gray-400">Click to upload image</p>
@@ -101,7 +104,7 @@
             <div class="relative group aspect-video bg-gray-50 rounded-xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center overflow-hidden transition-all hover:border-orange-300">
               <template v-if="videoPreviewUrl">
                 <video :src="videoPreviewUrl" controls class="w-full h-full object-cover"></video>
-                <button type="button" @click="videoFile = null; form.video = ''" class="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity z-10">
+                <button type="button" @click="removeVideo" class="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity z-10">
                   <Trash2 class="size-4" />
                 </button>
               </template>
@@ -272,8 +275,15 @@ const handleImageUpload = (event: Event) => {
   const file = (event.target as HTMLInputElement).files?.[0]
   if (file) {
     imageFile.value = file
+    form.imageUrl = ''
     imagePreview.value = URL.createObjectURL(file)
   }
+}
+
+const removeImage = () => {
+  imageFile.value = null
+  form.imageUrl = ''
+  imagePreview.value = ''
 }
 
 const handleVideoUpload = (event: Event) => {
@@ -282,6 +292,11 @@ const handleVideoUpload = (event: Event) => {
     videoFile.value = file
     form.video = ''
   }
+}
+
+const removeVideo = () => {
+  videoFile.value = null
+  form.video = ''
 }
 
 const handleSubmit = async () => {
@@ -302,12 +317,16 @@ const handleSubmit = async () => {
       formData.append('image', imageFile.value)
     } else if (form.imageUrl) {
       formData.append('image', form.imageUrl)
+    } else if (isEditMode.value) {
+      formData.append('image', '')
     }
 
     if (videoFile.value) {
       formData.append('video', videoFile.value)
     } else if (form.video) {
       formData.append('video', form.video)
+    } else if (isEditMode.value) {
+      formData.append('video', '')
     }
 
     if (isEditMode.value && editRecipeId.value) {
