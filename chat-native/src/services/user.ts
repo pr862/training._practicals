@@ -1,5 +1,5 @@
 import { db } from "../firebase/config";
-import { deleteField, doc, setDoc, Timestamp, updateDoc } from "firebase/firestore";
+import { deleteField, doc, setDoc, Timestamp } from "firebase/firestore";
 import {
   assertAtLeastOneField,
   assertRequiredString,
@@ -63,5 +63,7 @@ export const updateUser = async (
     updates.photoURL = normalizedPhotoURL || deleteField();
   }
 
-  return updateDoc(doc(db, "users", validatedUid), updates);
+  updates.uid = validatedUid;
+
+  return setDoc(doc(db, "users", validatedUid), updates, { merge: true });
 };

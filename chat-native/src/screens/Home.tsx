@@ -174,7 +174,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
           await onProfileEdit(name, imageUri, removePhoto);
           setProfileEditOpen(false);
         }}
-        isSubmitting={false}
+        isSubmitting={isProfileImageUploading}
       />
       <CreateGroup
         open={createGroupOpen}
