@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import type { User } from '../types/user';
 import UserAvatar from './UserAvatar';
 import { View, TouchableOpacity, Text, StyleSheet, Platform } from "react-native";
-import { colors } from '../constants/theme';
+import { colors, textStyles } from '../constants/theme';
 
 interface UserCardProps {
   user?: User;

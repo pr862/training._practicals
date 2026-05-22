@@ -16,7 +16,7 @@ import { validateEmail, validatePassword } from '../utils/validation';
 import { useAuthForm } from '../hooks/useAuthForm';
 import { Input } from '../components/Input';
 import Button from '../components/Button';
-import { colors } from '../constants/theme';
+import { colors, textStyles } from '../constants/theme';
 
 export default function LoginScreen({ navigation }: any) {
   const { values, errors, setErrors, loading, setLoading, handleChange } = useAuthForm({
@@ -152,14 +152,11 @@ const styles = StyleSheet.create({
     elevation: 6,
   },
   title: {
-    fontSize: 32,
-    fontWeight: '700',
+    ...textStyles.screenTitle,
     color: colors.text,
-    letterSpacing: -0.5,
   },
   subtitle: {
-    fontSize: 16,
-    fontWeight: '400',
+    ...textStyles.screenSubtitle,
     color: colors.textMuted,
     marginTop: 8,
     textAlign: 'center',
@@ -181,12 +178,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   footerText: {
-    fontSize: 15,
+    ...textStyles.footer,
     color: colors.icon,
   },
   linkText: {
-    fontSize: 15,
-    fontWeight: '600',
+    ...textStyles.footerLink,
     color: colors.textMuted,
   },
 });

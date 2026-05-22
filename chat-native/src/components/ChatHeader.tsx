@@ -6,7 +6,7 @@ import ConfirmationModal from './ConfirmationModal';
 import UserAvatar from './UserAvatar';
 import type { Chat } from '../types/chat';
 import type { User } from '../types/user';
-import { colors } from '../constants/theme';
+import { colors, textStyles } from '../constants/theme';
 
 interface ChatHeaderProps {
   user?: User;
@@ -222,13 +222,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 16,
-    fontWeight: '700',
+    ...textStyles.title,
     color: colors.text,
   },
   subtitle: {
-    fontSize: 12,
-    fontWeight: '400',
+    ...textStyles.subtitle,
     color: colors.textMuted,
     marginTop: 1,
   },
@@ -261,8 +259,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   menuItemText: {
-    fontSize: 14,
-    fontWeight: '500',
+    ...textStyles.formLabel,
     color: colors.text,
   },
 });

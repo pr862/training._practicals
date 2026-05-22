@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Modal, View, Text, StyleSheet } from "react-native";
-import { colors } from "../constants/theme";
+import { colors, textStyles } from "../constants/theme";
 import Button from "./Button";
 
 interface ConfirmationModalProps {
@@ -116,13 +116,12 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   title: {
-    fontSize: 20,
-    fontWeight: "700",
+    ...textStyles.title,
     color: colors.text,
     marginBottom: 8,
   },
   description: {
-    fontSize: 14,
+    ...textStyles.subtitle,
     lineHeight: 20,
     color: colors.textSoft,
     marginBottom: 24,
@@ -135,8 +134,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   errorText: {
-    fontSize: 14,
-    fontWeight: "600",
+    ...textStyles.formLabel,
     color: colors.danger,
   },
   buttonContainer: {
@@ -148,12 +146,10 @@ const styles = StyleSheet.create({
     height: 48,
   },
   cancelButtonText: {
-    fontSize: 14,
-    fontWeight: "600"
+    ...textStyles.modalbutton,
   },
   confirmButtonText: {
-    fontSize: 14,
-    fontWeight: "600",
+    ...textStyles.modalbutton,
     color: colors.text,
   },
   primaryConfirmButtonText: {

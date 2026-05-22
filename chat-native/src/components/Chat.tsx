@@ -7,7 +7,7 @@ import { useChatMessages } from "../hooks/useChat";
 import type { User } from "../types/user";
 import UserAvatar from "./UserAvatar";
 import Loading from "./Loading";
-import { colors } from "../constants/theme";
+import { colors, textStyles } from "../constants/theme";
 
 interface ChatProps {
   chatId: string;
@@ -269,8 +269,7 @@ const styles = StyleSheet.create({
     maxWidth: "85%"
   },
   systemMessageText: {
-    fontSize: 12,
-    fontWeight: "400",
+    ...textStyles.subtitle,
     color: colors.textMuted,
     textAlign: "center"
   },
@@ -309,8 +308,7 @@ const styles = StyleSheet.create({
     alignItems: "flex-end"
   },
   senderNameLabel: {
-    fontSize: 14,
-    fontWeight: "600",
+    ...textStyles.formLabel,
     color: colors.accent,
     marginBottom: 4,
   },
@@ -349,7 +347,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surfaceRaised
   },
   bubbleText: {
-    fontSize: 14,
+    ...textStyles.input,
     lineHeight: 20,
     marginRight: 6, 
     flexShrink: 1,
@@ -417,8 +415,7 @@ const styles = StyleSheet.create({
     justifyContent: "center"
   },
   emptyHeader: {
-    fontSize: 15,
-    fontWeight: "600",
+    ...textStyles.footerLink,
     color: colors.text,
     marginBottom: 4
   },
@@ -451,8 +448,7 @@ const styles = StyleSheet.create({
     alignItems: "center"
   },
   readOnlyText: {
-    fontSize: 14,
-    fontWeight: "500",
+    ...textStyles.formLabel,
     color: colors.textMuted,
     textAlign: "center"
   },
@@ -482,7 +478,7 @@ const styles = StyleSheet.create({
   textInput: {
     flex: 1,
     minHeight: 36,
-    fontSize: 15,
+    ...textStyles.footer,
     color: colors.text,
     paddingHorizontal: 8,
     paddingVertical: 6,
@@ -548,8 +544,7 @@ const styles = StyleSheet.create({
   errorText: {
     marginTop: 8,
     paddingHorizontal: 4,
-    fontSize: 12,
-    fontWeight: "500",
+    ...textStyles.error,
     color: colors.danger
   }
 });

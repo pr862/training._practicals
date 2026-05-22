@@ -4,7 +4,7 @@ import { Check, X } from "lucide-react-native";
 import type { User } from "../types/user";
 import { Input } from "./Input";
 import UserAvatar from "./UserAvatar";
-import { colors } from "../constants/theme";
+import { colors, textStyles } from "../constants/theme";
 import Button from "./Button";
 
 interface CreateGroupProps {
@@ -233,12 +233,11 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
   userName: {
-    fontSize: 14,
-    fontWeight: "700",
+    ...textStyles.formLabel,
     color: colors.text,
   },
   userEmail: {
-    fontSize: 12,
+    ...textStyles.subtitle,
     color: colors.textSoft,
     marginTop: 2,
   },
@@ -269,13 +268,11 @@ const styles = StyleSheet.create({
     borderStyle: "dashed",
   },
   emptyText: {
-    fontSize: 14,
-    fontWeight: "700",
+    ...textStyles.formLabel,
     color: colors.textMuted,
   },
   errorText: {
-    fontSize: 12,
-    fontWeight: "600",
+    ...textStyles.error,
     color: colors.danger,
     textAlign: "center",
     marginTop: 12,
@@ -294,13 +291,11 @@ const styles = StyleSheet.create({
     height: 44,
   },
   cancelButtonText: {
-    fontSize: 12,
-    fontWeight: "700",
+   ...textStyles.modalbutton,
     color: colors.background,
   },
   submitButtonText: {
-    fontSize: 12,
-    fontWeight: "700",
+    ...textStyles.modalbutton,
     color: colors.accentText,
   },
 });

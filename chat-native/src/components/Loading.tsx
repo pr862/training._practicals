@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, ActivityIndicator, StyleSheet, ViewStyle } from 'react-native';
-import { colors } from '../constants/theme';
+import { colors, textStyles } from '../constants/theme';
 
 interface LoadingProps {
   label?: string;
@@ -51,8 +51,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   labelText: {
-    fontSize: 14,
-    fontWeight: '500',
+    ...textStyles.formLabel,
     color: colors.accent,
   },
 });

@@ -20,7 +20,7 @@ import { Input } from "../components/Input";
 import Button from "../components/Button";
 import { useAuthForm } from "../hooks/useAuthForm";
 import { uploadImageToCloudinary } from "../services/upload";
-import { colors } from "../constants/theme";
+import { colors, textStyles } from "../constants/theme";
 
 export default function RegisterScreen({ navigation }: any) {
   const [profileImage, setProfileImage] = useState<string | null>(null);
@@ -233,14 +233,11 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   title: {
-    fontSize: 32,
-    fontWeight: '700',
+    ...textStyles.screenTitle,
     color: colors.text,
-    letterSpacing: -0.5,
   },
   subtitle: {
-    fontSize: 16,
-    fontWeight: '400',
+    ...textStyles.screenSubtitle,
     color: colors.textMuted,
     marginTop: 0,
     textAlign: 'center',
@@ -284,8 +281,7 @@ const styles = StyleSheet.create({
     borderColor: colors.surfaceRaised ,
   },
   uploadText: {
-    fontSize: 13,
-    fontWeight: '500',
+    ...textStyles.helper,
     color: '#6b6b72',
     marginTop: 10,
   },
@@ -306,12 +302,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   footerText: {
-    fontSize: 15,
+    ...textStyles.footer,
     color: colors.icon,
   },
   linkText: {
-    fontSize: 15,
-    fontWeight: '600',
+    ...textStyles.footerLink,
     color: colors.textMuted,
   },
 });

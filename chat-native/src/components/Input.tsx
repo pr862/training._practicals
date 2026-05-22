@@ -1,6 +1,6 @@
 import React, { forwardRef, useState, type ReactNode } from 'react';
 import { View, Text, TextInput, StyleSheet, type TextInputProps, type ViewStyle, type TextStyle } from 'react-native';
-import { colors } from '../constants/theme';
+import { colors, textStyles } from '../constants/theme';
 
 export interface InputProps extends TextInputProps {
   label?: string;
@@ -62,8 +62,7 @@ const styles = StyleSheet.create({
     gap: 6,
   },
   label: {
-    fontSize: 14,
-    fontWeight: '500',
+    ...textStyles.formLabel,
     color: '#cac8c8',
   },
   inputWrapper: {
@@ -84,7 +83,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#262626',
     backgroundColor: '#0F0F11',
-    fontSize: 14,
+    ...textStyles.input,
     color: colors.text,
   },
   inputFocused: {
@@ -110,8 +109,7 @@ const styles = StyleSheet.create({
     borderColor: colors.danger,
   },
   errorText: {
-    fontSize: 12,
-    fontWeight: '500',
+    ...textStyles.error,
     color: colors.danger,
   },
 

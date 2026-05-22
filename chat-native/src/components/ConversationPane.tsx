@@ -5,7 +5,7 @@ import Loading from "./Loading";
 import type { User } from "../types/user";
 import type { Chat as ChatType } from "../types/chat";
 import { Text, View, StyleSheet } from "react-native";
-import { colors } from "../constants/theme";
+import { colors, textStyles } from "../constants/theme";
 
 interface ConversationPaneProps {
   hasChatRoute: boolean;
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
   },
   emptySubtitle: {
     maxWidth: 320,
-    fontSize: 14,
+    ...textStyles.input,
     lineHeight: 20,
     color: "#64748b",
     textAlign: "center",

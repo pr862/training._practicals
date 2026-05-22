@@ -15,7 +15,7 @@ import type { User } from "../types/user";
 import UserAvatar from "./UserAvatar";
 import { Input } from "./Input";
 import { validateName } from "../utils/validation";
-import { colors } from "../constants/theme";
+import { colors, textStyles } from "../constants/theme";
 import Button from "./Button";
 
 interface ProfileEditModalProps {
@@ -194,8 +194,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16
   },
   headerTitle: {
-    fontSize: 16,
-    fontWeight: "700",
+    ...textStyles.button,
     color: colors.text
   },
   closeButton: {
@@ -261,8 +260,7 @@ const styles = StyleSheet.create({
     marginBottom: 16
   },
   errorText: {
-    fontSize: 12,
-    fontWeight: "600",
+    ...textStyles.error,
     color: colors.danger,
     textAlign: "center",
     marginTop: 8
@@ -282,13 +280,11 @@ const styles = StyleSheet.create({
     height: 44
   },
   cancelButtonText: {
-    fontSize: 14,
-    fontWeight: "700",
+    ...textStyles.modalbutton,
     color: "#334155"
   },
   saveButtonText: {
-    fontSize: 14,
-    fontWeight: "700",
+    ...textStyles.modalbutton,
     color: colors.accentText
   },
 });

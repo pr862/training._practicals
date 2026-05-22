@@ -6,7 +6,7 @@ import ConfirmationModal from "./ConfirmationModal";
 import UserAvatar from "./UserAvatar";
 import Loading from "./Loading";
 import { Modal, ScrollView, Text, TouchableOpacity, StyleSheet, View, Dimensions } from "react-native";
-import { colors } from "../constants/theme";
+import { colors, textStyles } from "../constants/theme";
 
 interface GroupInfoModalProps {
   open: boolean;
@@ -149,13 +149,11 @@ const styles = StyleSheet.create({
     marginRight: 12,
   },
   title: {
-    fontSize: 16,
-    fontWeight: "700",
+    ...textStyles.button,
     color: colors.text,
   },
   subtitle: {
-    fontSize: 12,
-    fontWeight: "600",
+    ...textStyles.subtitle,
     color: colors.textMuted,
     marginTop: 2,
   },
@@ -195,8 +193,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   memberName: {
-    fontSize: 14,
-    fontWeight: "700",
+    ...textStyles.formLabel,
     color: colors.text,
     flexShrink: 1,
   },
@@ -216,8 +213,7 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
   },
   memberEmail: {
-    fontSize: 12,
-    fontWeight: "500",
+    ...textStyles.subtitle,
     color: colors.textSoft,
     marginTop: 1,
   },

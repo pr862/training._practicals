@@ -6,7 +6,7 @@ import {
   type ViewStyle,
   type TextStyle
 } from 'react-native';
-import { colors } from '../constants/theme';
+import { colors, textStyles } from '../constants/theme';
 import Loading from './Loading';
 
 interface ButtonProps {
@@ -84,8 +84,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   text: {
-    fontSize: 16,
-    fontWeight: '600',
+    ...textStyles.button,
   },
   primaryText: {
     color: colors.accentText,

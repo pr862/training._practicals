@@ -12,7 +12,7 @@ import UserAvatar from "../components/UserAvatar";
 import UserCard from "../components/UserCard";
 import ConfirmationModal from "../components/ConfirmationModal";
 import Loading from "../components/Loading";
-import { colors } from "../constants/theme";
+import { colors, textStyles } from "../constants/theme";
 
 
 type NavigationProps = NativeStackScreenProps<RootStackParamList, "Home">;
@@ -302,12 +302,11 @@ const styles = StyleSheet.create({
     marginLeft: 12,
   },
   userName: {
-    fontSize: 16,
-    fontWeight: "700",
+    ...textStyles.title,
     color: colors.text,
   },
   userEmail: {
-    fontSize: 12,
+    ...textStyles.subtitle,
     color: colors.textSoft,
   },
   logoutBtn: {
@@ -337,7 +336,7 @@ const styles = StyleSheet.create({
     flex: 1,
     height: 45,
     color: "white",
-    fontSize: 14,
+    ...textStyles.input,
   },
   tabContainer: {
     flexDirection: "row",
@@ -388,8 +387,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   createGroupText: {
-    fontSize: 12,
-    fontWeight: "700",
+    ...textStyles.subtitle,
     color: colors.accent,
   },
   emptyState: {
@@ -400,7 +398,7 @@ const styles = StyleSheet.create({
   emptyText: {
     color: "white",
     marginTop: 8,
-    fontSize: 14,
+    ...textStyles.input,
   },
   groupAvatarWrapper: {
     width: 44,
