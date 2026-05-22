@@ -177,11 +177,11 @@ const ChatHeader = ({
 
 const styles = StyleSheet.create({
   header: {
-    height: Platform.OS === 'ios' ? 100 : 80,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 12,
+    paddingVertical: 14,
     backgroundColor: colors.surfaceRaised,
     borderBottomWidth: 0.5,
     borderBottomColor: colors.border,

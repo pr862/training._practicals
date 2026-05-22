@@ -166,7 +166,7 @@ const Chat = ({ chatId, user, title, isGroup = false, usersById = {}, readOnlyMe
             keyboardShouldPersistTaps="handled"
           />
         )}
-        <View style={styles.bottomDock}>
+        <View style={styles.chatInputContainer}>
           {imagePreview && (
             <View style={styles.previewContainer}>
               <View style={styles.previewCard}>
@@ -433,7 +433,7 @@ const styles = StyleSheet.create({
     color: colors.accent,
     fontWeight: "600"
   },
-  bottomDock: {
+  chatInputContainer: {
     borderTopWidth: 0.5,
     borderColor: colors.border,
     backgroundColor: colors.background,
