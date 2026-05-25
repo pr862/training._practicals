@@ -1,4 +1,4 @@
-import { auth } from "../../../mobile/app/firebase/config";
+import { auth } from "../config";
 import { assertRequiredString, assertRequiredValue } from "../validation";
 import {
   createUserWithEmailAndPassword,

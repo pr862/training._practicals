@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, memo } from "react";
 import { View, Text, TextInput, TouchableOpacity, FlatList, Image, StyleSheet, KeyboardAvoidingView, Platform, ViewStyle } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { ImagePlus, SendHorizonal, X } from "lucide-react-native";
-import { auth } from "../../../app/firebase/config";
+import { auth } from "../../../../packages/data/config";
 import { useChatMessages } from "../useChat";
 import type { User } from "../../../../packages/data/user/model";
 import UserAvatar from "../../../../packages/style/components/UserAvatar";

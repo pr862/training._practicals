@@ -12,7 +12,7 @@ import {
   getDoc,
   updateDoc
 } from "firebase/firestore";
-import { db, auth } from "../../../mobile/app/firebase/config";
+import { db, auth } from "../../../packages/data/config";
 import { uploadImageToCloudinary, type UploadImageSource } from "../../../packages/data/upload/service";
 import { validateProfileImage } from "../../../mobile/features/auth/validation";
 import type { Message } from "../../../packages/data/chat/model";

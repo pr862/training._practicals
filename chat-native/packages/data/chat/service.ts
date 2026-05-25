@@ -1,4 +1,4 @@
-import { db } from "../../../mobile/app/firebase/config";
+import { db } from "../config";
 import {
   addDoc,
   arrayRemove,

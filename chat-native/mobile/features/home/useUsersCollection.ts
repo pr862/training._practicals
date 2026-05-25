@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { collection, onSnapshot, Timestamp } from "firebase/firestore";
-import { db } from "../../../mobile/app/firebase/config";
+import { db } from "../../../packages/data/config";
 import type { User } from "../../../packages/data/user/model";
 
 interface FirestoreUser {

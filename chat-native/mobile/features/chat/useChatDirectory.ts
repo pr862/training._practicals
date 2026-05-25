@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { collection, onSnapshot, query, where, Timestamp } from "firebase/firestore";
-import { db } from "../../app/firebase/config";
-import { formatChatTime, getChatTimeValue } from "../../../packages/data/chat/dateUtils";
+import { db } from "../../../packages/data/config";
+import { formatChatTime, getChatTimeValue } from "../../../packages/data/utils/dateUtils";
 import type { Chat } from "../../../packages/data/chat/model";
 
 interface PrivateChatPreview {
