@@ -5,7 +5,13 @@
     "baseUrl": ".",
     "paths": {
       "@/*": [
-        "src/*"
+        "mobile/*"
+      ],
+      "@data/*": [
+        "packages/data/*"
+      ],
+      "@style/*": [
+        "packages/style/*"
       ],
       "firebase/auth": [
         "./node_modules/@firebase/auth/dist/index.rn.d.ts"

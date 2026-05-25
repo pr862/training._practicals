@@ -1,6 +1,6 @@
 import { registerRootComponent } from 'expo';
 import { LogBox } from 'react-native';
-import App from './App';
+import App from './mobile/app/_layout';
 
 // Ignore the specific warning about pointerEvents deprecation in React Native Web
 // which is triggered by the navigation stack internal components.
