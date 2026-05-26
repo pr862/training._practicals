@@ -1,6 +1,6 @@
 import { View, Text, Image, StyleSheet } from 'react-native';
-import { useState, useEffect } from 'react';
 import type { User } from '../../../packages/data/user/model';
+import { useUserAvatarState } from './useUserAvatarState';
 
 interface UserAvatarProps {
   user: User;
@@ -19,12 +19,7 @@ const UserAvatar = ({ user, size = 'md' }: UserAvatarProps) => {
   const name = user.name || user.email || '?';
   const image = user.photoURL;
   const initials = getInitials(name);
-
-  const [hasError, setHasError] = useState(false);
-
-  useEffect(() => {
-    setHasError(false);
-  }, [image]);
+  const { hasError, handleImageError } = useUserAvatarState(image);
 
   const currentDimensions = sizeStyles[size];
 
@@ -35,7 +30,7 @@ const UserAvatar = ({ user, size = 'md' }: UserAvatarProps) => {
           source={{ uri: image }}
           alt={name}
           style={styles.avatarImage}
-          onError={() => setHasError(true)}
+          onError={handleImageError}
         />
       ) : (
         <Text style={[styles.initialsText, sizeTextStyles[size]]}>{initials}</Text>

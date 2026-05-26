@@ -1,5 +1,4 @@
 import { Shield, Trash2, UserMinus, X } from "lucide-react-native";
-import { useState } from "react";
 import type { User } from "../../../../packages/data/user/model";
 import type { Chat } from "../../../../packages/data/chat/model";
 import ConfirmationModal from "../../../../packages/style/components/ConfirmationModal";
@@ -7,6 +6,7 @@ import UserAvatar from "../../../../packages/style/components/UserAvatar";
 import Loading from "../../../../packages/style/components/Loading";
 import { Modal, ScrollView, Text, TouchableOpacity, StyleSheet, View, Dimensions } from "react-native";
 import { colors, textStyles } from "../../../../packages/style/theme";
+import { useGroupInfoModalState } from "./useGroupInfoModalState";
 
 interface GroupInfoModalProps {
   open: boolean;
@@ -20,22 +20,15 @@ interface GroupInfoModalProps {
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 const GroupInfoModal = ({ open, group, members, currentUserId, onCancel, onRemoveMember }: GroupInfoModalProps) => {
-  const [removingMemberId, setRemovingMemberId] = useState<string | null>(null);
-  const [memberToRemove, setMemberToRemove] = useState<User | null>(null);
-  const isAdmin = group.adminId === currentUserId;
+  const {
+    removingMemberId,
+    memberToRemove,
+    setMemberToRemove,
+    isAdmin,
+    removeMember,
+  } = useGroupInfoModalState({ group, currentUserId, onRemoveMember });
 
   if (!open) return null;
-
-  const removeMember = async (memberId: string) => {
-    if (removingMemberId) return;
-    setRemovingMemberId(memberId);
-    try {
-      await onRemoveMember(memberId);
-      setMemberToRemove(null);
-    } finally {
-      setRemovingMemberId(null);
-    }
-  };
 
   return (
     <Modal visible={open} transparent animationType="fade" onRequestClose={onCancel}>

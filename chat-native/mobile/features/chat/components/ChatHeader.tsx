@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, Modal, View, Platform } from 'react-native';
 import { ArrowLeft, Trash2, MoreVertical, Users, LogOut, UserPlus, Info } from 'lucide-react-native';
 
@@ -7,6 +7,7 @@ import UserAvatar from '../../../../packages/style/components/UserAvatar';
 import type { Chat } from '../../../../packages/data/chat/model';
 import type { User } from '../../../../packages/data/user/model';
 import { colors, textStyles } from '../../../../packages/style/theme';
+import { useChatHeaderState } from './useChatHeaderState';
 
 interface ChatHeaderProps {
   user?: User;
@@ -31,34 +32,30 @@ const ChatHeader = ({
   onAddMembers,
   onViewGroupInfo,
 }: ChatHeaderProps) => {
-  const [showMenu, setShowMenu] = useState(false);
-  const [confirmAction, setConfirmAction] = useState<'leave' | 'delete' | null>(null);
-
-  const isGroup = Boolean(group);
-  const isGroupAdmin = group?.adminId === currentUserId;
-  const hasMenuActions = Boolean(
-    onViewGroupInfo || onLeaveGroup || (isGroupAdmin && onAddMembers) || (isGroupAdmin && onDeleteGroup)
-  );
-
-  const title = group?.groupName || user?.name || user?.email?.split('@')[0] || 'Conversation';
-  const subtitle = group
-    ? groupMembers.map((m) => m.name || m.email).filter(Boolean).join(', ') || `${group.members.length} members`
-    : user?.email;
-
-  const runMenuAction = (action: () => void) => {
-    setShowMenu(false);
-    requestAnimationFrame(action);
-  };
-
-  const requestLeaveConfirm = () => {
-    setShowMenu(false);
-    setConfirmAction('leave');
-  };
-
-  const requestDeleteConfirm = () => {
-    setShowMenu(false);
-    setConfirmAction('delete');
-  };
+  const {
+    showMenu,
+    setShowMenu,
+    confirmAction,
+    setConfirmAction,
+    isGroup,
+    isGroupAdmin,
+    hasMenuActions,
+    canShowDelete,
+    title,
+    subtitle,
+    runMenuAction,
+    requestLeaveConfirm,
+    requestDeleteConfirm,
+  } = useChatHeaderState({
+    user,
+    group,
+    groupMembers,
+    currentUserId,
+    onViewGroupInfo,
+    onLeaveGroup,
+    onDeleteGroup,
+    onAddMembers,
+  });
 
   const MenuItem = ({ icon: Icon, label, onPress, color = '#334155', }: {
     icon: any;
@@ -71,14 +68,6 @@ const ChatHeader = ({
       <Text style={[styles.menuItemText, { color }]}>{label}</Text>
     </TouchableOpacity>
   );
-
-  const canShowDelete = Boolean(
-    onDeleteGroup &&
-      isGroupAdmin &&
-      !group?.deletedAt &&
-      group?.adminExitedAt
-  );
-
 
   return (
     <View style={styles.header}>

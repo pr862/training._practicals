@@ -1,13 +1,11 @@
-import React, { useEffect, useMemo, useRef, memo } from "react";
+import React, { memo } from "react";
 import { View, Text, TextInput, TouchableOpacity, FlatList, Image, StyleSheet, KeyboardAvoidingView, Platform, ViewStyle } from "react-native";
-import * as ImagePicker from "expo-image-picker";
 import { ImagePlus, SendHorizonal, X } from "lucide-react-native";
-import { auth } from "../../../../packages/data/config";
-import { useChatMessages } from "../useChat";
 import type { User } from "../../../../packages/data/user/model";
 import UserAvatar from "../../../../packages/style/components/UserAvatar";
 import Loading from "../../../../packages/style/components/Loading";
 import { colors, textStyles } from "../../../../packages/style/theme";
+import { useMessageThreadState } from "./useMessageThreadState";
 
 interface ChatProps {
   chatId: string;
@@ -20,58 +18,29 @@ interface ChatProps {
 }
 
 const Chat = ({ chatId, user, title, isGroup = false, usersById = {}, readOnlyMessage = "", onLoadingChange }: ChatProps) => {
-  const flatListRef = useRef<FlatList>(null);
-  const { messages, loading, text, setText, sendMessage, handleImageUpload, isUploading, isSending, imagePreview, clearImageSelection, error, formatDateLabel, getMessageDate, getSenderName, getSenderUser, getSystemText } = useChatMessages(chatId, usersById);
-  const currentUserId = auth.currentUser?.uid;
-  const trimmedText = text.trim();
-  const canSend = Boolean((trimmedText || imagePreview) && !isUploading && !isSending && !loading);
-
-  const getRenderableText = (value: unknown) => (
-    typeof value === "string" ? value.replace(/[\u200B-\u200D\uFEFF]/g, "").trim() : ""
-  );
-
-  const hasRenderableImage = (value: unknown) => (
-    typeof value === "string" && /^(https?:|file:|content:|data:image\/)/.test(value.trim())
-  );
-
-  const hasRenderableMessage = (message: any) => (
-    message.type === "system" ? Boolean(getRenderableText(message.text)) : Boolean(getRenderableText(message.text) || hasRenderableImage(message.imageUrl))
-  );
-
-  const visibleMessages = useMemo(
-    () => messages.filter(hasRenderableMessage), [messages]
-  );
-
-  useEffect(() => {
-    onLoadingChange?.(loading);
-  }, [loading, onLoadingChange]);
-
-  const submitCurrentMessage = async () => {
-    if (readOnlyMessage) return;
-    if (!canSend) return;
-    await sendMessage(text);
-    flatListRef.current?.scrollToEnd({ animated: true });
-  };
-
-  const triggerNativeImagePicker = async () => {
-    if (isUploading || isSending) return;
-    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!permissionResult.granted) {
-      return;
-    }
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images"],
-      allowsEditing: false,
-      quality: 0.8,
-    });
-    if (result.canceled || !result.assets.length) return;
-    const asset = result.assets[0];
-    handleImageUpload({
-      uri: asset.uri,
-      name: asset.fileName || asset.uri.split("/").pop() || "chat-image.jpg",
-      type: asset.mimeType || "image/jpeg",
-    });
-  };
+  const {
+    flatListRef,
+    currentUserId,
+    loading,
+    text,
+    setText,
+    isUploading,
+    isSending,
+    imagePreview,
+    clearImageSelection,
+    formatDateLabel,
+    getMessageDate,
+    getSenderName,
+    getSenderUser,
+    getSystemText,
+    canSend,
+    visibleMessages,
+    getRenderableText,
+    hasRenderableImage,
+    hasRenderableMessage,
+    submitCurrentMessage,
+    triggerNativeImagePicker,
+  } = useMessageThreadState({ chatId, usersById, readOnlyMessage, onLoadingChange });
 
   const conversationTitle = title || user?.name || user?.email || "this chat";
 

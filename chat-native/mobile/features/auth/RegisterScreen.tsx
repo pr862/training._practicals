@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -6,94 +6,18 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Alert,
   Image,
   StyleSheet,
 } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import * as ImagePicker from 'expo-image-picker';
 import { Camera, Lock, Mail, MessagesSquare, User as UserIcon } from "lucide-react-native";
-import { registerUser, updateUserProfile } from "../../../packages/data/auth/service";
-import { saveUser } from "../../../packages/data/user/service";
-import { validateName, validateEmail, validatePassword, validateConfirmPassword } from "./validation";
 import { Input } from "../../../packages/style/components/Input";
 import Button from "../../../packages/style/components/Button";
-import { useAuthForm } from "./useAuthForm";
-import { uploadImageToCloudinary } from "../../../packages/data/upload/service";
+import { useRegisterScreenState } from "./useRegisterScreenState";
 import { colors, textStyles } from "../../../packages/style/theme";
 
 export default function RegisterScreen({ navigation }: any) {
-  const [profileImage, setProfileImage] = useState<string | null>(null);
-  const { values, errors, setErrors, loading, setLoading, handleChange } = useAuthForm({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
-
-  const pickImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== 'granted') {
-      Alert.alert("Permission Denied", "We need camera roll permissions to upload a profile picture.");
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.5,
-    });
-
-    if (!result.canceled) {
-      setProfileImage(result.assets[0].uri);
-    }
-  };
-
-  const handleRegister = async () => {
-    const newErrors = {
-      name: validateName(values.name) || "",
-      email: validateEmail(values.email) || "",
-      password: validatePassword(values.password) || "",
-      confirmPassword: validateConfirmPassword(values.confirmPassword, values.password) || "",
-    };
-
-    if (Object.values(newErrors).some((err) => err !== "")) {
-      setErrors(newErrors);
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const res = await registerUser(values.email, values.password);
-      let photoURL = "";
-
-      if (profileImage) {
-        photoURL = await uploadImageToCloudinary(profileImage);
-      }
-
-      await updateUserProfile(res.user, {
-        displayName: values.name,
-        ...(photoURL ? { photoURL } : {}),
-      });
-
-      await saveUser(res.user.uid, res.user.email!, values.name, photoURL);
-    } catch (err) {
-      const errorCode = err && typeof err === "object" && "code" in err ? String(err.code) : "";
-
-      if (errorCode === "auth/email-already-in-use") {
-        setErrors((prev) => ({
-          ...prev,
-          email: "Email already exists.",
-        }));
-        return;
-      }
-
-      Alert.alert("Registration Failed", err instanceof Error ? err.message : "Something went wrong");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { values, errors, loading, handleChange, profileImage, pickImage, handleRegister } = useRegisterScreenState();
 
   return (
     <SafeAreaView style={styles.safeArea}>

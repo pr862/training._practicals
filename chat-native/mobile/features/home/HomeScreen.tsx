@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Platform, FlatList, StatusBar } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -13,6 +13,7 @@ import UserCard from "./components/UserCard";
 import ConfirmationModal from "../../../packages/style/components/ConfirmationModal";
 import Loading from "../../../packages/style/components/Loading";
 import { colors, textStyles } from "../../../packages/style/theme";
+import { useHomeScreenState } from "./useHomeScreenState";
 
 
 type NavigationProps = NativeStackScreenProps<RootStackParamList, "Home">;
@@ -47,27 +48,28 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
 }) => {
   const isHydrating = !currentUser || isUsersLoading;
 
-  const [activeTab, setActiveTab] = useState<"chats" | "groups">("chats");
-  const [profileEditOpen, setProfileEditOpen] = useState(false);
-  const [createGroupOpen, setCreateGroupOpen] = useState(false);
-  const [logoutConfirmOpen, setLogoutConfirmOpen] = useState(false);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-
-  const normalizedSearchQuery = searchQuery.trim().toLowerCase();
-  const filteredUsers = otherUsers.filter((u) => {
-    if (!normalizedSearchQuery) return true;
-    return (
-      u.name.toLowerCase().includes(normalizedSearchQuery) ||
-      u.email.toLowerCase().includes(normalizedSearchQuery)
-    );
-  });
-  const filteredGroups = groupChats.filter((g) => {
-    if (!g) return false;
-    if (g.deletedAt) return false;
-    if (!normalizedSearchQuery) return true;
-
-    const nameToSearch = g.groupName || g.name || "Group chat";
-    return nameToSearch.toLowerCase().includes(normalizedSearchQuery);
+  const {
+    activeTab,
+    setActiveTab,
+    profileEditOpen,
+    setProfileEditOpen,
+    createGroupOpen,
+    setCreateGroupOpen,
+    logoutConfirmOpen,
+    setLogoutConfirmOpen,
+    isLoggingOut,
+    filteredUsers,
+    filteredGroups,
+    handleConfirmLogout,
+    handleSubmitProfileEdit,
+    handleCreateGroup,
+  } = useHomeScreenState({
+    otherUsers,
+    groupChats,
+    searchQuery,
+    onLogoutClick,
+    onProfileEdit,
+    onCreateGroup,
   });
 
   const handleUserSelection = (targetUser: User) => {
@@ -76,18 +78,6 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
 
   const handleGroupSelection = (targetGroup: Chat) => {
     navigation.navigate("Chat", { type: "group", data: targetGroup });
-  };
-
-  const handleConfirmLogout = async () => {
-    setIsLoggingOut(true);
-    try {
-      await onLogoutClick();
-      setLogoutConfirmOpen(false);
-    } catch (error) {
-      console.error("Logout failed:", error);
-    } finally {
-      setIsLoggingOut(false);
-    }
   };
 
   const renderUserItem = ({ item }: { item: User }) => {
@@ -170,10 +160,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
         open={profileEditOpen}
         user={currentUser}
         onCancel={() => setProfileEditOpen(false)}
-        onSubmit={async (name, imageUri, removePhoto) => {
-          await onProfileEdit(name, imageUri, removePhoto);
-          setProfileEditOpen(false);
-        }}
+        onSubmit={handleSubmitProfileEdit}
         isSubmitting={isProfileImageUploading}
       />
       <CreateGroup
@@ -181,10 +168,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
         mode="create"
         users={otherUsers}
         onCancel={() => setCreateGroupOpen(false)}
-        onSubmit={async (groupName, memberIds) => {
-          await onCreateGroup(groupName, memberIds);
-          setCreateGroupOpen(false);
-        }}
+        onSubmit={handleCreateGroup}
       />
 
       {currentUser && (

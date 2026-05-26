@@ -10,47 +10,13 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Mail, Lock, MessagesSquare } from 'lucide-react-native';
-import { loginUser } from '../../../packages/data/auth/service';
-import { saveUser } from '../../../packages/data/user/service';
-import { validateEmail, validatePassword } from './validation';
-import { useAuthForm } from './useAuthForm';
+import { useLoginScreenState } from './useLoginScreenState';
 import { Input } from '../../../packages/style/components/Input';
 import Button from '../../../packages/style/components/Button';
 import { colors, textStyles } from '../../../packages/style/theme';
 
 export default function LoginScreen({ navigation }: any) {
-  const { values, errors, setErrors, loading, setLoading, handleChange } = useAuthForm({
-    email: '',
-    password: '',
-  });
-
-  const handleLogin = async () => {
-    const emailError = validateEmail(values.email);
-    const passwordError = validatePassword(values.password);
-
-    if (emailError || passwordError) {
-      setErrors({ email: emailError || '', password: passwordError || '' });
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const res = await loginUser(values.email, values.password);
-      await saveUser(
-        res.user.uid,
-        res.user.email!,
-        res.user.displayName ?? undefined,
-        res.user.photoURL ?? undefined
-      );
-    } catch {
-      setErrors({
-        email: 'Invalid email.',
-        password: 'Invalid password.',
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { values, errors, loading, handleChange, handleLogin } = useLoginScreenState();
 
   return (
     <SafeAreaView style={styles.safeArea}>

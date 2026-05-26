@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React from "react";
 import { Modal, View, Text, StyleSheet } from "react-native";
 import { colors, textStyles } from "../theme";
 import Button from "./Button";
+import { useConfirmationModalState } from "./useConfirmationModalState";
 
 interface ConfirmationModalProps {
   open: boolean;
@@ -25,28 +26,7 @@ const ConfirmationDialog = ({
   onCancel,
   onConfirm,
 }: ConfirmationDialogProps) => {
-  const [error, setError] = useState("");
-  const [isConfirming, setIsConfirming] = useState(false);
-
-  const handleCancel = () => {
-    if (isConfirming) return;
-    setError("");
-    onCancel();
-  };
-
-  const handleConfirm = async () => {
-    if (isConfirming) return;
-    setError("");
-    setIsConfirming(true);
-    try {
-      await onConfirm();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Operation failed.");
-    } finally {
-      setIsConfirming(false);
-    }
-  };
-
+  const { error, isConfirming, handleCancel, handleConfirm } = useConfirmationModalState(onCancel, onConfirm);
   const isDanger = variant === "danger";
 
   return (

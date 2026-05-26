@@ -1,6 +1,7 @@
-import React, { forwardRef, useState, type ReactNode } from 'react';
+import React, { forwardRef, type ReactNode } from 'react';
 import { View, Text, TextInput, StyleSheet, type TextInputProps, type ViewStyle, type TextStyle } from 'react-native';
 import { colors, textStyles } from '../theme';
+import { useInputState } from './useInputState';
 
 export interface InputProps extends TextInputProps {
   label?: string;
@@ -14,19 +15,9 @@ export interface InputProps extends TextInputProps {
 
 export const Input = forwardRef<TextInput, InputProps>(
   ({ label, error, containerStyle, labelStyle, inputStyle, errorStyle, icon, onFocus, onBlur, ...props }, ref) => {
-    const [isFocused, setIsFocused] = useState(false);
+    const { isFocused, handleFocus, handleBlur } = useInputState(onFocus, onBlur);
 
     const isEditable = props.editable !== false;
-
-    const handleFocus = (e: any) => {
-      setIsFocused(true);
-      if (onFocus) onFocus(e);
-    };
-
-    const handleBlur = (e: any) => {
-      setIsFocused(false);
-      if (onBlur) onBlur(e);
-    };
 
     return (
       <View style={[styles.container, containerStyle]}>

@@ -1,11 +1,11 @@
 import { Modal, View, Text, TouchableOpacity, ScrollView, StyleSheet, Dimensions } from "react-native";
-import { useMemo, useState } from "react";
 import { Check, X } from "lucide-react-native";
 import type { User } from "../../../../packages/data/user/model";
 import { Input } from "../../../../packages/style/components/Input";
 import UserAvatar from "../../../../packages/style/components/UserAvatar";
 import { colors, textStyles } from "../../../../packages/style/theme";
 import Button from "../../../../packages/style/components/Button";
+import { useCreateGroupState } from "./useCreateGroupState";
 
 interface CreateGroupProps {
   open: boolean;
@@ -19,48 +19,21 @@ interface CreateGroupProps {
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 const CreateGroup = ({ open, mode, users = [], excludedUserIds = [], onCancel, onSubmit }: CreateGroupProps) => {
-  const [groupName, setGroupName] = useState("");
-  const [selectedMemberIds, setSelectedMemberIds] = useState<string[]>([]);
-  const [error, setError] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const selectableUsers = useMemo(() => {
-    const excludedSet = new Set(excludedUserIds.map(id => String(id)));
-    return users.filter((user) => !excludedSet.has(user.uid));
-  }, [users, excludedUserIds]);
+  const {
+    groupName,
+    setGroupName,
+    selectedMemberIds,
+    error,
+    isSubmitting,
+    selectableUsers,
+    isCreateMode,
+    canSubmit,
+    close,
+    toggleMember,
+    handleSubmit,
+  } = useCreateGroupState({ mode, users, excludedUserIds, onCancel, onSubmit });
 
   if (!open) return null;
-
-  const isCreateMode = mode === "create";
-  const hasMinMembers = selectedMemberIds.length >= (isCreateMode ? 2 : 1);
-  const isNameValid = !isCreateMode || groupName.trim().length > 0;
-  const canSubmit = hasMinMembers && !isSubmitting && isNameValid;
-
-  const resetForm = () => {
-    setGroupName("");
-    setSelectedMemberIds([]);
-    setError("");
-  };
-
-  const close = () => {
-    if (isSubmitting) return;
-    resetForm();
-    onCancel();
-  };
-
-  const handleSubmit = async () => {
-    if (!canSubmit) return;
-    setIsSubmitting(true);
-    try {
-      await onSubmit(groupName.trim(), selectedMemberIds);
-      resetForm();
-      onCancel();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Operation failed");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
 
   return (
     <Modal visible={open} transparent animationType="fade" onRequestClose={close}>
@@ -99,7 +72,7 @@ const CreateGroup = ({ open, mode, users = [], excludedUserIds = [], onCancel, o
                   return (
                     <TouchableOpacity
                       key={uid}
-                      onPress={() => setSelectedMemberIds((prev) => isSelected ? prev.filter((id) => id !== uid) : [...prev, uid])}
+                      onPress={() => toggleMember(uid)}
                       style={[styles.userRow, isSelected ? styles.userRowSelected : styles.userRowUnselected]}
                     >
                       <UserAvatar user={user} size="md" />
