@@ -1,0 +1,10 @@
+{
+  "name": "@my-app/style",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./theme.ts",
+  "dependencies": {
+    "nativewind": "^4.2.3",
+    "tailwindcss": "^3.4.19"
+  }
+}
