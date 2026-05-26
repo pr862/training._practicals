@@ -2,10 +2,8 @@ import React from 'react';
 import { View } from 'react-native';
 import { DefaultTheme, NavigationContainer } from '@react-navigation/native';
 import { AuthProvider, useAuth } from './context/Auth';
-import { RootNavigator } from './navigation';
+import { RootNavigator } from './index';
 import Loading from '../../packages/style/components/Loading';
-import { logoutUser } from '../../packages/data/auth/service';
-import { useUsersDirectory } from '../features/home/useUsers';
 import { colors } from '../../packages/style/theme';
 
 const navigationTheme = {
@@ -23,29 +21,7 @@ const navigationTheme = {
 };
 
 function AppContent() {
-  const { user, loading } = useAuth();
-
-  const {
-    otherUsers,
-    loading: usersLoading,
-    me,
-    groupChats,
-    chatPreviewsByUserId,
-    searchQuery,
-    setSearchQuery,
-    handleCreateGroup,
-    isProfileImageUploading,
-    updateCurrentUserProfile,
-  } = useUsersDirectory();
-
-  const currentUserProfile = user ? {
-    id: user.uid,
-    uid: user.uid,
-    email: me?.email || user.email || "",
-    name: me?.name || user.displayName || "",
-    photoURL: me?.photoURL || user.photoURL || "",
-    createdAt: me?.createdAt,
-  } : undefined;
+  const { loading } = useAuth();
 
   if (loading) {
     return (
@@ -58,22 +34,7 @@ function AppContent() {
   return (
     <View style={{ flex: 1, backgroundColor: colors.background }}>
       <NavigationContainer theme={navigationTheme}>
-        <RootNavigator
-          user={user}
-          currentUserProfile={currentUserProfile}
-          otherUsers={otherUsers}
-          groupChats={groupChats}
-          chatPreviewsByUserId={chatPreviewsByUserId}
-          searchQuery={searchQuery}
-          onSearchChange={setSearchQuery}
-          onCreateGroup={(groupName, memberIds) => handleCreateGroup(groupName, memberIds)}
-          onLogoutClick={() => logoutUser()}
-          isProfileImageUploading={isProfileImageUploading}
-          isUsersLoading={usersLoading}
-          onProfileEdit={async (name, imageUri, removePhoto) => {
-            await updateCurrentUserProfile(name, imageUri ?? null, removePhoto);
-          }}
-        />
+        <RootNavigator />
       </NavigationContainer>
     </View>
   );

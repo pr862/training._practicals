@@ -1,11 +1,13 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, Platform, FlatList, StatusBar } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { useNavigation } from "@react-navigation/native";
+import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Camera, LogOut, MessageSquare, Plus, Search, Users } from "lucide-react-native";
 import { User } from "../../../packages/data/user/model";
 import { Chat } from "../../../packages/data/chat/model";
-import { RootStackParamList } from "../../app/navigation/index";
+import { RootStackParamList } from "../../app/index";
+import { logoutUser } from "../../../packages/data/auth/service";
 import ProfileEditModal from "./components/ProfileEditModal";
 import CreateGroup from "./components/CreateGroup";
 import UserAvatar from "../../../packages/style/components/UserAvatar";
@@ -13,40 +15,38 @@ import UserCard from "./components/UserCard";
 import ConfirmationModal from "../../../packages/style/components/ConfirmationModal";
 import Loading from "../../../packages/style/components/Loading";
 import { colors, textStyles } from "../../../packages/style/theme";
+import { useAuth } from "../../app/context/Auth";
 import { useHomeScreenState } from "./useHomeScreenState";
+import { useUsersDirectory } from "./useUsers";
 
 
-type NavigationProps = NativeStackScreenProps<RootStackParamList, "Home">;
+type HomeNavigation = NativeStackNavigationProp<RootStackParamList, "Home">;
 
-interface HomeScreenProps extends NavigationProps {
-  currentUser: User | undefined;
-  otherUsers: User[];
-  groupChats?: Chat[];
-  chatPreviewsByUserId?: Record<string, { unreadCount: number; lastMessageTime: string }>;
-  searchQuery: string;
-  onSearchChange: (text: string) => void;
-  onCreateGroup: (groupName: string, memberIds: string[]) => Promise<void>;
-  onLogoutClick: () => void | Promise<void>;
-  onProfileEdit: (name: string, imageUri?: string | null, removePhoto?: boolean) => Promise<void>;
-  isProfileImageUploading?: boolean;
-  isUsersLoading?: boolean;
-}
+const HomeScreen: React.FC = () => {
+  const navigation = useNavigation<HomeNavigation>();
+  const { user } = useAuth();
+  const {
+    otherUsers,
+    loading: usersLoading,
+    me,
+    groupChats,
+    chatPreviewsByUserId,
+    searchQuery,
+    setSearchQuery,
+    handleCreateGroup: createGroup,
+    isProfileImageUploading,
+    updateCurrentUserProfile,
+  } = useUsersDirectory();
 
-const HomeScreen: React.FC<HomeScreenProps> = ({
-  navigation,
-  currentUser,
-  otherUsers,
-  groupChats = [],
-  chatPreviewsByUserId = {},
-  searchQuery,
-  onSearchChange,
-  onCreateGroup,
-  onLogoutClick,
-  onProfileEdit,
-  isProfileImageUploading,
-  isUsersLoading = false,
-}) => {
-  const isHydrating = !currentUser || isUsersLoading;
+  const currentUser = user ? {
+    id: user.uid,
+    uid: user.uid,
+    email: me?.email || user.email || "",
+    name: me?.name || user.displayName || "",
+    photoURL: me?.photoURL || user.photoURL || "",
+    createdAt: me?.createdAt,
+  } : undefined;
+  const isHydrating = !currentUser || usersLoading;
 
   const {
     activeTab,
@@ -67,9 +67,11 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
     otherUsers,
     groupChats,
     searchQuery,
-    onLogoutClick,
-    onProfileEdit,
-    onCreateGroup,
+    onLogoutClick: logoutUser,
+    onProfileEdit: async (name, imageUri, removePhoto) => {
+      await updateCurrentUserProfile(name, imageUri ?? null, removePhoto);
+    },
+    onCreateGroup: createGroup,
   });
 
   const handleUserSelection = (targetUser: User) => {
@@ -208,7 +210,7 @@ const HomeScreen: React.FC<HomeScreenProps> = ({
             placeholder="Search conversations..."
             placeholderTextColor="#76767a"
             value={searchQuery}
-            onChangeText={onSearchChange}
+            onChangeText={setSearchQuery}
           />
         </View>
 
